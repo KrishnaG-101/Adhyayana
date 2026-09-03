@@ -1,0 +1,206 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Adhyayana API Master Contracts",
+  "description": "Authoritative contract-first schema registry for FastAPI backend endpoints and TypeScript frontend interfaces.",
+  "version": "1.0.0",
+  "definitions": {
+    "HealthCheck": {
+      "type": "object",
+      "title": "HealthCheck",
+      "description": "Standard service health check probe response.",
+      "required": ["status", "version", "timestamp", "services"],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["healthy", "degraded", "unhealthy"],
+          "description": "Overall service health status."
+        },
+        "version": {
+          "type": "string",
+          "description": "Semantic version of the running backend release."
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 UTC server timestamp."
+        },
+        "services": {
+          "type": "object",
+          "required": ["firestore", "embedding_cache"],
+          "properties": {
+            "firestore": {
+              "type": "string",
+              "enum": ["connected", "disconnected", "unknown"]
+            },
+            "embedding_cache": {
+              "type": "string",
+              "enum": ["loaded", "unloaded", "warming"]
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "StandardErrorResponse": {
+      "type": "object",
+      "title": "StandardErrorResponse",
+      "description": "Uniform error envelope returned on 4xx/5xx responses.",
+      "required": ["error_code", "message", "timestamp"],
+      "properties": {
+        "error_code": {
+          "type": "string",
+          "description": "Machine-readable unique application error code (e.g., PUZZLE_SESSION_EXPIRED)."
+        },
+        "message": {
+          "type": "string",
+          "description": "Human-readable descriptive error explanation."
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 UTC timestamp of error occurrence."
+        },
+        "details": {
+          "type": "object",
+          "description": "Optional contextual diagnostic data or validation failure traces.",
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": false
+    },
+    "PuzzleSession": {
+      "type": "object",
+      "title": "PuzzleSession",
+      "description": "Represents an active or completed linguistic puzzle attempt for a user.",
+      "required": [
+        "session_id",
+        "user_id",
+        "puzzle_id",
+        "puzzle_type",
+        "status",
+        "attempt_count",
+        "started_at",
+        "updated_at"
+      ],
+      "properties": {
+        "session_id": {
+          "type": "string",
+          "description": "Unique UUID identifier for this gameplay session."
+        },
+        "user_id": {
+          "type": "string",
+          "description": "Firebase Auth UID or anonymous visitor ID."
+        },
+        "puzzle_id": {
+          "type": "string",
+          "description": "Unique identifier of the target puzzle."
+        },
+        "puzzle_type": {
+          "type": "string",
+          "description": "Identifier of the mounted puzzle engine (e.g. 'contexto', 'crossword', 'word_blanks')."
+        },
+        "status": {
+          "type": "string",
+          "enum": ["ACTIVE", "WON", "FAILED", "ABANDONED"],
+          "description": "Current lifecycle status of the puzzle session."
+        },
+        "attempt_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Total number of valid guesses evaluated in this session."
+        },
+        "started_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when session was initiated."
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp of last guess or state change."
+        },
+        "completed_at": {
+          "type": ["string", "null"],
+          "format": "date-time",
+          "description": "Timestamp when terminal state (WON/FAILED) was reached, or null if active."
+        },
+        "engine_state": {
+          "type": "object",
+          "description": "Engine-specific persisted session state.",
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": false
+    },
+    "EngineLevelContracts": {
+      "type": "object",
+      "title": "EngineLevelContracts",
+      "description": "Placeholder namespace for pluggable puzzle engine specific payload contracts.",
+      "properties": {
+        "PuzzleGuessRequest": {
+          "type": "object",
+          "title": "PuzzleGuessRequest",
+          "description": "Generic baseline request payload for evaluating a puzzle guess.",
+          "required": ["puzzle_id", "session_id", "guess"],
+          "properties": {
+            "puzzle_id": {
+              "type": "string"
+            },
+            "session_id": {
+              "type": "string"
+            },
+            "guess": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            },
+            "client_timestamp": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          "additionalProperties": false
+        },
+        "PuzzleGuessResponse": {
+          "type": "object",
+          "title": "PuzzleGuessResponse",
+          "description": "Generic baseline response payload returning rich pedagogical telemetry.",
+          "required": [
+            "session_id",
+            "guess",
+            "is_valid_word",
+            "is_solved",
+            "status",
+            "telemetry"
+          ],
+          "properties": {
+            "session_id": {
+              "type": "string"
+            },
+            "guess": {
+              "type": "string"
+            },
+            "is_valid_word": {
+              "type": "boolean"
+            },
+            "is_solved": {
+              "type": "boolean"
+            },
+            "status": {
+              "type": "string",
+              "enum": ["PLAYING", "WON", "FAILED"]
+            },
+            "telemetry": {
+              "type": "object",
+              "description": "Engine-specific analytical feedback (rank, similarity, morphological breakdown).",
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": true
+    }
+  }
+}
