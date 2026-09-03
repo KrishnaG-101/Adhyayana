@@ -32,6 +32,10 @@ Activate this skill when:
    ```
    *(If no files are staged, identify the unstaged modified/created files and propose staging them or check with the user).*
 
+### Step 1.1: Verify Context & Documentation Sync (Rule 6)
+Ensure that [`context.md`](context.md) is updated and staged with the commit to record recent system/pedagogical shifts. Verify whether [`README.md`](README.md) needs updating (e.g. if new setup steps, scripts, or directories were added).
+
+
 ### Step 2: Determine Semantic Type and Scope
 Select the most accurate type based on `.agent/rules/git-workflow.md`:
 - `feat`: A new feature, engine, or API endpoint.

@@ -22,6 +22,11 @@
   - `docs/architecture/data-model.md`: Cloud Firestore collections, schemas, and indexes.
   - `docs/tracker/state.md`: Active sprint tracker.
 
+### Governance & Documentation Sanitization — 2026-09-03
+#### Documentation & Rule Synchronization
+- **Rule 6 Codified**: Established mandatory `context.md` sync on every commit, and `README.md` sync when setup, structure, or workflows change.
+- **Link Portability**: Replaced absolute machine-specific file URLs with repository-relative paths across `AGENTS.md`, `README.md`, `context.md`, and all `.agent/skills/`.
+
 ---
 
 ## Dependency Rationale Log

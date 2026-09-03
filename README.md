@@ -126,3 +126,5 @@ AI agents working in this repository must strictly adhere to [`AGENTS.md`](AGENT
 - **Rule 3 (Modular Engines)**: Keep puzzle logic isolated inside engine folders.
 - **Rule 4 (State Tracker Sync)**: Keep `docs/tracker/state.md` updated at every milestone.
 - **Rule 5 (Dependency Guardrail)**: Record any dependency installation in `docs/tracker/changelog.md`.
+- **Rule 6 (Context & Doc Sync)**: Refresh `context.md` on every single commit, and update `README.md` when setup, structure, or workflows change.
+

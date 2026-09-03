@@ -134,3 +134,6 @@ To maintain pristine velocity and code health between two collaborating engineer
    - Any work initiated, completed, or blocked must be reflected in `docs/tracker/state.md`.
 5. **Dependency Governance**:
    - Any additions to `package.json` or `requirements.txt` require explicit documentation in `docs/tracker/changelog.md` detailing security, bundle size, and pedagogical necessity.
+6. **Continuous Context Synchronization**:
+   - Every single commit must update `context.md` to maintain living fidelity with the system's evolving architectural, pedagogical, and engine states. `README.md` must be reviewed and updated whenever user-facing setup, scripts, or directory structures evolve.
+

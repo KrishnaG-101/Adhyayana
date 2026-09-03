@@ -24,7 +24,7 @@ Activate this skill when:
 ## Step-by-Step Execution Workflow
 
 ### Step 1: Lock the Master Contract in `docs/specs/api-contracts.json`
-1. Open [`docs/specs/api-contracts.json`](file:///e:/Code/Projects/Major%20Projects/Adhyayana/docs/specs/api-contracts.json).
+1. Open [`docs/specs/api-contracts.json`](docs/specs/api-contracts.json).
 2. Locate the relevant schema definition under `definitions` (or `EngineLevelContracts`).
 3. Add or update the JSON Schema definition:
    - Define exact property names (using `snake_case` for network wire consistency).
@@ -32,7 +32,7 @@ Activate this skill when:
    - Explicitly declare `"additionalProperties": false` unless variable metadata maps are intended.
 
 ### Step 2: Implement / Update Backend Pydantic v2 Schema
-1. Open the corresponding file in [`backend/app/schemas/`](file:///e:/Code/Projects/Major%20Projects/Adhyayana/backend/app/schemas/) or engine schemas.
+1. Open the corresponding file in [`backend/app/schemas/`](backend/app/schemas/) or engine schemas.
 2. Define the Pydantic v2 model inheriting from `BaseModel`:
    - Use `Field(..., description="...")` on all fields.
    - Use Python 3.10+ union syntax (e.g. `str | None`).
@@ -40,7 +40,7 @@ Activate this skill when:
 3. Verify that the Pydantic schema strictly matches the JSON Schema types.
 
 ### Step 3: Mirror into Frontend TypeScript Interfaces
-1. Open the corresponding interface file in [`frontend/src/types/`](file:///e:/Code/Projects/Major%20Projects/Adhyayana/frontend/src/types/) or engine types.
+1. Open the corresponding interface file in [`frontend/src/types/`](frontend/src/types/) or engine types.
 2. Define or update the TypeScript interface:
    - Match field names, nullability (`string | null`), and optionality (`field?: type`).
    - Use strict typing (no `any`). Use string literal unions for enum fields.

@@ -9,7 +9,7 @@ description: >-
 
 # Puzzle Engine Scaffolding Skill (`puzzle-scaffold`)
 
-This skill automates the creation of a new, fully compliant pluggable puzzle engine in accordance with [`docs/specs/puzzle-framework.md`](file:///e:/Code/Projects/Major%20Projects/Adhyayana/docs/specs/puzzle-framework.md). It enforces directory structure, mandatory structured comment headers, lifecycle states, and evaluator protocols.
+This skill automates the creation of a new, fully compliant pluggable puzzle engine in accordance with [`docs/specs/puzzle-framework.md`](docs/specs/puzzle-framework.md). It enforces directory structure, mandatory structured comment headers, lifecycle states, and evaluator protocols.
 
 ---
 
@@ -137,5 +137,6 @@ Create directory: `backend/app/engines/<engine-name>/` with:
 ---
 
 ### Step 3: Register in API Contracts
-1. Add `<engine-name>` request/response schemas to [`docs/specs/api-contracts.json`](file:///e:/Code/Projects/Major%20Projects/Adhyayana/docs/specs/api-contracts.json).
-2. Log the engine creation in [`docs/tracker/state.md`](file:///e:/Code/Projects/Major%20Projects/Adhyayana/docs/tracker/state.md).
+1. Add `<engine-name>` request/response schemas to [`docs/specs/api-contracts.json`](docs/specs/api-contracts.json).
+2. Log the engine creation in [`docs/tracker/state.md`](docs/tracker/state.md).
+

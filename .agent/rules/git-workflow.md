@@ -82,3 +82,7 @@ Before committing or pushing:
   - `docs/specs/api-contracts.json` reflects all endpoint payload modifications.
 - [ ] **Tracker Synced**:
   - `docs/tracker/state.md` has been updated with your current task status.
+- [ ] **Context & Documentation Synced (Rule 6)**:
+  - `context.md` MUST be updated on every commit to record latest architectural and pedagogical context.
+  - `README.md` reviewed and updated if setup, directory map, or commands changed.
+

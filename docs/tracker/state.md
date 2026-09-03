@@ -24,3 +24,5 @@
 - [x] System architecture & topology documentation (`docs/architecture/system-overview.md`)
 - [x] Firestore data model specification (`docs/architecture/data-model.md`)
 - [x] Workflow rules & Antigravity skills scaffolding
+- [x] Codified Rule 6 (Mandatory `context.md` sync on every commit, `README.md` sync when needed) across `AGENTS.md`, `context.md`, `README.md`, and `.agent/`
+
