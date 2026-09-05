@@ -33,17 +33,21 @@ adhyayana/
 │   └── skills/                         # Antigravity automated workflow skills
 │       ├── contract-sync/              # Sync Pydantic models with TS & JSON contracts
 │       ├── puzzle-scaffold/            # Scaffold frontend/backend engine pairs
-│       └── commit-formatter/           # Generate Conventional Commits from git diffs
+│       ├── commit-formatter/           # Generate Conventional Commits from git diffs
+│       └── ui-ux-pro-max/              # UI/UX design intelligence & styling rules
 ├── docs/                               # Engineering documentation & specifications
 │   ├── architecture/                   # High-level architecture and data schemas
 │   │   ├── system-overview.md          # Topology, auth flow, and network boundaries
-│   │   └── data-model.md               # Firestore schemas, indexes, and entity models
+│   │   ├── data-model.md               # Firestore schemas, indexes, and entity models
+│   │   └── design-system.md            # Authoritative UI/UX design tokens & specs
 │   ├── specs/                          # Technical specifications and contracts
 │   │   ├── puzzle-framework.md         # Pluggable puzzle engine specification
 │   │   └── api-contracts.json          # Master JSON Schema API contracts
-│   └── tracker/                        # Collaboration and iteration management
-│       ├── state.md                    # Living sprint tracker (tasks, blockers, next up)
-│       └── changelog.md                # Dependency rationale & architectural decisions
+│   ├── tracker/                        # Collaboration and iteration management
+│   │   ├── state.md                    # Living sprint tracker (tasks, blockers, next up)
+│   │   └── changelog.md                # Dependency rationale & architectural decisions
+│   └── workflows/                      # Master execution strategy & roadmaps
+│       └── roadmap.md                  # 7-Phase Master Engineering Roadmap
 ├── frontend/                           # Client-side web application
 │   └── src/
 │       ├── components/                 # Global, reusable UI design system

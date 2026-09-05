@@ -146,4 +146,6 @@ To maintain pristine velocity and code health between two collaborating engineer
    - Any additions to `package.json` or `requirements.txt` require explicit documentation in `docs/tracker/changelog.md` detailing security, bundle size, and pedagogical necessity.
 6. **Continuous Context Synchronization**:
    - Every single commit must update `context.md` to maintain living fidelity with the system's evolving architectural, pedagogical, and engine states. `README.md` must be reviewed and updated whenever user-facing setup, scripts, or directory structures evolve.
+7. **Master Engineering Roadmap Fidelity**:
+   - All feature additions, vertical slices, and architectural milestones must adhere strictly to the 7-phase phased execution blueprint codified in [`docs/workflows/roadmap.md`](docs/workflows/roadmap.md).
 

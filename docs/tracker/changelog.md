@@ -6,6 +6,18 @@
 
 ## [Unreleased]
 
+### Master Engineering Roadmap Formalization — 2026-09-05
+#### Engineering Strategy & Workflows
+- **Master Roadmap Codification**: Authored `docs/workflows/roadmap.md` establishing the single source of truth for all 7 project phases:
+  - *Phase 1*: Shell, Dual-Navigation Architecture & Design Foundation (In Progress).
+  - *Phase 2*: Puzzles Catalog, Discovery & Filter Engine.
+  - *Phase 3*: Modular Puzzle Engine #1 — Word Blanks (Vertical Slice).
+  - *Phase 4*: Authentication, Player Profiles & Cloud Persistence.
+  - *Phase 5*: Modular Puzzle Engine #2 — Contexto (Semantic Proximity).
+  - *Phase 6*: XP Engine, Dashboard Analytics & Leaderboards.
+  - *Phase 7*: Real-Time Multiplayer Duels & Community.
+- **Architectural Principles Locked**: Enforced Iterative Vertical Slices, Contract-First & Type Parity, Strict State & Scope Boundaries, and Pedagogy-First development across all phases.
+
 ### UI/UX Design System & Agent Skill Integration — 2026-09-05
 #### Design System & Agent Tooling
 - **Embedded Permanent Agent Skill**: Created `.agent/skills/ui-ux-pro-max/SKILL.md` embedding UI/UX design intelligence, WCAG AA contrast rules, 4px spacing scale, Lucide-React SVG iconography, and presentation state isolation.
