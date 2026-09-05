@@ -82,7 +82,30 @@ Ensure the following runtimes and toolchains are installed on your workstation:
 
 ---
 
-## 4. Dual-Developer Git Workflow
+## 4. Backend Setup & Local Execution
+
+To start the FastAPI backend service and execute the automated test suite:
+
+```bash
+# 1. Navigate to backend directory
+cd backend
+
+# 2. Install dependencies
+pip install -r requirements.txt
+
+# 3. Start development server with hot-reload
+uvicorn app.main:app --reload --port 8000
+
+# 4. Verify system health probe
+curl http://localhost:8000/health
+
+# 5. Run test suite
+pytest tests/ -v
+```
+
+---
+
+## 5. Dual-Developer Git Workflow
 
 To ensure harmonious, zero-conflict collaboration between teammates:
 

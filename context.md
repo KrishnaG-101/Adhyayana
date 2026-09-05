@@ -85,7 +85,9 @@ Adhyayana adopts a clean client-server architecture with separation between high
 
 ### 3.2 Backend (`backend/`)
 - Built with **Python 3.11+**, **FastAPI**, and **Pydantic v2**.
-- Dedicated to computationally intensive tasks:
+- **Runtime Entrypoint**: `backend/app/main.py` initializes the ASGI application with configured CORS middleware, root health probe (`GET /health`), and mounts versioned API routers at `/api/v1`.
+- **Configuration & Validation**: `backend/app/core/config.py` provides centralized environment configuration using Pydantic Settings v2 (`BaseSettings`), handling environment variables, CORS origin parsing, and release versioning.
+- **Dedicated Responsibilities**:
   - Vector similarity evaluation (cosine distance, embedding matrix lookups).
   - Lexical validation and morphological analysis.
   - Anti-cheat puzzle resolution verification.
@@ -109,9 +111,16 @@ frontend/src/engines/<puzzle-name>/
 
 backend/app/engines/<puzzle-name>/
   ├── __init__.py        # Engine entrypoint & handler exports
-  ├── evaluator.py       # Algorithmic evaluation & scoring formulas
+  ├── evaluator.py       # Algorithmic evaluation & scoring formulas (subclasses AbstractPuzzleEngine)
   └── schemas.py         # Request/Response DTOs matching api-contracts.json
 ```
+
+### 4.1 Base Engine Contracts (`backend/app/engines/base.py`)
+All backend puzzle engines inherit from the standardized abstract base contracts:
+- `AbstractPuzzleEngine(ABC)`: Declares mandatory asynchronous methods `@abstractmethod async def initialize(self, **kwargs) -> BasePuzzleInit` and `@abstractmethod async def evaluate(self, payload: BaseGuessRequest) -> BaseGuessResponse`.
+- `BasePuzzleInit`: Standard initialization payload (`puzzle_id`, `puzzle_type`, `difficulty`, `metadata`).
+- `BaseGuessRequest`: Standard guess submission payload (`puzzle_id`, `session_id`).
+- `BaseGuessResponse`: Standard evaluation envelope (`puzzle_id`, `status`, `feedback`, `is_correct`).
 
 ### 4.1 Modularity Rules
 1. **Isolated State Machine**: Puzzles manage their own internal interaction loop and expose a uniform lifecycle (`IDLE` -> `PLAYING` -> `EVALUATING` -> `WON` | `FAILED`).
