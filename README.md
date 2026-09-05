@@ -50,9 +50,12 @@ adhyayana/
 │       └── roadmap.md                  # 7-Phase Master Engineering Roadmap
 ├── frontend/                           # Client-side web application
 │   └── src/
-│       ├── components/                 # Global, reusable UI design system
-│       ├── engines/                    # Pluggable puzzle game engines (e.g. Contexto)
+│       ├── components/                 # Global layout, navigation & modal components
+│       ├── context/                    # Theme and Navigation reactive providers
+│       ├── engines/                    # Pluggable puzzle game engines (e.g. Word Blanks)
+│       ├── pages/                      # Platform route views (Home, Puzzles, Catalog, etc.)
 │       ├── services/                   # Firebase and backend API service clients
+│       ├── tests/                      # Vitest component & context test suites
 │       └── types/                      # TypeScript definitions (mirrored from backend)
 ├── backend/                            # Server-side algorithmic & scoring API
 │   └── app/
@@ -109,11 +112,34 @@ pytest tests/ -v
 
 ---
 
-## 5. Dual-Developer Git Workflow
+## 5. Frontend Setup & Local Execution
+
+To start the Vite development server and execute the frontend automated test suite:
+
+```bash
+# 1. Navigate to frontend directory
+cd frontend
+
+# 2. Install dependencies
+npm install
+
+# 3. Start development server with hot-reload
+npm run dev
+
+# 4. Run Vitest test suite
+npm run test
+
+# 5. Run TypeScript type checker & production build
+npm run build
+```
+
+---
+
+## 6. Dual-Developer Git Workflow
 
 To ensure harmonious, zero-conflict collaboration between teammates:
 
-### 4.1 Branching Strategy
+### 6.1 Branching Strategy
 - Main branch (`main`) is protected. Never commit directly to `main`.
 - Feature branches branch from `main` using standard prefixes:
   - `feat/<short-description>`: New features or puzzle engines.
@@ -121,7 +147,7 @@ To ensure harmonious, zero-conflict collaboration between teammates:
   - `docs/<short-description>`: Spec or documentation updates.
   - `chore/<short-description>`: Dependency changes or tooling setup.
 
-### 4.2 Development Routine
+### 6.2 Development Routine
 1. **Pull Latest Main**:
    ```bash
    git checkout main
@@ -145,7 +171,7 @@ To ensure harmonious, zero-conflict collaboration between teammates:
 
 ---
 
-## 5. Antigravity Agent Directives
+## 7. Antigravity Agent Directives
 
 AI agents working in this repository must strictly adhere to [`AGENTS.md`](AGENTS.md):
 - **Rule 1 (Contract-First)**: Lock schemas in `docs/specs/api-contracts.json` before coding endpoints.
