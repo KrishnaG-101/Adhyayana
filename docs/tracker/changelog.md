@@ -6,6 +6,13 @@
 
 ## [Unreleased]
 
+### Phase 1 Design System Specification Refinement — 2026-09-05
+#### UI/UX Architecture & Layout Specifications
+- **Canvas & Aesthetic Tokens Refined**: Locked warm editorial paper (`#FAF8F5`) and deep ink charcoal (`#121213`) canvas with glassmorphic panel utilities (`backdrop-blur-md bg-white/70 dark:bg-stone-900/70 border-stone-200/50 dark:border-stone-800/50`).
+- **Typography Pairing Standardized**: Updated display typography to `Newsreader` (editorial serif) for brand identity and puzzle titles; standardized `Inter` / `Plus Jakarta Sans` for UI cards, inputs, and letter tile slots.
+- **Dual-Shell Navigation Topology Formalized**: Documented architectural specs for Platform Shell (standard routes with center links, streak flame counter, avatar dropdown, and pinned footer) and Puzzle Focus Mode Shell (`/puzzles/:id` with hamburger drawer, active title, rules modal help button, and hidden footer).
+- **Discovery Catalog & Rules Modal Contracts**: Documented sticky desktop sidebar/mobile dropdown filter specs for `/puzzles` and the lifecycle contract for the interactive Rules Modal.
+
 ### Master Engineering Roadmap Formalization — 2026-09-05
 #### Engineering Strategy & Workflows
 - **Master Roadmap Codification**: Authored `docs/workflows/roadmap.md` establishing the single source of truth for all 7 project phases:

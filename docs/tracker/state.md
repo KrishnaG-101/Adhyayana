@@ -41,6 +41,6 @@
 - [x] Initialize backend `requirements.txt`, `core/config.py`, and FastAPI `main.py`
 - [x] Modular puzzle base contract (`AbstractPuzzleEngine`, `BasePuzzleInit`, `BaseGuessRequest`, `BaseGuessResponse`) in `backend/app/engines/base.py`
 - [x] Backend test harness configured with `pytest`, `pytest-asyncio`, and `httpx.AsyncClient`
-- [x] Formulated authoritative UI/UX design system in `docs/architecture/design-system.md`
+- [x] Formulated and refined authoritative UI/UX design system in `docs/architecture/design-system.md` (Phase 1 Dual-Shell, warm canvas, Newsreader typography, rules modal contract)
 - [x] Embedded permanent `ui-ux-pro-max` design intelligence skill in `.agent/skills/ui-ux-pro-max/`
 - [x] Formalized 7-Phase Master Engineering Roadmap in `docs/workflows/roadmap.md`

@@ -80,7 +80,8 @@ Adhyayana adopts a clean client-server architecture with separation between high
 
 ### 3.1 Frontend (`frontend/`)
 - Built with **Vite**, **React 18**, **TypeScript** (Strict Mode), and **Tailwind CSS**.
-- **Design System & Typography**: Implements [`docs/architecture/design-system.md`](docs/architecture/design-system.md) with `Lexend`/`Outfit` headings, `Inter`/`Plus Jakarta Sans` body/tiles, 4px base token scale, and WCAG AA contrast compliance governed by [`.agent/skills/ui-ux-pro-max/`](.agent/skills/ui-ux-pro-max/).
+- **Design System & Typography**: Implements [`docs/architecture/design-system.md`](docs/architecture/design-system.md) with warm editorial paper canvas (`#FAF8F5` light / `#121213` dark), `Newsreader` editorial display serif for branding/puzzle titles, `Inter` / `Plus Jakarta Sans` for UI/tiles, 4px base token scale, and WCAG AA contrast compliance governed by [`.agent/skills/ui-ux-pro-max/`](.agent/skills/ui-ux-pro-max/).
+- **Dual-Shell Navigation Topology**: Dynamically toggles between Platform Shell (full navigation, flame streak, pinned footer) and Puzzle Focus Mode Shell (`/puzzles/:id` with hamburger drawer, help button, rules modal, and suppressed footer).
 - Pure client-side UI rendering with modular engine hosts.
 - Communicates with FastAPI backend for algorithmic puzzle evaluation and with Firebase client SDK for session sync, auth state, and progress persistence.
 
