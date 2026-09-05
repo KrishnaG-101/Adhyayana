@@ -8,12 +8,16 @@
       "type": "object",
       "title": "HealthCheck",
       "description": "Standard service health check probe response.",
-      "required": ["status", "version", "timestamp", "services"],
+      "required": ["status", "service", "version"],
       "properties": {
         "status": {
           "type": "string",
           "enum": ["healthy", "degraded", "unhealthy"],
           "description": "Overall service health status."
+        },
+        "service": {
+          "type": "string",
+          "description": "Backend service identifier."
         },
         "version": {
           "type": "string",
@@ -22,22 +26,7 @@
         "timestamp": {
           "type": "string",
           "format": "date-time",
-          "description": "ISO 8601 UTC server timestamp."
-        },
-        "services": {
-          "type": "object",
-          "required": ["firestore", "embedding_cache"],
-          "properties": {
-            "firestore": {
-              "type": "string",
-              "enum": ["connected", "disconnected", "unknown"]
-            },
-            "embedding_cache": {
-              "type": "string",
-              "enum": ["loaded", "unloaded", "warming"]
-            }
-          },
-          "additionalProperties": false
+          "description": "Optional ISO 8601 UTC server timestamp."
         }
       },
       "additionalProperties": false
@@ -65,6 +54,75 @@
           "type": "object",
           "description": "Optional contextual diagnostic data or validation failure traces.",
           "additionalProperties": true
+        }
+      },
+      "additionalProperties": false
+    },
+    "BasePuzzleInit": {
+      "type": "object",
+      "title": "BasePuzzleInit",
+      "description": "Generic initialization payload for a puzzle challenge session.",
+      "required": ["puzzle_id", "puzzle_type", "difficulty", "metadata"],
+      "properties": {
+        "puzzle_id": {
+          "type": "string",
+          "description": "Unique puzzle challenge identifier."
+        },
+        "puzzle_type": {
+          "type": "string",
+          "description": "Linguistic engine identifier (e.g. 'contexto')."
+        },
+        "difficulty": {
+          "type": "string",
+          "enum": ["BEGINNER", "INTERMEDIATE", "ADVANCED"],
+          "description": "Pedagogical tier."
+        },
+        "metadata": {
+          "type": "object",
+          "description": "Public configuration parameters, hints, or grid constraints.",
+          "additionalProperties": true
+        }
+      },
+      "additionalProperties": false
+    },
+    "BaseGuessRequest": {
+      "type": "object",
+      "title": "BaseGuessRequest",
+      "description": "Generic guess submission payload submitted by the player.",
+      "required": ["puzzle_id"],
+      "properties": {
+        "puzzle_id": {
+          "type": "string",
+          "description": "Target puzzle identifier."
+        },
+        "session_id": {
+          "type": ["string", "null"],
+          "description": "Active gameplay session UUID, or null if stateless."
+        }
+      },
+      "additionalProperties": false
+    },
+    "BaseGuessResponse": {
+      "type": "object",
+      "title": "BaseGuessResponse",
+      "description": "Generic evaluation envelope returned by the engine evaluator.",
+      "required": ["puzzle_id", "status", "feedback", "is_correct"],
+      "properties": {
+        "puzzle_id": {
+          "type": "string",
+          "description": "Target puzzle identifier."
+        },
+        "status": {
+          "type": "string",
+          "description": "Session state machine indicator (e.g. 'PLAYING', 'WON', 'FAILED')."
+        },
+        "feedback": {
+          "type": "string",
+          "description": "Analytical qualitative feedback or hint for the learner."
+        },
+        "is_correct": {
+          "type": "boolean",
+          "description": "Boolean flag indicating if the submission resolved the puzzle."
         }
       },
       "additionalProperties": false

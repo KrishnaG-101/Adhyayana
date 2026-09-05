@@ -1,1 +1,1 @@
-" \\Adhyayana backend application package.\\\
+"""Adhyayana backend application package."""
