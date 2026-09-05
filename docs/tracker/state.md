@@ -2,7 +2,7 @@
 
 ## Active Assignments
 - **Teammate 1 (Backend Systems Engineer)**: Backend Core Runtime & Modular Scaffolding Complete; Primed for Puzzle #1 Design
-- **Teammate 2 (Frontend Engineer)**: Frontend Environment Configuration & Vite Setup
+- **Teammate 2 (Frontend Engineer)**: Frontend Environment Configuration & Vite Setup (primed with `ui-ux-pro-max` design system)
 
 ## Operational Endpoints
 - **Active Health Probe**: `GET /health` -> `{"status": "healthy", "service": "adhyayana-backend", "version": "0.1.0"}`
@@ -12,7 +12,7 @@
 - None currently.
 
 ## Next Up (Iteration Backlog)
-- [ ] Initialize frontend `package.json` & `vite.config.ts`
+- [ ] Initialize frontend `package.json` & `vite.config.ts` configured with `docs/architecture/design-system.md` font & color tokens
 - [ ] Define shared TypeScript & Pydantic interfaces for Puzzle #1 (Contexto Engine)
 - [ ] Implement Firebase Admin Auth token verification dependency in `backend/app/core/auth.py`
 
@@ -32,3 +32,5 @@
 - [x] Initialize backend `requirements.txt`, `core/config.py`, and FastAPI `main.py`
 - [x] Modular puzzle base contract (`AbstractPuzzleEngine`, `BasePuzzleInit`, `BaseGuessRequest`, `BaseGuessResponse`) in `backend/app/engines/base.py`
 - [x] Backend test harness configured with `pytest`, `pytest-asyncio`, and `httpx.AsyncClient`
+- [x] Formulated authoritative UI/UX design system in `docs/architecture/design-system.md`
+- [x] Embedded permanent `ui-ux-pro-max` design intelligence skill in `.agent/skills/ui-ux-pro-max/`

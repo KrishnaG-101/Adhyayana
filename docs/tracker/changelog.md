@@ -6,6 +6,15 @@
 
 ## [Unreleased]
 
+### UI/UX Design System & Agent Skill Integration — 2026-09-05
+#### Design System & Agent Tooling
+- **Embedded Permanent Agent Skill**: Created `.agent/skills/ui-ux-pro-max/SKILL.md` embedding UI/UX design intelligence, WCAG AA contrast rules, 4px spacing scale, Lucide-React SVG iconography, and presentation state isolation.
+- **Authoritative Design System**: Established `docs/architecture/design-system.md` consolidating tailored design specifications for Adhyayana:
+  - Typography: `Lexend` / `Outfit` for headings; `Inter` / `Plus Jakarta Sans` for body, definitions, and letter tile grids.
+  - Palette: Indigo/Slate foundation (`#4F46E5`), Emerald victory state (`#16A34A`), Amber near-miss indicator (`#D97706`), and slate background/surface tokens.
+  - Component Blueprints: Formal specs for game board containers, letter tile slots, clue cards, and bottom-anchored guess input bars.
+- **Root Directory Sanitization**: Cleaned up transient root folders to maintain pristine monorepo structure.
+
 ### Backend Runtime & Modular Core Scaffolding — 2026-09-05
 #### Infrastructure & API Architecture
 - **FastAPI Core Initialization**: Initialized `backend/app/main.py` with CORS middleware, `/health` endpoint, and `/api/v1` router mount.
@@ -31,6 +40,7 @@
 | *Pending* | `frontend` | `react` | `^18.3.1` | Core UI rendering library. Zero CVEs, standard web foundation. | Teammate 1 & 2 |
 | *Pending* | `frontend` | `vite` | `^5.4.0` | Fast ESM build tool and development server. | Teammate 1 & 2 |
 | *Pending* | `frontend` | `tailwindcss` | `^3.4.0` | Utility-first styling engine for responsive layout. | Teammate 1 & 2 |
+| *Pending* | `frontend` | `lucide-react` | `^0.400.0` | Consistent, accessible SVG icon library adhering to UI-UX Pro Max rules. | Teammate 1 & 2 |
 | *Pending* | `frontend` | `firebase` | `^10.13.0` | Client SDK for Firebase Auth and Firestore persistence. | Teammate 1 & 2 |
 | *Pending* | `backend` | `firebase-admin` | `>=6.5.0` | Server-side verification of Firebase ID tokens. | Teammate 1 & 2 |
 | *Pending* | `backend` | `numpy` | `>=2.0.0` | Vector operations for high-speed cosine distance scoring. | Teammate 1 & 2 |
