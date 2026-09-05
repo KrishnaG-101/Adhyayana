@@ -6,6 +6,22 @@
 
 ## [Unreleased]
 
+### Phase 1 Frontend Foundation & Dual-Navigation Architecture — 2026-09-05
+#### Frontend Architecture & Shell Foundation
+- **Vite + React + TypeScript Scaffolding**: Initialized `frontend/` runtime with strict TypeScript configuration, `@/` path aliasing, and Tailwind CSS.
+- **Design System Integration**: Configured `tailwind.config.js` with warm paper canvas (`#FAF8F5`), deep charcoal (`#121213`), `Newsreader` display serif, and `Inter`/`Plus Jakarta Sans` interface sans per `docs/architecture/design-system.md`.
+- **Core State Contexts**:
+  - `ThemeContext`: Triple-state theme (`system`, `light`, `dark`) with local storage persistence and system preference synchronization.
+  - `NavigationContext`: Reactive route-aware shell state (`isFocusMode`), drawer open/close, rules modal triggers, and active puzzle titles.
+- **Dual-Shell Navigation Layout**:
+  - `Navbar`: Platform Shell (brand, links with hover underlines, flame streak, avatar dropdown) vs. Focus Mode Shell (hamburger button, active title, rules modal help button, avatar dropdown).
+  - `AvatarDropdown`: Floating card supporting Guest CTAs, theme segmented controls, and authenticated navigation summaries.
+  - `HamburgerDrawer`: Slide-over glassmorphic panel with platform navigation and expandable Puzzles accordion.
+  - `RulesModal`: Centered educational rules overlay with backdrop blur dismissal.
+  - `Footer`: Global pinned footer automatically suppressed during Focus Mode.
+- **Route Skeletons**: Established route placeholders for `/`, `/puzzles`, `/leaderboard`, `/community`, `/about`, and `/puzzles/:puzzleId`.
+- **Automated Verification Harness**: Configured Vitest + JSDOM with React Testing Library tests for Navbar shell swapping, ThemeContext toggling, and RulesModal dismissal.
+
 ### Phase 1 Design System Specification Refinement — 2026-09-05
 #### UI/UX Architecture & Layout Specifications
 - **Canvas & Aesthetic Tokens Refined**: Locked warm editorial paper (`#FAF8F5`) and deep ink charcoal (`#121213`) canvas with glassmorphic panel utilities (`backdrop-blur-md bg-white/70 dark:bg-stone-900/70 border-stone-200/50 dark:border-stone-800/50`).
@@ -48,6 +64,21 @@
 
 | Date | Target | Package Name | Version | Rationale & Security Justification | Approved By |
 | :--- | :--- | :--- | :--- | :--- | :--- |
+| 2026-09-05 | `frontend` | `react` | `^18.3.1` | Declarative UI component library. Production foundation with zero CVEs. | Frontend Engineer |
+| 2026-09-05 | `frontend` | `react-dom` | `^18.3.1` | DOM renderer for React web application. | Frontend Engineer |
+| 2026-09-05 | `frontend` | `react-router-dom` | `^6.28.0` | Client-side declarative routing and URL parameter matching for dual shells. | Frontend Engineer |
+| 2026-09-05 | `frontend` | `lucide-react` | `^0.469.0` | High-quality accessible SVG icons adhering to UI-UX Pro Max design rules. | Frontend Engineer |
+| 2026-09-05 | `frontend` | `vite` | `^6.0.0` | Fast ESM development server and production build bundler. | Frontend Engineer |
+| 2026-09-05 | `frontend` | `@vitejs/plugin-react` | `^4.3.4` | Vite plugin providing fast refresh and JSX compilation. | Frontend Engineer |
+| 2026-09-05 | `frontend` | `typescript` | `^5.7.2` | Type checker enforcing strict mode (zero `any` types). | Frontend Engineer |
+| 2026-09-05 | `frontend` | `tailwindcss` | `^3.4.17` | Utility-first CSS framework configured with custom canvas tokens. | Frontend Engineer |
+| 2026-09-05 | `frontend` | `postcss` | `^8.4.49` | CSS transformation pipeline for Tailwind CSS. | Frontend Engineer |
+| 2026-09-05 | `frontend` | `autoprefixer` | `^10.4.20` | Automatic vendor prefix injection for cross-browser CSS. | Frontend Engineer |
+| 2026-09-05 | `frontend` | `vitest` | `^2.1.8` | Fast Vite-native unit test runner for React components. | Frontend Engineer |
+| 2026-09-05 | `frontend` | `@testing-library/react` | `^16.1.0` | User-centric DOM testing utilities for React components. | Frontend Engineer |
+| 2026-09-05 | `frontend` | `@testing-library/jest-dom` | `^6.6.3` | Custom jest-compatible matchers for DOM assertions. | Frontend Engineer |
+| 2026-09-05 | `frontend` | `@testing-library/user-event` | `^14.5.2` | Simulation of realistic browser user interactions. | Frontend Engineer |
+| 2026-09-05 | `frontend` | `jsdom` | `^25.0.1` | Headless browser DOM environment for executing tests in Node.js. | Frontend Engineer |
 | 2026-09-05 | `backend` | `fastapi` | `>=0.110.0` | High-performance async REST API framework for algorithmic scoring and endpoints. | Backend Engineer |
 | 2026-09-05 | `backend` | `uvicorn[standard]` | `>=0.29.0` | Production ASGI web server implementation for FastAPI with uvloop and httptools. | Backend Engineer |
 | 2026-09-05 | `backend` | `pydantic` | `>=2.6.0` | High-speed data validation and schema serialization with V2 core. | Backend Engineer |
@@ -56,10 +87,6 @@
 | 2026-09-05 | `backend` | `pytest` | `>=8.0.0` | Primary testing framework for unit, integration, and contract tests. | Backend Engineer |
 | 2026-09-05 | `backend` | `pytest-asyncio` | `>=0.23.0` | Async support for pytest enabling native coroutine testing with FastAPI. | Backend Engineer |
 | 2026-09-05 | `backend` | `httpx` | `>=0.27.0` | Async HTTP client for test requests via ASGI transport without binding network ports. | Backend Engineer |
-| *Pending* | `frontend` | `react` | `^18.3.1` | Core UI rendering library. Zero CVEs, standard web foundation. | Teammate 1 & 2 |
-| *Pending* | `frontend` | `vite` | `^5.4.0` | Fast ESM build tool and development server. | Teammate 1 & 2 |
-| *Pending* | `frontend` | `tailwindcss` | `^3.4.0` | Utility-first styling engine for responsive layout. | Teammate 1 & 2 |
-| *Pending* | `frontend` | `lucide-react` | `^0.400.0` | Consistent, accessible SVG icon library adhering to UI-UX Pro Max rules. | Teammate 1 & 2 |
 | *Pending* | `frontend` | `firebase` | `^10.13.0` | Client SDK for Firebase Auth and Firestore persistence. | Teammate 1 & 2 |
 | *Pending* | `backend` | `firebase-admin` | `>=6.5.0` | Server-side verification of Firebase ID tokens. | Teammate 1 & 2 |
 | *Pending* | `backend` | `numpy` | `>=2.0.0` | Vector operations for high-speed cosine distance scoring. | Teammate 1 & 2 |

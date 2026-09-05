@@ -1,0 +1,20 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400..800;1,6..72,400..800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-[#FAF8F5] text-stone-900 dark:bg-[#121213] dark:text-stone-100 antialiased selection:bg-indigo-500 selection:text-white;
+  }
+}
+
+@layer utilities {
+  .glass-panel {
+    @apply backdrop-blur-md bg-white/70 dark:bg-stone-900/70 border border-stone-200/60 dark:border-stone-800/60 shadow-lg;
+  }
+  .glass-drawer {
+    @apply backdrop-blur-xl bg-[#FAF8F5]/90 dark:bg-[#121213]/90 border-r border-stone-200/80 dark:border-stone-800/80 shadow-2xl;
+  }
+}
