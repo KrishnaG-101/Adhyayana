@@ -3,8 +3,8 @@
 > **Document Class**: Foundational System Specification (Vicharanashala Pattern)  
 > **Target System**: Adhyayana Web Application (English Linguistic Pedagogy)  
 > **Status**: Active / Authoritative  
-> **Version**: 1.2.0  
-> **Last Synchronized Milestone**: Phase 1 UI/UX Polish, Mobile Filters & Legal Pages Scaffolding (Completed)  
+> **Version**: 1.2.1  
+> **Last Synchronized Milestone**: Phase 1 UI/UX Polish, Drawer Decoupling & Legal Pages Scaffolding (Completed)  
 
 ---
 
@@ -102,10 +102,10 @@ Adhyayana adopts a clean client-server architecture with separation between high
   - **Puzzle Focus Mode Shell** (Active puzzle pages: `/puzzles/:id`):
     - Minimalist header maximizing cognitive focus, featuring left hamburger drawer trigger, centered active puzzle title, right Help (`?`) rules button, and avatar dropdown.
     - Automatic suppression of the platform footer to eliminate distraction during gameplay.
-    - Glassmorphic slide-over drawer ([`frontend/src/components/layout/HamburgerDrawer.tsx`](frontend/src/components/layout/HamburgerDrawer.tsx)) for category browsing without abandoning active sessions.
+    - Glassmorphic slide-over drawer ([`frontend/src/components/layout/HamburgerDrawer.tsx`](frontend/src/components/layout/HamburgerDrawer.tsx)) featuring decoupled Puzzles row (direct catalog link vs isolated rotating chevron accordion trigger, collapsed by default with redundant links removed), 44px touch targets, and automatic session preservation.
     - Pedagogical Rules Modal ([`frontend/src/components/layout/RulesModal.tsx`](frontend/src/components/layout/RulesModal.tsx)) with objective breakdown, color telemetry guides, and keyboard-accessible dismiss actions.
 - **Verification & Test Rig**:
-  - Unit and integration test harness configured with **Vitest**, `@testing-library/react`, `@testing-library/jest-dom`, and `jsdom` ([`frontend/src/tests/`](frontend/src/tests/)) verifying navigation, modals, theme toggling, mobile catalog filters, and legal routes (15/15 tests passing).
+  - Unit and integration test harness configured with **Vitest**, `@testing-library/react`, `@testing-library/jest-dom`, and `jsdom` ([`frontend/src/tests/`](frontend/src/tests/)) verifying navigation, modals, theme toggling, mobile catalog filters, legal routes, and drawer accordion decoupling (20/20 tests passing across 6 test suites).
 - Pure client-side UI rendering with modular engine hosts, prepared for backend algorithmic evaluation and Firebase persistence client SDK integration.
 
 ### 3.2 Backend (`backend/`)

@@ -9,7 +9,7 @@
 
 ## Active Assignments
 - **Teammate 1 (Lead Systems Architect / Backend)**: Backend Core Runtime Verified; Ready for Phase 2 Word Blanks engine implementation
-- **Teammate 2 (Frontend Engineer)**: Phase 1 Frontend Scaffolding & UI/UX Polish Complete (Vite + React + Tailwind + Dual Shell Layout + Mobile Filters + Legal Pages + 15/15 Vitest tests passing)
+- **Teammate 2 (Frontend Engineer)**: Phase 1 Frontend Scaffolding, UI/UX Polish, Legal Pages & Drawer Interaction Decoupling Complete (Vite + React + Tailwind + Dual Shell Layout + Mobile Filters + Legal Pages + Decoupled Drawer + 20/20 Vitest tests passing)
 
 ## Operational Endpoints
 - **Active Health Probe**: `GET /health` -> `{"status": "healthy", "service": "adhyayana-backend", "version": "0.1.0"}`
@@ -47,4 +47,5 @@
 - [x] Formalized 7-Phase Master Engineering Roadmap in `docs/workflows/roadmap.md`
 - [x] Phase 1 Frontend Scaffolding Complete: Vite + React + TypeScript + Tailwind CSS, Dual-Shell Navigation (`Navbar`, `HamburgerDrawer`, `RulesModal`, `Footer`, `Layout`), `ThemeContext`, `NavigationContext` (URL-reactive `isFocusMode`), full route skeletons (`/`, `/puzzles`, `/puzzles/:id`, `/leaderboard`, `/community`, `/about`), 8/8 Vitest tests passing, and living context synchronization (`context.md` v1.1.0).
 - [x] UI/UX Polish & Legal Scaffolding: Refined dark theme canvas (`#161618`) and surfaces (`#202024`), swapped glassmorphism (solid crisp `AvatarDropdown`, glassmorphic `HamburgerDrawer`), implemented mobile 3-category filter grid on `/puzzles`, scaffolded bespoke editorial `TermsPage` (`/terms`) and `PrivacyPage` (`/privacy`), and expanded Vitest test suite to 15/15 passing tests (`context.md` v1.2.0).
+- [x] Drawer Interaction Decoupling & Accordion Refactor: Decoupled Puzzles row into direct catalog link (`/puzzles`) and isolated rotating chevron accordion trigger, default collapsed state (`isPuzzlesExpanded = false`), removed redundant nested catalog link, enforced 44px touch targets across all rows, and expanded Vitest test suite to 20/20 passing tests (`context.md` v1.2.1).
 

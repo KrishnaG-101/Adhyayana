@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { X, ChevronDown, ChevronRight, Home, Grid, Trophy, Users, Info } from 'lucide-react';
+import { X, ChevronDown, Home, Grid, Trophy, Users, Info } from 'lucide-react';
 import { useNavigation } from '@/context/NavigationContext';
 
 export const HamburgerDrawer: React.FC = () => {
   const { isDrawerOpen, closeDrawer } = useNavigation();
-  const [isPuzzlesExpanded, setIsPuzzlesExpanded] = useState(true);
+  const [isPuzzlesExpanded, setIsPuzzlesExpanded] = useState(false);
   const location = useLocation();
 
   // Handle Escape key to close drawer
@@ -55,7 +55,7 @@ export const HamburgerDrawer: React.FC = () => {
           <Link
             to="/"
             onClick={closeDrawer}
-            className="font-serif text-2xl font-bold tracking-tight text-stone-900 dark:text-stone-100"
+            className="font-serif text-2xl font-bold tracking-tight text-stone-900 dark:text-stone-100 hover:opacity-90 transition-opacity"
           >
             Adhyayana
           </Link>
@@ -63,7 +63,7 @@ export const HamburgerDrawer: React.FC = () => {
             type="button"
             onClick={closeDrawer}
             aria-label="Close drawer"
-            className="p-1.5 rounded-lg text-stone-600 dark:text-stone-400 hover:bg-stone-200/60 dark:hover:bg-stone-800/60 transition-colors"
+            className="p-2 min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg text-stone-600 dark:text-stone-400 hover:bg-stone-200/60 dark:hover:bg-stone-800/60 transition-colors"
           >
             <X size={20} />
           </button>
@@ -76,47 +76,65 @@ export const HamburgerDrawer: React.FC = () => {
             <Link
               to="/"
               onClick={closeDrawer}
-              className={`flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition-colors ${
+              className={`flex items-center gap-3 px-3 py-2.5 min-h-[44px] rounded-xl text-sm font-medium hover:underline transition-colors ${
                 location.pathname === '/'
                   ? 'bg-indigo-50 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-300 font-semibold'
-                  : 'text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800/60'
+                  : 'text-stone-700 dark:text-stone-300 hover:bg-stone-200/50 dark:hover:bg-stone-800/50'
               }`}
             >
-              <Home size={18} /> Home
+              <Home size={18} />
+              <span>Home</span>
             </Link>
 
             {/* Puzzles Accordion */}
-            <div>
-              <button
-                type="button"
-                onClick={() => setIsPuzzlesExpanded((prev) => !prev)}
-                className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800/60 transition-colors"
+            <div className="space-y-1">
+              <div
+                className={`flex items-center justify-between rounded-xl transition-colors ${
+                  location.pathname === '/puzzles'
+                    ? 'bg-indigo-50 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-300 font-semibold'
+                    : 'text-stone-700 dark:text-stone-300 hover:bg-stone-200/50 dark:hover:bg-stone-800/50'
+                }`}
               >
-                <div className="flex items-center gap-3">
+                {/* Left Target: Navigation Link to /puzzles */}
+                <Link
+                  to="/puzzles"
+                  onClick={closeDrawer}
+                  className="flex-1 flex items-center gap-3 px-3 py-2.5 min-h-[44px] text-sm font-medium hover:underline rounded-l-xl transition-colors"
+                >
                   <Grid size={18} />
                   <span>Puzzles</span>
-                </div>
-                {isPuzzlesExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-              </button>
+                </Link>
 
+                {/* Right Target: Accordion Toggle Button */}
+                <button
+                  type="button"
+                  aria-label="Toggle puzzles list"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setIsPuzzlesExpanded((prev) => !prev);
+                  }}
+                  className="min-h-[44px] min-w-[44px] flex items-center justify-center px-3 py-2.5 text-stone-500 hover:text-stone-800 dark:text-stone-400 dark:hover:text-stone-200 hover:bg-stone-300/40 dark:hover:bg-stone-700/40 rounded-r-xl transition-colors"
+                >
+                  <ChevronDown
+                    size={18}
+                    className={`transition-transform duration-200 ${isPuzzlesExpanded ? 'rotate-180' : ''}`}
+                  />
+                </button>
+              </div>
+
+              {/* Indented Sub-Puzzle Items */}
               {isPuzzlesExpanded && (
-                <div className="pl-9 pr-2 py-1 space-y-1">
-                  <Link
-                    to="/puzzles"
-                    onClick={closeDrawer}
-                    className="block px-3 py-1.5 rounded-lg text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50/50 dark:hover:bg-indigo-950/30"
-                  >
-                    Browse All Catalog →
-                  </Link>
+                <div className="pl-9 pr-2 py-1 space-y-1 animate-in fade-in slide-in-from-top-1 duration-150">
                   {puzzleSubRoutes.map((p) => (
                     <Link
                       key={p.path}
                       to={p.path}
                       onClick={closeDrawer}
-                      className={`block px-3 py-2 rounded-lg text-xs transition-colors ${
+                      className={`block px-3 py-2 rounded-lg text-xs min-h-[44px] flex flex-col justify-center transition-colors ${
                         location.pathname === p.path
                           ? 'bg-stone-200/80 dark:bg-stone-800 text-stone-900 dark:text-stone-100 font-semibold'
-                          : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200 hover:bg-stone-100 dark:hover:bg-stone-800/40'
+                          : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200 hover:bg-stone-200/50 dark:hover:bg-stone-800/40'
                       }`}
                     >
                       <div className="font-medium text-stone-800 dark:text-stone-200">{p.title}</div>
@@ -130,37 +148,40 @@ export const HamburgerDrawer: React.FC = () => {
             <Link
               to="/leaderboard"
               onClick={closeDrawer}
-              className={`flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition-colors ${
+              className={`flex items-center gap-3 px-3 py-2.5 min-h-[44px] rounded-xl text-sm font-medium hover:underline transition-colors ${
                 location.pathname === '/leaderboard'
                   ? 'bg-indigo-50 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-300 font-semibold'
-                  : 'text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800/60'
+                  : 'text-stone-700 dark:text-stone-300 hover:bg-stone-200/50 dark:hover:bg-stone-800/50'
               }`}
             >
-              <Trophy size={18} /> Leaderboard
+              <Trophy size={18} />
+              <span>Leaderboard</span>
             </Link>
 
             <Link
               to="/community"
               onClick={closeDrawer}
-              className={`flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition-colors ${
+              className={`flex items-center gap-3 px-3 py-2.5 min-h-[44px] rounded-xl text-sm font-medium hover:underline transition-colors ${
                 location.pathname === '/community'
                   ? 'bg-indigo-50 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-300 font-semibold'
-                  : 'text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800/60'
+                  : 'text-stone-700 dark:text-stone-300 hover:bg-stone-200/50 dark:hover:bg-stone-800/50'
               }`}
             >
-              <Users size={18} /> Community
+              <Users size={18} />
+              <span>Community</span>
             </Link>
 
             <Link
               to="/about"
               onClick={closeDrawer}
-              className={`flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition-colors ${
+              className={`flex items-center gap-3 px-3 py-2.5 min-h-[44px] rounded-xl text-sm font-medium hover:underline transition-colors ${
                 location.pathname === '/about'
                   ? 'bg-indigo-50 dark:bg-indigo-950/50 text-indigo-700 dark:text-indigo-300 font-semibold'
-                  : 'text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800/60'
+                  : 'text-stone-700 dark:text-stone-300 hover:bg-stone-200/50 dark:hover:bg-stone-800/50'
               }`}
             >
-              <Info size={18} /> About Adhyayana
+              <Info size={18} />
+              <span>About Adhyayana</span>
             </Link>
           </nav>
         </div>
@@ -168,13 +189,25 @@ export const HamburgerDrawer: React.FC = () => {
         {/* Drawer Footer Links */}
         <div className="p-4 border-t border-stone-200/80 dark:border-stone-800/80 text-xs text-stone-500 dark:text-stone-400 space-y-2">
           <div className="flex items-center gap-4">
-            <Link to="/about" onClick={closeDrawer} className="hover:underline">
+            <Link
+              to="/about"
+              onClick={closeDrawer}
+              className="py-2 hover:underline hover:text-stone-900 dark:hover:text-stone-100 transition-colors"
+            >
               Methodology
             </Link>
-            <Link to="/privacy" onClick={closeDrawer} className="hover:underline">
+            <Link
+              to="/privacy"
+              onClick={closeDrawer}
+              className="py-2 hover:underline hover:text-stone-900 dark:hover:text-stone-100 transition-colors"
+            >
               Privacy
             </Link>
-            <Link to="/terms" onClick={closeDrawer} className="hover:underline">
+            <Link
+              to="/terms"
+              onClick={closeDrawer}
+              className="py-2 hover:underline hover:text-stone-900 dark:hover:text-stone-100 transition-colors"
+            >
               Terms
             </Link>
           </div>
@@ -186,3 +219,4 @@ export const HamburgerDrawer: React.FC = () => {
     </div>
   );
 };
+

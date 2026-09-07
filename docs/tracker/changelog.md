@@ -6,6 +6,17 @@
 
 ## [Unreleased]
 
+### Drawer Interaction Decoupling & Accordion Refactor — 2026-09-07
+#### UI/UX Architecture & Drawer Interaction Polish
+- **Decoupled Puzzles Row in `HamburgerDrawer.tsx`**:
+  - Split single-target Puzzles row into two decoupled interactive zones:
+    - **Left Target**: Direct `<Link to="/puzzles">` wrapping Grid icon and "Puzzles" text with hover underline styling and automated `closeDrawer()` invocation.
+    - **Right Target**: Isolated `<button type="button" aria-label="Toggle puzzles list">` containing `ChevronDown` with event propagation stop (`e.stopPropagation()`, `e.preventDefault()`) and CSS transform rotation (`rotate-180`), strictly preventing navigation when expanding/collapsing.
+  - Set default accordion state to collapsed (`isPuzzlesExpanded = false`), expanding only on explicit chevron trigger.
+  - Eliminated redundant nested `"Browse All Catalog →"` link from inside the sub-puzzle list.
+  - Enforced 44×44px minimum touch targets across all top-level drawer items (`Home`, `Puzzles`, `Leaderboard`, `Community`, `About Adhyayana`, and footer links) with unified hover highlights (`hover:bg-stone-200/50 dark:hover:bg-stone-800/50`, `hover:underline`).
+- **Test Suite Expansion**: Added dedicated test suite `HamburgerDrawer.test.tsx` (5 tests) asserting collapsed default state, chevron toggle isolation, navigation triggering, sub-item routing, and dismissal actions (20/20 Vitest tests passing).
+
 ### UI/UX Refinement, Mobile Filter Completion & Legal Pages — 2026-09-07
 #### UI/UX Architecture, Visual Polish & Navigation Enhancements
 - **AvatarDropdown & HamburgerDrawer Aesthetic Swap (Bug 1)**:
