@@ -6,6 +6,23 @@
 
 ## [Unreleased]
 
+### UI/UX Refinement, Mobile Filter Completion & Legal Pages — 2026-09-07
+#### UI/UX Architecture, Visual Polish & Navigation Enhancements
+- **AvatarDropdown & HamburgerDrawer Aesthetic Swap (Bug 1)**:
+  - Removed translucent backdrop-blur from `AvatarDropdown`, establishing crisp solid styling (`bg-[#FAF8F5] border border-stone-200 shadow-xl` / `dark:bg-[#1E1E22] dark:border-stone-800 dark:shadow-2xl`).
+  - Elevated `HamburgerDrawer` slide-over panel with true glassmorphic styling (`backdrop-blur-md bg-[#FAF8F5]/85 dark:bg-[#161618]/85 border-r border-stone-200/60 dark:border-stone-800/60 shadow-2xl`) and `bg-black/40 backdrop-blur-sm` dimmed backdrop overlay.
+- **Refined Dark Theme Palette for Editorial Polish (Bug 2)**:
+  - Synchronized deep matte ink canvas token `#161618`, dark surface `#202024`, and subtle border `#2E2E34` across `tailwind.config.js`, `index.css`, `index.html`, `Layout.tsx`, `Navbar.tsx`, `Footer.tsx`, and `PuzzleViewPage.tsx`.
+  - Tuned soft paper white text `#E4E4E7` and muted text `#9CA3AF` to eliminate harsh contrast.
+- **Mobile Filter 3-Selector Grid & Catalog Parity (Bug 3)**:
+  - Created a responsive 3-selector grid on `/puzzles` for mobile viewports (`< md`) supporting **Difficulty** (All, Beginner, Intermediate, Advanced), **Game Type** (All, Fill-in-Blanks, Semantic Similarity, Crossword), and **Learning Objective** (All, Vocabulary, Morphology, Syntax, Etymology, Inference).
+  - Synchronized with desktop sidebar filter groups and active filter removal tags.
+- **Scaffolded Legal Documentation Pages (Task 4)**:
+  - Authored `TermsPage.tsx` with editorial typography, structured legal terms (Use of Service, IP, Fair Play, Disclaimers), and bespoke inline SVG hero illustration (editorial quill, parchment, and scales of justice).
+  - Authored `PrivacyPage.tsx` with transparent privacy sections (Anonymous guest sessions, Local Storage tokens, Data retention), and bespoke inline SVG hero illustration (geometric vault & cryptographic shield).
+  - Registered `/terms` and `/privacy` in `App.tsx` and wired footer links across `Footer.tsx` and `HamburgerDrawer.tsx`.
+- **Test Suite Expansion**: Added unit and route verification tests in `LegalPages.test.tsx` and `PuzzlesPage.test.tsx` (15/15 tests passing).
+
 ### Phase 1 Frontend Foundation & Dual-Navigation Architecture — 2026-09-05
 #### Frontend Architecture & Shell Foundation
 - **Vite + React + TypeScript Scaffolding**: Initialized `frontend/` runtime with strict TypeScript configuration, `@/` path aliasing, and Tailwind CSS.

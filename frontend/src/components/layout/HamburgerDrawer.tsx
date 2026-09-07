@@ -43,13 +43,13 @@ export const HamburgerDrawer: React.FC = () => {
     <div className="fixed inset-0 z-50 flex" role="dialog" aria-modal="true" aria-label="Navigation Drawer">
       {/* Dimmed Backdrop */}
       <div
-        className="fixed inset-0 bg-stone-950/40 backdrop-blur-xs transition-opacity duration-300"
+        className="fixed inset-0 bg-black/40 backdrop-blur-sm transition-opacity duration-300"
         onClick={closeDrawer}
         aria-hidden="true"
       />
 
       {/* Slide-over Drawer Panel */}
-      <div className="relative w-full max-w-xs sm:max-w-sm h-full glass-drawer flex flex-col z-10 animate-in slide-in-from-left duration-300">
+      <div className="relative w-full max-w-xs sm:max-w-sm h-full backdrop-blur-md bg-[#FAF8F5]/85 dark:bg-[#161618]/85 border-r border-stone-200/60 dark:border-stone-800/60 shadow-2xl flex flex-col z-10 animate-in slide-in-from-left duration-300">
         {/* Drawer Header */}
         <div className="p-4 border-b border-stone-200/80 dark:border-stone-800/80 flex items-center justify-between">
           <Link
@@ -171,10 +171,10 @@ export const HamburgerDrawer: React.FC = () => {
             <Link to="/about" onClick={closeDrawer} className="hover:underline">
               Methodology
             </Link>
-            <Link to="/about" onClick={closeDrawer} className="hover:underline">
+            <Link to="/privacy" onClick={closeDrawer} className="hover:underline">
               Privacy
             </Link>
-            <Link to="/about" onClick={closeDrawer} className="hover:underline">
+            <Link to="/terms" onClick={closeDrawer} className="hover:underline">
               Terms
             </Link>
           </div>

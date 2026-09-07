@@ -56,7 +56,7 @@ export const AvatarDropdown: React.FC<AvatarDropdownProps> = ({ isAuthenticated 
 
       {/* Dropdown Floating Card */}
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-72 rounded-2xl glass-panel p-4 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+        <div className="absolute right-0 mt-2 w-72 rounded-2xl bg-[#FAF8F5] dark:bg-[#1E1E22] border border-stone-200 dark:border-stone-800 shadow-xl dark:shadow-2xl p-4 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
           {isAuthenticated ? (
             /* Authenticated User View */
             <div className="space-y-3">

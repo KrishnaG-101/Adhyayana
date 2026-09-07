@@ -6,15 +6,15 @@
 
 @layer base {
   body {
-    @apply bg-[#FAF8F5] text-stone-900 dark:bg-[#121213] dark:text-stone-100 antialiased selection:bg-indigo-500 selection:text-white;
+    @apply bg-[#FAF8F5] text-stone-900 dark:bg-[#161618] dark:text-[#E4E4E7] antialiased selection:bg-indigo-500 selection:text-white;
   }
 }
 
 @layer utilities {
   .glass-panel {
-    @apply backdrop-blur-md bg-white/70 dark:bg-stone-900/70 border border-stone-200/60 dark:border-stone-800/60 shadow-lg;
+    @apply backdrop-blur-md bg-white/70 dark:bg-[#202024]/80 border border-stone-200/60 dark:border-[#2E2E34]/80 shadow-lg;
   }
   .glass-drawer {
-    @apply backdrop-blur-xl bg-[#FAF8F5]/90 dark:bg-[#121213]/90 border-r border-stone-200/80 dark:border-stone-800/80 shadow-2xl;
+    @apply backdrop-blur-md bg-[#FAF8F5]/85 dark:bg-[#161618]/85 border-r border-stone-200/60 dark:border-stone-800/60 shadow-2xl;
   }
 }

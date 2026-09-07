@@ -25,13 +25,13 @@ Adhyayana utilizes a curated palette designed around warm paper in light mode an
 
 | Token Role | Light Mode Value | Dark Mode Value | Tailwind Class Equivalent | Purpose / Application |
 | :--- | :--- | :--- | :--- | :--- |
-| **Canvas Background** | `#FAF8F5` | `#121213` | `bg-[#FAF8F5] dark:bg-[#121213]` | Warm editorial paper / deep ink backdrop |
-| **Surface / Card** | `#FFFFFF` | `#1C1917` | `bg-white dark:bg-stone-900` | Tile cards, clue surfaces, dialogs, drawers |
-| **Muted Surface** | `#F5F2EB` | `#262626` | `bg-[#F5F2EB] dark:bg-stone-800` | Inactive tile slots, table headers, hover chips |
-| **Border / Divider** | `#E7E3DA` | `#2E2E2E` | `border-[#E7E3DA] dark:border-stone-800` | Tile borders, card dividers, subtle outlines |
-| **Text Primary** | `#1C1917` | `#EDEDED` | `text-stone-900 dark:text-stone-100` | Main headings, word letters, primary labels (4.5:1+) |
-| **Text Secondary** | `#57534E` | `#A8A29E` | `text-stone-600 dark:text-stone-400` | Clue text, metadata, descriptions, subheaders |
-| **Text Muted** | `#78716C` | `#737373` | `text-stone-500 dark:text-stone-500` | Footnotes, keyboard shortcuts, timestamps |
+| **Canvas Background** | `#FAF8F5` | `#161618` | `bg-[#FAF8F5] dark:bg-[#161618]` | Warm editorial paper / deep matte ink backdrop |
+| **Surface / Card** | `#FFFFFF` | `#202024` | `bg-white dark:bg-[#202024]` | Tile cards, clue surfaces, dialogs, drawers |
+| **Muted Surface** | `#F5F2EB` | `#28282D` | `bg-[#F5F2EB] dark:bg-[#28282D]` | Inactive tile slots, table headers, hover chips |
+| **Border / Divider** | `#E7E3DA` | `#2E2E34` | `border-[#E7E3DA] dark:border-[#2E2E34]` | Tile borders, card dividers, subtle outlines |
+| **Text Primary** | `#1C1917` | `#E4E4E7` | `text-stone-900 dark:text-[#E4E4E7]` | Main headings, word letters, primary labels (soft paper white) |
+| **Text Secondary** | `#57534E` | `#A1A1AA` | `text-stone-600 dark:text-[#A1A1AA]` | Clue text, metadata, descriptions, subheaders |
+| **Text Muted** | `#78716C` | `#9CA3AF` | `text-stone-500 dark:text-[#9CA3AF]` | Footnotes, keyboard shortcuts, timestamps |
 
 ### 2.2 Functional & Pedagogical Accent Tokens
 
@@ -42,12 +42,27 @@ Adhyayana utilizes a curated palette designed around warm paper in light mode an
 | **Interactive Primary** | `#4F46E5` | `#818CF8` | Primary actions, focused inputs, active tabs | Submit buttons, focus rings, selected filters |
 | **Destructive / Cold** | `#DC2626` | `#EF4444` | Invalid submission, distant vector rank | Error toast alerts, reset prompts, out-of-range guesses |
 
-### 2.3 Glassmorphism System
-Used for slide-over drawers, sticky focus headers, and floating dropdown cards:
-```css
-/* Glassmorphic Panel Utility */
-backdrop-blur-md bg-white/70 dark:bg-stone-900/70 border border-stone-200/50 dark:border-stone-800/50 shadow-lg
-```
+### 2.3 Surface Elevation & Glassmorphism System
+
+To preserve absolute visual crispness and eliminate translucent bleed on high-density interactive menus:
+
+1. **Slide-Over Drawer Glassmorphism**:
+   Slide-over navigation drawers retain a rich glassmorphic aesthetic over game states:
+   ```css
+   /* Glassmorphic Slide-Over Drawer */
+   backdrop-blur-md bg-[#FAF8F5]/85 dark:bg-[#161618]/85 border-r border-stone-200/60 dark:border-stone-800/60 shadow-2xl
+   /* Dimmed Outer Backdrop */
+   bg-black/40 backdrop-blur-sm
+   ```
+
+2. **Crisp Solid Floating Dropdowns**:
+   Floating menus and user avatar dropdowns utilize solid, high-contrast surfaces to guarantee legibility over any underlying content:
+   ```css
+   /* Light Dropdown */
+   bg-[#FAF8F5] border border-stone-200 shadow-xl
+   /* Dark Dropdown */
+   bg-[#1E1E22] border border-stone-800 shadow-2xl
+   ```
 
 ---
 

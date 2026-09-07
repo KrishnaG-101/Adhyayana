@@ -11,6 +11,8 @@ import { PuzzleViewPage } from '@/pages/PuzzleViewPage';
 import { LeaderboardPage } from '@/pages/LeaderboardPage';
 import { CommunityPage } from '@/pages/CommunityPage';
 import { AboutPage } from '@/pages/AboutPage';
+import { TermsPage } from '@/pages/TermsPage';
+import { PrivacyPage } from '@/pages/PrivacyPage';
 
 export const App: React.FC = () => {
   return (
@@ -25,6 +27,8 @@ export const App: React.FC = () => {
               <Route path="leaderboard" element={<LeaderboardPage />} />
               <Route path="community" element={<CommunityPage />} />
               <Route path="about" element={<AboutPage />} />
+              <Route path="terms" element={<TermsPage />} />
+              <Route path="privacy" element={<PrivacyPage />} />
               {/* Fallback to home */}
               <Route path="*" element={<Navigate to="/" replace />} />
             </Route>

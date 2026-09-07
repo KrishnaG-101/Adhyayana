@@ -66,7 +66,7 @@ export const PuzzleViewPage: React.FC = () => {
           </div>
 
           {/* Simulated Puzzle Board Mockup */}
-          <div className="p-6 rounded-2xl bg-[#FAF8F5] dark:bg-[#121213] border border-stone-200/60 dark:border-stone-800/60 space-y-4">
+          <div className="p-6 rounded-2xl bg-[#FAF8F5] dark:bg-[#161618] border border-stone-200/60 dark:border-stone-800/60 space-y-4">
             <div className="text-xs uppercase font-mono tracking-widest text-stone-400">
               Active Challenge: Session Alpha-1
             </div>

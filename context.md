@@ -3,8 +3,8 @@
 > **Document Class**: Foundational System Specification (Vicharanashala Pattern)  
 > **Target System**: Adhyayana Web Application (English Linguistic Pedagogy)  
 > **Status**: Active / Authoritative  
-> **Version**: 1.1.0  
-> **Last Synchronized Milestone**: Phase 1: Shell, Dual Navigation Architecture & Design Foundation (Completed)  
+> **Version**: 1.2.0  
+> **Last Synchronized Milestone**: Phase 1 UI/UX Polish, Mobile Filters & Legal Pages Scaffolding (Completed)  
 
 ---
 
@@ -84,24 +84,28 @@ Adhyayana adopts a clean client-server architecture with separation between high
   - Built with **Vite 5**, **React 18**, **TypeScript** strict mode (`strict: true`, `noImplicitAny: true`, `strictNullChecks: true`, zero `any` allowance), and **Tailwind CSS**.
   - Path alias `@/*` is strictly synchronized pointing to `src/*` across both [`frontend/vite.config.ts`](frontend/vite.config.ts) and [`frontend/tsconfig.json`](frontend/tsconfig.json).
 - **Design Tokens & Typography**:
-  - Implements [`docs/architecture/design-system.md`](docs/architecture/design-system.md) with warm editorial paper canvas (`#FAF8F5` light / `#121213` dark) and charcoal typography.
+  - Implements [`docs/architecture/design-system.md`](docs/architecture/design-system.md) with warm editorial paper canvas in light mode (`#FAF8F5`) and deep matte ink in dark mode (`#161618`, softer than harsh pure black).
+  - Surfaces and cards utilize `#FFFFFF` (light) and `#202024` (dark) with `#2E2E34` borders, `#E4E4E7` soft paper white primary text, and `#9CA3AF` muted typography.
+  - Softened pedagogical accents: emerald (`#22C55E` solved/complete), amber (`#F59E0B` streak/warning), and indigo (`#818CF8` interactive).
   - Display & branding typography rendered in `Newsreader` (serif editorial display).
   - Interface elements, cards, inputs, and letter tiles rendered in `Inter` / `Plus Jakarta Sans`.
-  - Glassmorphic panels and drawers styled with `backdrop-blur-md`, translucent borders, and subtle elevation tokens governed by [`.agent/skills/ui-ux-pro-max/`](.agent/skills/ui-ux-pro-max/).
+  - Elevation & surface distinction: High-contrast solid floating dropdowns ([`AvatarDropdown.tsx`](frontend/src/components/layout/AvatarDropdown.tsx)) for crisp legibility without bleed, paired with rich glassmorphic slide-over drawers ([`HamburgerDrawer.tsx`](frontend/src/components/layout/HamburgerDrawer.tsx)) utilizing `backdrop-blur-md bg-[#FAF8F5]/85 dark:bg-[#161618]/85` over `bg-black/40 backdrop-blur-sm` backdrops.
 - **Reactive Context Infrastructure**:
   - `ThemeContext` ([`frontend/src/context/ThemeContext.tsx`](frontend/src/context/ThemeContext.tsx)): Triple-state theme (`system`, `light`, `dark`) backed by `window.matchMedia` listeners and `localStorage` persistence, reactively applying the `.dark` class to `document.documentElement`.
   - `NavigationContext` ([`frontend/src/context/NavigationContext.tsx`](frontend/src/context/NavigationContext.tsx)): Reactively derives `isFocusMode` from URL route patterns (`/puzzles/:id` triggers Focus Mode; standard routes activate Platform Shell), managing drawer visibility, rules modal state, and active puzzle title synchronization.
-- **Dual-Shell Navigation Layout**:
-  - **Platform Shell** (Standard pages: `/`, `/puzzles`, `/leaderboard`, `/community`, `/about`):
-    - Top navigation bar with editorial brand logo ("Adhyayana"), Sanskrit badge (अध्ययन), centered navigational links with active/hover underlines (`Home`, `Puzzles`, `Leaderboard`, `Community`, `About`), streak flame counter, and interactive avatar dropdown with guest prompt and theme switcher.
-    - Pinned global footer ([`frontend/src/components/layout/Footer.tsx`](frontend/src/components/layout/Footer.tsx)) with mission overview, links, and system telemetry.
+- **Dual-Shell Navigation Layout & Routes**:
+  - **Platform Shell** (Standard pages: `/`, `/puzzles`, `/leaderboard`, `/community`, `/about`, `/terms`, `/privacy`):
+    - Top navigation bar with editorial brand logo ("Adhyayana"), Sanskrit badge (अध्ययन), centered navigational links with active/hover underlines (`Home`, `Puzzles`, `Leaderboard`, `Community`, `About`), streak flame counter, and solid crisp avatar dropdown with guest prompt and theme switcher.
+    - Puzzle catalog ([`frontend/src/pages/PuzzlesPage.tsx`](frontend/src/pages/PuzzlesPage.tsx)) with full responsive parity: 3-selector grid on mobile viewports (< `md`) for Difficulty, Game Type, and Learning Objective with active filter pills, matched by desktop sidebar navigation.
+    - Bespoke editorial legal pages ([`frontend/src/pages/TermsPage.tsx`](frontend/src/pages/TermsPage.tsx) and [`frontend/src/pages/PrivacyPage.tsx`](frontend/src/pages/PrivacyPage.tsx)) with custom SVG hero illustrations and structured terms/privacy sections.
+    - Pinned global footer ([`frontend/src/components/layout/Footer.tsx`](frontend/src/components/layout/Footer.tsx)) with mission overview, legal links, and system telemetry.
   - **Puzzle Focus Mode Shell** (Active puzzle pages: `/puzzles/:id`):
     - Minimalist header maximizing cognitive focus, featuring left hamburger drawer trigger, centered active puzzle title, right Help (`?`) rules button, and avatar dropdown.
     - Automatic suppression of the platform footer to eliminate distraction during gameplay.
     - Glassmorphic slide-over drawer ([`frontend/src/components/layout/HamburgerDrawer.tsx`](frontend/src/components/layout/HamburgerDrawer.tsx)) for category browsing without abandoning active sessions.
     - Pedagogical Rules Modal ([`frontend/src/components/layout/RulesModal.tsx`](frontend/src/components/layout/RulesModal.tsx)) with objective breakdown, color telemetry guides, and keyboard-accessible dismiss actions.
 - **Verification & Test Rig**:
-  - Unit and integration test harness configured with **Vitest**, `@testing-library/react`, `@testing-library/jest-dom`, and `jsdom` ([`frontend/src/tests/`](frontend/src/tests/)).
+  - Unit and integration test harness configured with **Vitest**, `@testing-library/react`, `@testing-library/jest-dom`, and `jsdom` ([`frontend/src/tests/`](frontend/src/tests/)) verifying navigation, modals, theme toggling, mobile catalog filters, and legal routes (15/15 tests passing).
 - Pure client-side UI rendering with modular engine hosts, prepared for backend algorithmic evaluation and Firebase persistence client SDK integration.
 
 ### 3.2 Backend (`backend/`)

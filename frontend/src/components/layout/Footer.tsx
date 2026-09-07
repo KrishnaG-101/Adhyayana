@@ -12,7 +12,7 @@ export const Footer: React.FC = () => {
   }
 
   return (
-    <footer className="w-full border-t border-stone-200/80 dark:border-stone-800/80 bg-[#FAF8F5]/80 dark:bg-[#121213]/80 backdrop-blur-md mt-auto">
+    <footer className="w-full border-t border-stone-200/80 dark:border-stone-800/80 bg-[#FAF8F5]/80 dark:bg-[#161618]/80 backdrop-blur-md mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
           {/* Brand & Mission */}
@@ -92,8 +92,8 @@ export const Footer: React.FC = () => {
         <div className="pt-8 border-t border-stone-200/60 dark:border-stone-800/60 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-stone-500 dark:text-stone-400">
           <p>&copy; {new Date().getFullYear()} Adhyayana Platform. Built with educational rigor.</p>
           <div className="flex items-center gap-6">
-            <Link to="/about" className="hover:underline">Privacy Policy</Link>
-            <Link to="/about" className="hover:underline">Terms of Service</Link>
+            <Link to="/privacy" className="hover:underline">Privacy Policy</Link>
+            <Link to="/terms" className="hover:underline">Terms of Service</Link>
             <Link to="/about" className="hover:underline">Vicharanashala</Link>
           </div>
         </div>

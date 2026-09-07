@@ -10,14 +10,21 @@ export default {
       colors: {
         paper: {
           light: '#FAF8F5',
-          dark: '#121213',
+          dark: '#161618',
           surface: '#F5F2EB',
           border: '#E7E3DA',
         },
         charcoal: {
-          DEFAULT: '#121213',
-          surface: '#1C1917',
-          border: '#2E2E2E',
+          DEFAULT: '#161618',
+          surface: '#202024',
+          border: '#2E2E34',
+        },
+        darkCanvas: '#161618',
+        darkSurface: '#202024',
+        darkBorder: '#2E2E34',
+        darkText: {
+          primary: '#E4E4E7',
+          muted: '#9CA3AF',
         },
       },
       fontFamily: {
