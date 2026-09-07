@@ -3,8 +3,8 @@
 > **Document Class**: Foundational System Specification (Vicharanashala Pattern)  
 > **Target System**: Adhyayana Web Application (English Linguistic Pedagogy)  
 > **Status**: Active / Authoritative  
-> **Version**: 1.4.0  
-> **Last Synchronized Milestone**: Phase 2 Step 2.1: Puzzle Catalog API Contracts, Progression Schemas & Discovery Engine (Completed)  
+> **Version**: 1.5.0  
+> **Last Synchronized Milestone**: Phase 2 Step 2.2: Dynamic Catalog API Integration, URL Search Param Sync & Level/XP Badges (Completed)  
 
 ---
 
@@ -110,8 +110,15 @@ Adhyayana adopts a clean client-server architecture with separation between high
     - Focused cognitive board canvas (`max-w-2xl lg:max-w-3xl space-y-6 mx-auto`) preserving gameplay focus while top navigation stretches full-width.
     - Glassmorphic slide-over drawer ([`frontend/src/components/layout/HamburgerDrawer.tsx`](frontend/src/components/layout/HamburgerDrawer.tsx)) featuring decoupled Puzzles row (direct catalog link vs isolated rotating chevron accordion trigger, collapsed by default with redundant links removed), 44px touch targets, and automatic session preservation.
     - Pedagogical Rules Modal ([`frontend/src/components/layout/RulesModal.tsx`](frontend/src/components/layout/RulesModal.tsx)) with objective breakdown, color telemetry guides, and keyboard-accessible dismiss actions.
+- **Dynamic Catalog Discovery & Filter Engine (Phase 2 Step 2.2)**:
+  - Resilient API service ([`frontend/src/services/catalogApi.ts`](frontend/src/services/catalogApi.ts)) querying `GET /api/v1/puzzles` with automatic fallback to embedded client fixture (`CLIENT_CATALOG_FIXTURE`) with offline indicator state.
+  - Interactive Catalog Page ([`frontend/src/pages/PuzzlesPage.tsx`](frontend/src/pages/PuzzlesPage.tsx)) featuring:
+    - Bidirectional synchronization between search text, filters (`difficulty`, `type`, `objective`), and React Router `useSearchParams` (`{ replace: true }`).
+    - Progressive level indicators (`total_levels`) and dynamic XP reward badges (`max_xp` with amber styling).
+    - Shimmer skeleton loading states and empty result states with reset actions.
+    - Dynamic Lucide icon lookup for `thumbnail_icon`.
 - **Verification & Test Rig**:
-  - Unit and integration test harness configured with **Vitest**, `@testing-library/react`, `@testing-library/jest-dom`, and `jsdom` ([`frontend/src/tests/`](frontend/src/tests/)) verifying navigation, modals, theme toggling, mobile catalog filters, legal routes, and drawer accordion decoupling (20/20 tests passing across 6 test suites).
+  - Unit and integration test harness configured with **Vitest**, `@testing-library/react`, `@testing-library/jest-dom`, and `jsdom` ([`frontend/src/tests/`](frontend/src/tests/)) verifying navigation, modals, theme toggling, mobile catalog filters, legal routes, drawer accordion decoupling, dynamic catalog fetching, and URL search parameter synchronization (22/22 tests passing across 6 test suites).
   - TypeScript type parity registry maintained in [`frontend/src/types/backend.ts`](frontend/src/types/backend.ts) and [`frontend/src/types/catalog.ts`](frontend/src/types/catalog.ts) (mirrored directly from `docs/specs/api-contracts.json` and `backend/app/schemas/`).
 - Pure client-side UI rendering with modular engine hosts, prepared for dynamic catalog API consumption and Firebase persistence client SDK integration.
 

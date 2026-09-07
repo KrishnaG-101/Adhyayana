@@ -4,12 +4,12 @@
 
 ## Current Sprint Status
 - **Current Phase**: Phase 2 (Puzzles Catalog, Discovery & Filter Engine) — In Progress
-- **Next Milestone**: Step 2.2: Connect Frontend `PuzzlesPage.tsx` to Dynamic Backend Catalog API & Prepare Word Blanks Engine
-- **Active Task**: Step 2.1 Complete (Catalog API contracts, Pydantic progression schemas, CatalogService, and discovery endpoints `GET /api/v1/puzzles` & `/{puzzle_id}`)
+- **Next Milestone**: Step 2.3 / Phase 3: Declare Word Blanks Engine Contracts & Implement Evaluator
+- **Active Task**: Step 2.2 Complete (Dynamic Catalog API Service, URL Search Parameter Synchronization, and Level/XP Reward Badges)
 
 ## Active Assignments
-- **Teammate 1 (Lead Systems Architect / Backend)**: Step 2.1 Complete: Defined catalog contracts, Pydantic progression schemas, CatalogService, and mounted `/api/v1/puzzles` router. 8/8 backend tests passing.
-- **Teammate 2 (Frontend Engineer)**: Mirrored catalog types into `frontend/src/types/catalog.ts`. Ready to connect `PuzzlesPage.tsx` dynamic fetching and filter hooks.
+- **Teammate 1 (Lead Systems Architect / Backend)**: Backend Catalog Service & discovery endpoints verified (8/8 tests passing). Ready for Word Blanks engine evaluator implementation.
+- **Teammate 2 (Frontend Engineer)**: Step 2.2 Complete: Implemented resilient `catalogApi.ts`, connected `PuzzlesPage.tsx` to dynamic API with offline fallback, bidirectionally bound search & filters to URL query params, rendered level ladders and XP badges, and verified with 22/22 Vitest tests.
 
 ## Operational Endpoints
 - **Active Health Probe**: `GET /health` -> `{"status": "healthy", "service": "adhyayana-backend", "version": "0.1.0"}`
@@ -19,8 +19,8 @@
 ## Blockers & Dependencies
 - None currently.
 
-## Next Up (Iteration Backlog — Phase 2)
-- [ ] Connect `frontend/src/pages/PuzzlesPage.tsx` to fetch catalog data dynamically from `GET /api/v1/puzzles` with offline fallback
+## Next Up (Iteration Backlog — Phase 2 & Phase 3)
+- [x] Connect `frontend/src/pages/PuzzlesPage.tsx` to fetch catalog data dynamically from `GET /api/v1/puzzles` with offline fallback
 - [ ] Declare Word Blanks contract schemas in `docs/specs/api-contracts.json` (`/api/v1/puzzles/word-blanks/init` and `/evaluate`)
 - [ ] Mirror contract types in `backend/app/schemas/puzzles/word_blanks.py` and `frontend/src/types/wordBlanks.ts`
 - [ ] Implement backend evaluator `backend/app/engines/word_blanks/engine.py` with dictionary-validated active recall
@@ -51,4 +51,5 @@
 - [x] Drawer Interaction Decoupling & Accordion Refactor: Decoupled Puzzles row into direct catalog link (`/puzzles`) and isolated rotating chevron accordion trigger, default collapsed state (`isPuzzlesExpanded = false`), removed redundant nested catalog link, enforced 44px touch targets across all rows, and expanded Vitest test suite to 20/20 passing tests (`context.md` v1.2.1).
 - [x] Widescreen Full-Width Responsiveness & Layout Audit: Refactored Navbar, Footer, and page views to fluid scaling (`max-w-7xl 2xl:max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-10`), sticky footer guarantee with `min-h-screen` and `flex-1` main, horizontal `overflow-x-hidden`, HomePage proportional 3-card grid, PuzzlesPage `2xl:grid-cols-3` catalog expansion with `lg:w-72` sidebar, and hardened `z-50` clipping prevention (`context.md` v1.3.0).
 - [x] Phase 2 Step 2.1: Puzzle Catalog API contracts (`DifficultyLevel`, `GameType`, `LearningObjective`, `PuzzleLevelInfo`, `PuzzleMetadata`, `PuzzleCatalogResponse`), Pydantic v2 schemas in `backend/app/schemas/puzzles.py`, `CatalogService` in `backend/app/services/catalog.py`, endpoints `GET /api/v1/puzzles` & `/{puzzle_id}`, frontend type parity in `frontend/src/types/catalog.ts`, and test suite `backend/tests/test_catalog.py` (8/8 backend tests passing, 20/20 vitest tests passing, `context.md` v1.4.0).
+- [x] Phase 2 Step 2.2: Dynamic Catalog API Client (`catalogApi.ts`) with offline fixture fallback, URL Search Parameter Synchronization (`search`, `difficulty`, `type`, `objective`) on `PuzzlesPage.tsx`, Level Ladders & XP Badges, and expanded test suite (22/22 vitest tests passing, 8/8 backend tests passing, `context.md` v1.5.0).
 

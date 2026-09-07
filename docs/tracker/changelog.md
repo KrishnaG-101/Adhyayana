@@ -6,6 +6,28 @@
 
 ## [Unreleased]
 
+### Phase 2: Dynamic Catalog API Client, URL Search Param Sync & Level/XP Badges — 2026-09-08
+#### Frontend Catalog Integration & Client Service
+- **Resilient Catalog API Client (`frontend/src/services/catalogApi.ts`)**:
+  - Implemented `fetchPuzzleCatalog()` targeting `/api/v1/puzzles` with configurable `VITE_API_BASE_URL` (defaulting to `http://localhost:8000`).
+  - Implemented graceful fallback mechanism returning `CLIENT_CATALOG_FIXTURE` with `is_offline: true` flag on backend or network failure.
+- **URL Search Parameter Synchronization (`frontend/src/pages/PuzzlesPage.tsx`)**:
+  - Bound search input and all filter dimensions (`difficulty`, `type`, `objective`) to React Router `useSearchParams`.
+  - Implemented bidirectional sync: hydrated filter state from URL on initial page mount, and pushed updates via `{ replace: true }` to avoid history pollution.
+  - Added filter reset mechanism returning cleanly to `/puzzles`.
+- **Dynamic Level Ladders & XP Badging (`frontend/src/pages/PuzzlesPage.tsx`)**:
+  - Added level indicator badge (e.g., `5 Levels`, `3 Levels`) using `Layers` icon.
+  - Added XP reward badge (e.g., `⚡ Up to 750 XP`, `⚡ Up to 1200 XP`) with amber styling.
+  - Dynamic Lucide icon lookup for `thumbnail_icon` with fallback to `Sparkles`.
+  - Shimmer skeleton loading state while fetching catalog.
+  - Empty state with reset trigger when zero exercises match query.
+  - Offline mode banner indicator when running in client fixture mode.
+- **Test Suite Expansion (`frontend/src/tests/PuzzlesPage.test.tsx`)**:
+  - Added tests for dynamic card rendering with levels and XP badges.
+  - Added tests for URL query parameter synchronization across difficulty, learning objective, and search text.
+  - Added test verifying initial state hydration from deep-linked URL parameters.
+  - Added test for graceful offline fallback when fetch fails (22/22 Vitest tests passing).
+
 ### Phase 2: Puzzle Catalog Contracts, Progression Schemas & Discovery API — 2026-09-08
 #### Master Contract Specification & Backend Catalog Service
 - **Contract-First Registry Expansion (`docs/specs/api-contracts.json`)**:
