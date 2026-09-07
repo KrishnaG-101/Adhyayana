@@ -6,6 +6,51 @@
 
 ## [Unreleased]
 
+### Phase 2: Dynamic Catalog API Client, URL Search Param Sync & Level/XP Badges — 2026-09-08
+#### Frontend Catalog Integration & Client Service
+- **Resilient Catalog API Client (`frontend/src/services/catalogApi.ts`)**:
+  - Implemented `fetchPuzzleCatalog()` targeting `/api/v1/puzzles` with configurable `VITE_API_BASE_URL` (defaulting to `http://localhost:8000`).
+  - Implemented graceful fallback mechanism returning `CLIENT_CATALOG_FIXTURE` with `is_offline: true` flag on backend or network failure.
+- **URL Search Parameter Synchronization (`frontend/src/pages/PuzzlesPage.tsx`)**:
+  - Bound search input and all filter dimensions (`difficulty`, `type`, `objective`) to React Router `useSearchParams`.
+  - Implemented bidirectional sync: hydrated filter state from URL on initial page mount, and pushed updates via `{ replace: true }` to avoid history pollution.
+  - Added filter reset mechanism returning cleanly to `/puzzles`.
+- **Dynamic Level Ladders & XP Badging (`frontend/src/pages/PuzzlesPage.tsx`)**:
+  - Added level indicator badge (e.g., `5 Levels`, `3 Levels`) using `Layers` icon.
+  - Added XP reward badge (e.g., `⚡ Up to 750 XP`, `⚡ Up to 1200 XP`) with amber styling.
+  - Dynamic Lucide icon lookup for `thumbnail_icon` with fallback to `Sparkles`.
+  - Shimmer skeleton loading state while fetching catalog.
+  - Empty state with reset trigger when zero exercises match query.
+  - Offline mode banner indicator when running in client fixture mode.
+- **Test Suite Expansion (`frontend/src/tests/PuzzlesPage.test.tsx`)**:
+  - Added tests for dynamic card rendering with levels and XP badges.
+  - Added tests for URL query parameter synchronization across difficulty, learning objective, and search text.
+  - Added test verifying initial state hydration from deep-linked URL parameters.
+  - Added test for graceful offline fallback when fetch fails (22/22 Vitest tests passing).
+
+### Phase 2: Puzzle Catalog Contracts, Progression Schemas & Discovery API — 2026-09-08
+#### Master Contract Specification & Backend Catalog Service
+- **Contract-First Registry Expansion (`docs/specs/api-contracts.json`)**:
+  - Defined `DifficultyLevel` enum (`beginner`, `intermediate`, `advanced`, `master`).
+  - Defined `GameType` enum (`fill-in-blanks`, `semantic-similarity`, `crossword`, `morphology-matrix`).
+  - Defined `LearningObjective` enum (`vocabulary`, `morphology`, `syntax`, `etymology`, `inference`).
+  - Defined `PuzzleLevelInfo` schema specifying progressive levels with `level`, `label`, `base_xp`, and `unlocked_by_default`.
+  - Defined `PuzzleMetadata` schema specifying full puzzle descriptors: `id`, `slug`, `title`, `short_description`, `difficulty`, `game_type`, `learning_objectives`, `is_new`, `thumbnail_icon`, `available_levels`, `total_levels`, and cumulative `max_xp`.
+  - Defined `PuzzleCatalogResponse` schema containing `puzzles` array and `total_count`.
+  - Registered contract for endpoint `GET /api/v1/puzzles`.
+- **Backend Pydantic Schemas & Catalog Service**:
+  - Implemented strict Pydantic v2 models in `backend/app/schemas/puzzles.py` with `ConfigDict(populate_by_name=True, extra="forbid")`.
+  - Implemented `CatalogService` in `backend/app/services/catalog.py` with in-memory seed catalog featuring:
+    - **Word Blanks**: Beginner `fill-in-blanks`, 5 progressive levels scaling from 50 to 250 XP (`max_xp: 750`).
+    - **Contexto Vectors**: Intermediate `semantic-similarity`, 3 levels scaling from 100 to 300 XP (`max_xp: 600`).
+    - **Syntactic Crossword**: Advanced `crossword`, 4 levels scaling from 150 to 450 XP (`max_xp: 1200`).
+  - Implemented route handlers in `backend/app/api/v1/endpoints/puzzles.py` for `GET /api/v1/puzzles` and `GET /api/v1/puzzles/{puzzle_id}` with dependency injection via `Depends(get_catalog_service)`.
+  - Mounted `puzzles_router` under `/api/v1/puzzles` in `backend/app/api/v1/router.py`.
+- **Frontend Type Parity (Rule 2)**:
+  - Mirrored schemas into `frontend/src/types/catalog.ts` (`DifficultyLevel`, `GameType`, `LearningObjective`, `PuzzleLevelInfo`, `PuzzleMetadata`, `PuzzleCatalogResponse`) and exported in `frontend/src/types/index.ts`.
+- **Backend Verification Suite**:
+  - Added comprehensive test suite `backend/tests/test_catalog.py` testing catalog discovery, level ladders, XP scaling, ID/slug lookup, and 404 handling (8/8 backend tests passing).
+
 ### Widescreen Full-Width Responsiveness & Layout Audit — 2026-09-08
 #### UI/UX Architecture & Responsive Fluid Layout
 - **Navbar Full-Width Bleed & Fluid Container Scaling**:

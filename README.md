@@ -59,10 +59,11 @@ adhyayana/
 │       └── types/                      # TypeScript definitions (mirrored from backend)
 ├── backend/                            # Server-side algorithmic & scoring API
 │   └── app/
-│       ├── api/routes/                 # FastAPI REST route controllers
+│       ├── api/v1/                     # FastAPI versioned REST route controllers
 │       ├── core/                       # App configuration, security, and auth middleware
 │       ├── engines/                    # Pluggable backend algorithmic handlers
-│       └── schemas/                    # Pydantic v2 DTOs (mirrored to frontend)
+│       ├── schemas/                    # Pydantic v2 DTOs (mirrored to frontend)
+│       └── services/                   # Business logic and catalog discovery providers
 ├── context.md                          # Foundational pedagogical & architecture context
 ├── AGENTS.md                           # Antigravity agent operational rules
 ├── README.md                           # Developer onboarding guide (this file)

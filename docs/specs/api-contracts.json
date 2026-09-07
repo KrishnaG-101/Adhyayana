@@ -259,6 +259,173 @@
         }
       },
       "additionalProperties": true
+    },
+    "DifficultyLevel": {
+      "type": "string",
+      "title": "DifficultyLevel",
+      "enum": ["beginner", "intermediate", "advanced", "master"],
+      "description": "Pedagogical difficulty tier classification for puzzle challenges."
+    },
+    "GameType": {
+      "type": "string",
+      "title": "GameType",
+      "enum": [
+        "fill-in-blanks",
+        "semantic-similarity",
+        "crossword",
+        "morphology-matrix"
+      ],
+      "description": "Mechanic and engine classification for linguistic puzzles."
+    },
+    "LearningObjective": {
+      "type": "string",
+      "title": "LearningObjective",
+      "enum": ["vocabulary", "morphology", "syntax", "etymology", "inference"],
+      "description": "Core pedagogical objective targeted by a puzzle challenge."
+    },
+    "PuzzleLevelInfo": {
+      "type": "object",
+      "title": "PuzzleLevelInfo",
+      "description": "Progressive level descriptor with XP reward bracket and unlock state.",
+      "required": ["level", "label", "base_xp", "unlocked_by_default"],
+      "properties": {
+        "level": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "1-based incremental level tier."
+        },
+        "label": {
+          "type": "string",
+          "description": "Pedagogical stage description or subtitle."
+        },
+        "base_xp": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "XP rewarded upon first successful completion of this level."
+        },
+        "unlocked_by_default": {
+          "type": "boolean",
+          "description": "Whether this level is accessible immediately to guest and novice players."
+        }
+      },
+      "additionalProperties": false
+    },
+    "PuzzleMetadata": {
+      "type": "object",
+      "title": "PuzzleMetadata",
+      "description": "Comprehensive catalog metadata describing a puzzle engine and its progression ladder.",
+      "required": [
+        "id",
+        "slug",
+        "title",
+        "short_description",
+        "difficulty",
+        "game_type",
+        "learning_objectives",
+        "is_new",
+        "thumbnail_icon",
+        "available_levels",
+        "total_levels",
+        "max_xp"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique immutable puzzle identifier."
+        },
+        "slug": {
+          "type": "string",
+          "description": "URL-friendly kebab-case route slug."
+        },
+        "title": {
+          "type": "string",
+          "description": "Human-readable display title."
+        },
+        "short_description": {
+          "type": "string",
+          "description": "Concise summary of gameplay mechanic and pedagogical purpose."
+        },
+        "difficulty": {
+          "$ref": "#/definitions/DifficultyLevel"
+        },
+        "game_type": {
+          "$ref": "#/definitions/GameType"
+        },
+        "learning_objectives": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/LearningObjective"
+          },
+          "description": "List of core linguistic learning outcomes."
+        },
+        "is_new": {
+          "type": "boolean",
+          "description": "Flag highlighting newly introduced puzzle modes."
+        },
+        "thumbnail_icon": {
+          "type": "string",
+          "description": "Lucide icon identifier name."
+        },
+        "available_levels": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PuzzleLevelInfo"
+          },
+          "description": "Progression ladder levels available for this puzzle."
+        },
+        "total_levels": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Total number of progression levels configured."
+        },
+        "max_xp": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Cumulative total XP achievable across all levels in this puzzle."
+        }
+      },
+      "additionalProperties": false
+    },
+    "PuzzleCatalogResponse": {
+      "type": "object",
+      "title": "PuzzleCatalogResponse",
+      "description": "Catalog payload returning all registered puzzle engines and total count.",
+      "required": ["puzzles", "total_count"],
+      "properties": {
+        "puzzles": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PuzzleMetadata"
+          },
+          "description": "Array of registered puzzle engines and progression metadata."
+        },
+        "total_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Total count of puzzles available in the catalog."
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "endpoints": {
+    "GET /api/v1/puzzles": {
+      "summary": "List Puzzle Catalog",
+      "description": "Retrieves the catalog of registered linguistic puzzle engines with progression levels and XP metadata.",
+      "responses": {
+        "200": {
+          "description": "Puzzle catalog retrieved successfully.",
+          "schema": {
+            "$ref": "#/definitions/PuzzleCatalogResponse"
+          }
+        },
+        "500": {
+          "description": "Internal server error.",
+          "schema": {
+            "$ref": "#/definitions/StandardErrorResponse"
+          }
+        }
+      }
     }
   }
 }
