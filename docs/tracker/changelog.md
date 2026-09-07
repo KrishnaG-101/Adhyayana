@@ -6,6 +6,29 @@
 
 ## [Unreleased]
 
+### Phase 2: Puzzle Catalog Contracts, Progression Schemas & Discovery API — 2026-09-08
+#### Master Contract Specification & Backend Catalog Service
+- **Contract-First Registry Expansion (`docs/specs/api-contracts.json`)**:
+  - Defined `DifficultyLevel` enum (`beginner`, `intermediate`, `advanced`, `master`).
+  - Defined `GameType` enum (`fill-in-blanks`, `semantic-similarity`, `crossword`, `morphology-matrix`).
+  - Defined `LearningObjective` enum (`vocabulary`, `morphology`, `syntax`, `etymology`, `inference`).
+  - Defined `PuzzleLevelInfo` schema specifying progressive levels with `level`, `label`, `base_xp`, and `unlocked_by_default`.
+  - Defined `PuzzleMetadata` schema specifying full puzzle descriptors: `id`, `slug`, `title`, `short_description`, `difficulty`, `game_type`, `learning_objectives`, `is_new`, `thumbnail_icon`, `available_levels`, `total_levels`, and cumulative `max_xp`.
+  - Defined `PuzzleCatalogResponse` schema containing `puzzles` array and `total_count`.
+  - Registered contract for endpoint `GET /api/v1/puzzles`.
+- **Backend Pydantic Schemas & Catalog Service**:
+  - Implemented strict Pydantic v2 models in `backend/app/schemas/puzzles.py` with `ConfigDict(populate_by_name=True, extra="forbid")`.
+  - Implemented `CatalogService` in `backend/app/services/catalog.py` with in-memory seed catalog featuring:
+    - **Word Blanks**: Beginner `fill-in-blanks`, 5 progressive levels scaling from 50 to 250 XP (`max_xp: 750`).
+    - **Contexto Vectors**: Intermediate `semantic-similarity`, 3 levels scaling from 100 to 300 XP (`max_xp: 600`).
+    - **Syntactic Crossword**: Advanced `crossword`, 4 levels scaling from 150 to 450 XP (`max_xp: 1200`).
+  - Implemented route handlers in `backend/app/api/v1/endpoints/puzzles.py` for `GET /api/v1/puzzles` and `GET /api/v1/puzzles/{puzzle_id}` with dependency injection via `Depends(get_catalog_service)`.
+  - Mounted `puzzles_router` under `/api/v1/puzzles` in `backend/app/api/v1/router.py`.
+- **Frontend Type Parity (Rule 2)**:
+  - Mirrored schemas into `frontend/src/types/catalog.ts` (`DifficultyLevel`, `GameType`, `LearningObjective`, `PuzzleLevelInfo`, `PuzzleMetadata`, `PuzzleCatalogResponse`) and exported in `frontend/src/types/index.ts`.
+- **Backend Verification Suite**:
+  - Added comprehensive test suite `backend/tests/test_catalog.py` testing catalog discovery, level ladders, XP scaling, ID/slug lookup, and 404 handling (8/8 backend tests passing).
+
 ### Widescreen Full-Width Responsiveness & Layout Audit — 2026-09-08
 #### UI/UX Architecture & Responsive Fluid Layout
 - **Navbar Full-Width Bleed & Fluid Container Scaling**:

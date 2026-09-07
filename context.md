@@ -3,8 +3,8 @@
 > **Document Class**: Foundational System Specification (Vicharanashala Pattern)  
 > **Target System**: Adhyayana Web Application (English Linguistic Pedagogy)  
 > **Status**: Active / Authoritative  
-> **Version**: 1.3.0  
-> **Last Synchronized Milestone**: Phase 1 Widescreen Responsiveness, Layout Audit & Fluid Scaling (Completed)  
+> **Version**: 1.4.0  
+> **Last Synchronized Milestone**: Phase 2 Step 2.1: Puzzle Catalog API Contracts, Progression Schemas & Discovery Engine (Completed)  
 
 ---
 
@@ -112,12 +112,25 @@ Adhyayana adopts a clean client-server architecture with separation between high
     - Pedagogical Rules Modal ([`frontend/src/components/layout/RulesModal.tsx`](frontend/src/components/layout/RulesModal.tsx)) with objective breakdown, color telemetry guides, and keyboard-accessible dismiss actions.
 - **Verification & Test Rig**:
   - Unit and integration test harness configured with **Vitest**, `@testing-library/react`, `@testing-library/jest-dom`, and `jsdom` ([`frontend/src/tests/`](frontend/src/tests/)) verifying navigation, modals, theme toggling, mobile catalog filters, legal routes, and drawer accordion decoupling (20/20 tests passing across 6 test suites).
-- Pure client-side UI rendering with modular engine hosts, prepared for backend algorithmic evaluation and Firebase persistence client SDK integration.
+  - TypeScript type parity registry maintained in [`frontend/src/types/backend.ts`](frontend/src/types/backend.ts) and [`frontend/src/types/catalog.ts`](frontend/src/types/catalog.ts) (mirrored directly from `docs/specs/api-contracts.json` and `backend/app/schemas/`).
+- Pure client-side UI rendering with modular engine hosts, prepared for dynamic catalog API consumption and Firebase persistence client SDK integration.
 
 ### 3.2 Backend (`backend/`)
 - Built with **Python 3.11+**, **FastAPI**, and **Pydantic v2**.
 - **Runtime Entrypoint**: `backend/app/main.py` initializes the ASGI application with configured CORS middleware, root health probe (`GET /health`), and mounts versioned API routers at `/api/v1`.
 - **Configuration & Validation**: `backend/app/core/config.py` provides centralized environment configuration using Pydantic Settings v2 (`BaseSettings`), handling environment variables, CORS origin parsing, and release versioning.
+- **Puzzle Catalog & Discovery Engine (Phase 2)**:
+  - Contract registry schemas locked in `docs/specs/api-contracts.json`: `DifficultyLevel`, `GameType`, `LearningObjective`, `PuzzleLevelInfo`, `PuzzleMetadata`, and `PuzzleCatalogResponse`.
+  - Pydantic v2 schemas declared in `backend/app/schemas/puzzles.py` with `ConfigDict(populate_by_name=True, extra="forbid")`.
+  - In-memory `CatalogService` provider in `backend/app/services/catalog.py` managing curated seed challenges with progressive level ladders and scaled XP reward brackets:
+    - **Word Blanks**: Beginner `fill-in-blanks`, 5 progressive levels scaling from 50 to 250 base XP (`max_xp: 750`).
+    - **Contexto Vectors**: Intermediate `semantic-similarity`, 3 levels scaling from 100 to 300 base XP (`max_xp: 600`).
+    - **Syntactic Crossword**: Advanced `crossword`, 4 levels scaling from 150 to 450 base XP (`max_xp: 1200`).
+  - Route handlers in `backend/app/api/v1/endpoints/puzzles.py`:
+    - `GET /api/v1/puzzles`: Returns full `PuzzleCatalogResponse` with total count.
+    - `GET /api/v1/puzzles/{puzzle_id}`: Returns detailed `PuzzleMetadata` by immutable ID or URL slug (with 404 handling).
+  - Router mounted in `backend/app/api/v1/router.py` under prefix `/puzzles` with tag `Puzzles`.
+  - Backend test harness in `backend/tests/test_catalog.py` verifying catalog responses, XP brackets, slug lookups, and error envelopes (8/8 tests passing).
 - **Dedicated Responsibilities**:
   - Vector similarity evaluation (cosine distance, embedding matrix lookups).
   - Lexical validation and morphological analysis.

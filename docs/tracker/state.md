@@ -3,28 +3,29 @@
 > **Master Roadmap**: Defined and tracked in [`docs/workflows/roadmap.md`](../workflows/roadmap.md)
 
 ## Current Sprint Status
-- **Current Phase**: Phase 1 (Shell, Dual Navigation & Design Foundation) — Complete
-- **Next Phase**: Phase 2 (Engine 1: Word Blanks — Vertical Slice)
-- **Active Task**: Preparing Phase 2 Word Blanks API contract declaration and frontend engine scaffolding
+- **Current Phase**: Phase 2 (Puzzles Catalog, Discovery & Filter Engine) — In Progress
+- **Next Milestone**: Step 2.2: Connect Frontend `PuzzlesPage.tsx` to Dynamic Backend Catalog API & Prepare Word Blanks Engine
+- **Active Task**: Step 2.1 Complete (Catalog API contracts, Pydantic progression schemas, CatalogService, and discovery endpoints `GET /api/v1/puzzles` & `/{puzzle_id}`)
 
 ## Active Assignments
-- **Teammate 1 (Lead Systems Architect / Backend)**: Backend Core Runtime Verified; Ready for Phase 2 Word Blanks engine implementation
-- **Teammate 2 (Frontend Engineer)**: Phase 1 Frontend Scaffolding, UI/UX Polish, Legal Pages, Drawer Decoupling & Widescreen Full-Width Responsiveness Complete (Vite + React + Tailwind + Dual Shell Layout + Mobile Filters + Legal Pages + Decoupled Drawer + Fluid Widescreen Scaling + 20/20 Vitest tests passing)
+- **Teammate 1 (Lead Systems Architect / Backend)**: Step 2.1 Complete: Defined catalog contracts, Pydantic progression schemas, CatalogService, and mounted `/api/v1/puzzles` router. 8/8 backend tests passing.
+- **Teammate 2 (Frontend Engineer)**: Mirrored catalog types into `frontend/src/types/catalog.ts`. Ready to connect `PuzzlesPage.tsx` dynamic fetching and filter hooks.
 
 ## Operational Endpoints
 - **Active Health Probe**: `GET /health` -> `{"status": "healthy", "service": "adhyayana-backend", "version": "0.1.0"}`
-- **Master API Router**: Mounted at `/api/v1` with `/puzzles` sub-router ready for engine registration.
+- **Puzzle Catalog Discovery**: `GET /api/v1/puzzles` -> `PuzzleCatalogResponse` (Seed puzzles: Word Blanks, Contexto, Crossword with level ladders & XP brackets)
+- **Puzzle Metadata Lookup**: `GET /api/v1/puzzles/{puzzle_id}` -> `PuzzleMetadata` (by immutable ID or slug)
 
 ## Blockers & Dependencies
 - None currently.
 
 ## Next Up (Iteration Backlog — Phase 2)
+- [ ] Connect `frontend/src/pages/PuzzlesPage.tsx` to fetch catalog data dynamically from `GET /api/v1/puzzles` with offline fallback
 - [ ] Declare Word Blanks contract schemas in `docs/specs/api-contracts.json` (`/api/v1/puzzles/word-blanks/init` and `/evaluate`)
 - [ ] Mirror contract types in `backend/app/schemas/puzzles/word_blanks.py` and `frontend/src/types/wordBlanks.ts`
 - [ ] Implement backend evaluator `backend/app/engines/word_blanks/engine.py` with dictionary-validated active recall
 - [ ] Implement frontend interactive engine `frontend/src/engines/word-blanks/WordBlanksBoard.tsx`
 - [ ] Connect `frontend/src/pages/PuzzleViewPage.tsx` dynamic engine mounting for `word-blanks`
-
 
 ---
 
@@ -49,4 +50,5 @@
 - [x] UI/UX Polish & Legal Scaffolding: Refined dark theme canvas (`#161618`) and surfaces (`#202024`), swapped glassmorphism (solid crisp `AvatarDropdown`, glassmorphic `HamburgerDrawer`), implemented mobile 3-category filter grid on `/puzzles`, scaffolded bespoke editorial `TermsPage` (`/terms`) and `PrivacyPage` (`/privacy`), and expanded Vitest test suite to 15/15 passing tests (`context.md` v1.2.0).
 - [x] Drawer Interaction Decoupling & Accordion Refactor: Decoupled Puzzles row into direct catalog link (`/puzzles`) and isolated rotating chevron accordion trigger, default collapsed state (`isPuzzlesExpanded = false`), removed redundant nested catalog link, enforced 44px touch targets across all rows, and expanded Vitest test suite to 20/20 passing tests (`context.md` v1.2.1).
 - [x] Widescreen Full-Width Responsiveness & Layout Audit: Refactored Navbar, Footer, and page views to fluid scaling (`max-w-7xl 2xl:max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-10`), sticky footer guarantee with `min-h-screen` and `flex-1` main, horizontal `overflow-x-hidden`, HomePage proportional 3-card grid, PuzzlesPage `2xl:grid-cols-3` catalog expansion with `lg:w-72` sidebar, and hardened `z-50` clipping prevention (`context.md` v1.3.0).
+- [x] Phase 2 Step 2.1: Puzzle Catalog API contracts (`DifficultyLevel`, `GameType`, `LearningObjective`, `PuzzleLevelInfo`, `PuzzleMetadata`, `PuzzleCatalogResponse`), Pydantic v2 schemas in `backend/app/schemas/puzzles.py`, `CatalogService` in `backend/app/services/catalog.py`, endpoints `GET /api/v1/puzzles` & `/{puzzle_id}`, frontend type parity in `frontend/src/types/catalog.ts`, and test suite `backend/tests/test_catalog.py` (8/8 backend tests passing, 20/20 vitest tests passing, `context.md` v1.4.0).
 
