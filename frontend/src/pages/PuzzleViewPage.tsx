@@ -30,8 +30,8 @@ export const PuzzleViewPage: React.FC = () => {
   }, [formattedTitle, setPuzzleTitle]);
 
   return (
-    <div className="w-full flex-1 flex flex-col items-center justify-center px-4 py-8 sm:py-12">
-      <div className="w-full max-w-2xl space-y-6">
+    <div className="w-full flex-1 flex flex-col items-center justify-center px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+      <div className="w-full max-w-2xl lg:max-w-3xl space-y-6 mx-auto">
         {/* Breadcrumb / Exit Navigation */}
         <div className="flex items-center justify-between text-xs text-stone-500 dark:text-stone-400">
           <Link
@@ -41,24 +41,24 @@ export const PuzzleViewPage: React.FC = () => {
             <ArrowLeft size={14} />
             <span>Return to Catalog</span>
           </Link>
-          <span className="font-mono uppercase tracking-wider bg-stone-200/60 dark:bg-stone-800/60 px-2 py-0.5 rounded">
+          <span className="font-mono uppercase tracking-wider bg-stone-200/60 dark:bg-[#202024] px-2 py-0.5 rounded border border-stone-200 dark:border-[#2E2E34]">
             Engine Slot: {puzzleId}
           </span>
         </div>
 
         {/* Engine Mount Placeholder Card */}
-        <div className="p-8 sm:p-12 rounded-3xl bg-white/70 dark:bg-stone-900/70 border border-stone-200/80 dark:border-stone-800/80 backdrop-blur-md shadow-sm text-center space-y-6">
+        <div className="p-8 sm:p-12 rounded-3xl bg-white/80 dark:bg-[#202024]/80 border border-stone-200/80 dark:border-[#2E2E34]/80 backdrop-blur-md shadow-sm text-center space-y-6">
           <div className="w-16 h-16 rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 mx-auto flex items-center justify-center border border-indigo-100 dark:border-indigo-900/50 shadow-inner">
             <Sparkles size={28} />
           </div>
 
           <div className="space-y-2">
-            <h2 className="font-serif text-3xl font-bold tracking-tight text-stone-900 dark:text-stone-100">
+            <h2 className="font-serif text-3xl font-bold tracking-tight text-stone-900 dark:text-[#E4E4E7]">
               {formattedTitle}
             </h2>
             <p className="text-sm text-stone-600 dark:text-stone-400 max-w-md mx-auto leading-relaxed">
               Focus Mode active. Cognitive distractions have been minimized. The modular puzzle engine for{' '}
-              <code className="px-1.5 py-0.5 rounded bg-stone-100 dark:bg-stone-800 font-mono text-xs text-indigo-600 dark:text-indigo-400">
+              <code className="px-1.5 py-0.5 rounded bg-stone-100 dark:bg-[#161618] font-mono text-xs text-indigo-600 dark:text-indigo-400">
                 frontend/src/engines/{puzzleId}
               </code>{' '}
               will mount into this vertical slice container.
@@ -66,7 +66,7 @@ export const PuzzleViewPage: React.FC = () => {
           </div>
 
           {/* Simulated Puzzle Board Mockup */}
-          <div className="p-6 rounded-2xl bg-[#FAF8F5] dark:bg-[#161618] border border-stone-200/60 dark:border-stone-800/60 space-y-4">
+          <div className="p-6 rounded-2xl bg-[#FAF8F5] dark:bg-[#161618] border border-stone-200/60 dark:border-[#2E2E34]/60 space-y-4">
             <div className="text-xs uppercase font-mono tracking-widest text-stone-400">
               Active Challenge: Session Alpha-1
             </div>

@@ -13,12 +13,12 @@ export const LeaderboardPage: React.FC = () => {
   ];
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full">
+    <div className="w-full max-w-4xl 2xl:max-w-5xl mx-auto px-4 sm:px-6 lg:px-10 py-10">
       <div className="text-center max-w-xl mx-auto mb-10">
         <div className="w-12 h-12 rounded-2xl bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center mx-auto mb-4">
           <Trophy size={24} />
         </div>
-        <h1 className="font-serif text-3xl sm:text-4xl font-bold text-stone-900 dark:text-stone-100 tracking-tight">
+        <h1 className="font-serif text-3xl sm:text-4xl font-bold text-stone-900 dark:text-[#E4E4E7] tracking-tight">
           Linguistic Leaderboard
         </h1>
         <p className="text-sm text-stone-600 dark:text-stone-400 mt-2">
@@ -26,7 +26,7 @@ export const LeaderboardPage: React.FC = () => {
         </p>
 
         {/* Timeframe Segmented Switcher */}
-        <div className="flex items-center justify-center gap-1 bg-stone-100 dark:bg-stone-800/80 p-1.5 rounded-2xl max-w-xs mx-auto mt-6">
+        <div className="flex items-center justify-center gap-1 bg-stone-100 dark:bg-[#202024] border border-stone-200/80 dark:border-[#2E2E34] p-1.5 rounded-2xl max-w-xs mx-auto mt-6 shadow-xs">
           {(['weekly', 'monthly', 'all_time'] as const).map((t) => (
             <button
               key={t}
@@ -34,8 +34,8 @@ export const LeaderboardPage: React.FC = () => {
               onClick={() => setTimeframe(t)}
               className={`flex-1 py-1.5 text-xs font-semibold rounded-xl capitalize transition-all ${
                 timeframe === t
-                  ? 'bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 shadow-sm'
-                  : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200'
+                  ? 'bg-white dark:bg-[#28282D] text-stone-900 dark:text-[#E4E4E7] shadow-xs'
+                  : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-[#E4E4E7]'
               }`}
             >
               {t.replace('_', ' ')}
@@ -46,11 +46,11 @@ export const LeaderboardPage: React.FC = () => {
 
       {/* Leaderboard Table Skeleton */}
       <div className="rounded-2xl glass-panel overflow-hidden">
-        <div className="divide-y divide-stone-200/80 dark:divide-stone-800/80">
+        <div className="divide-y divide-stone-200/80 dark:divide-[#2E2E34]/80">
           {leaders.map((player) => (
             <div
               key={player.rank}
-              className="flex items-center justify-between p-4 sm:px-6 hover:bg-stone-100/50 dark:hover:bg-stone-800/40 transition-colors"
+              className="flex items-center justify-between p-4 sm:px-6 hover:bg-stone-100/50 dark:hover:bg-[#28282D]/40 transition-colors"
             >
               <div className="flex items-center gap-4">
                 <div className="w-8 text-center font-serif font-bold text-base text-stone-500">

@@ -49,14 +49,14 @@ export const CommunityPage: React.FC = () => {
   ];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 space-y-12">
+    <div className="w-full max-w-7xl 2xl:max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-10 py-10 sm:py-14 space-y-12">
       {/* Header */}
       <div className="text-center max-w-3xl mx-auto space-y-4">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-indigo-100 dark:bg-indigo-950/70 text-indigo-700 dark:text-indigo-300 border border-indigo-200/50 dark:border-indigo-800/50">
           <Users size={14} />
           <span>Vicharanashala Guilds & Multiplayer</span>
         </div>
-        <h1 className="font-serif text-3xl sm:text-5xl font-bold tracking-tight text-stone-900 dark:text-stone-100">
+        <h1 className="font-serif text-3xl sm:text-5xl font-bold tracking-tight text-stone-900 dark:text-[#E4E4E7]">
           Community Arena
         </h1>
         <p className="text-stone-600 dark:text-stone-400 text-base sm:text-lg leading-relaxed">
@@ -67,12 +67,12 @@ export const CommunityPage: React.FC = () => {
       {/* Duel & Matchmaking Hub */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Quick Match Battle */}
-        <div className="p-8 rounded-3xl bg-white/70 dark:bg-stone-900/70 border border-stone-200/70 dark:border-stone-800/70 backdrop-blur-md shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+        <div className="p-8 rounded-3xl bg-white/80 dark:bg-[#202024]/80 border border-stone-200/80 dark:border-[#2E2E34]/80 backdrop-blur-md shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
           <div className="space-y-4">
             <div className="w-12 h-12 rounded-2xl bg-amber-100 dark:bg-amber-950/70 text-amber-600 dark:text-amber-400 flex items-center justify-center">
               <Swords size={24} />
             </div>
-            <h2 className="font-serif text-2xl font-bold text-stone-900 dark:text-stone-100">
+            <h2 className="font-serif text-2xl font-bold text-stone-900 dark:text-[#E4E4E7]">
               Synchronous Quick Battle
             </h2>
             <p className="text-stone-600 dark:text-stone-400 text-sm leading-relaxed">
@@ -103,12 +103,12 @@ export const CommunityPage: React.FC = () => {
         </div>
 
         {/* Private Room / Party Code */}
-        <div className="p-8 rounded-3xl bg-white/70 dark:bg-stone-900/70 border border-stone-200/70 dark:border-stone-800/70 backdrop-blur-md shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
+        <div className="p-8 rounded-3xl bg-white/80 dark:bg-[#202024]/80 border border-stone-200/80 dark:border-[#2E2E34]/80 backdrop-blur-md shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
           <div className="space-y-4">
             <div className="w-12 h-12 rounded-2xl bg-indigo-100 dark:bg-indigo-950/70 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
               <Shield size={24} />
             </div>
-            <h2 className="font-serif text-2xl font-bold text-stone-900 dark:text-stone-100">
+            <h2 className="font-serif text-2xl font-bold text-stone-900 dark:text-[#E4E4E7]">
               Private Match Room
             </h2>
             <p className="text-stone-600 dark:text-stone-400 text-sm leading-relaxed">
@@ -123,11 +123,11 @@ export const CommunityPage: React.FC = () => {
               value={roomCode}
               onChange={(e) => setRoomCode(e.target.value.toUpperCase())}
               maxLength={12}
-              className="flex-1 px-4 py-3 rounded-2xl text-sm bg-stone-100/80 dark:bg-stone-800/80 border border-stone-200 dark:border-stone-700 text-stone-900 dark:text-stone-100 placeholder-stone-400 uppercase tracking-wider focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="flex-1 px-4 py-3 rounded-2xl text-sm bg-stone-100/80 dark:bg-[#161618] border border-stone-200 dark:border-[#2E2E34] text-stone-900 dark:text-[#E4E4E7] placeholder-stone-400 uppercase tracking-wider focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
             <button
               type="submit"
-              className="py-3 px-6 rounded-2xl font-medium text-sm transition-all flex items-center justify-center gap-2 bg-stone-900 hover:bg-stone-800 text-white dark:bg-stone-100 dark:hover:bg-stone-200 dark:text-stone-900"
+              className="py-3 px-6 rounded-2xl font-medium text-sm transition-all flex items-center justify-center gap-2 bg-stone-900 hover:bg-stone-800 text-white dark:bg-[#E4E4E7] dark:hover:bg-white dark:text-stone-900 shadow-xs"
             >
               <span>Join Room</span>
               <ArrowRight size={16} />
@@ -140,7 +140,7 @@ export const CommunityPage: React.FC = () => {
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="font-serif text-2xl font-bold text-stone-900 dark:text-stone-100">
+            <h2 className="font-serif text-2xl font-bold text-stone-900 dark:text-[#E4E4E7]">
               Active Tournaments
             </h2>
             <p className="text-stone-600 dark:text-stone-400 text-sm">
@@ -160,7 +160,7 @@ export const CommunityPage: React.FC = () => {
           {activeTournaments.map((tourney) => (
             <div
               key={tourney.id}
-              className="p-6 rounded-3xl bg-white/60 dark:bg-stone-900/60 border border-stone-200/60 dark:border-stone-800/60 backdrop-blur-md space-y-4 flex flex-col justify-between"
+              className="p-6 rounded-3xl bg-white/70 dark:bg-[#202024]/70 border border-stone-200/60 dark:border-[#2E2E34]/60 backdrop-blur-md space-y-4 flex flex-col justify-between"
             >
               <div className="space-y-2">
                 <div className="flex items-center justify-between text-xs">

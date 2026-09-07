@@ -45,14 +45,14 @@ export const RulesModal: React.FC = () => {
       />
 
       {/* Modal Dialog Card */}
-      <div className="relative w-full max-w-lg rounded-3xl glass-panel bg-white/95 dark:bg-stone-900/95 p-6 sm:p-8 z-10 shadow-2xl border border-stone-200 dark:border-stone-800 animate-in fade-in zoom-in-95 duration-200">
+      <div className="relative w-full max-w-lg rounded-3xl glass-panel bg-white/95 dark:bg-[#202024]/95 p-6 sm:p-8 z-10 shadow-2xl border border-stone-200 dark:border-[#2E2E34] animate-in fade-in zoom-in-95 duration-200">
         {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-stone-200 dark:border-stone-800">
+        <div className="flex items-center justify-between pb-4 border-b border-stone-200 dark:border-[#2E2E34]">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
               <HelpCircle size={18} />
             </div>
-            <h2 id="rules-modal-title" className="font-serif text-xl sm:text-2xl font-bold text-stone-900 dark:text-stone-100">
+            <h2 id="rules-modal-title" className="font-serif text-xl sm:text-2xl font-bold text-stone-900 dark:text-[#E4E4E7]">
               How to Play: {activePuzzleTitle}
             </h2>
           </div>
@@ -60,7 +60,7 @@ export const RulesModal: React.FC = () => {
             type="button"
             onClick={closeRulesModal}
             aria-label="Close rules dialog"
-            className="p-1.5 rounded-lg text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
+            className="p-1.5 rounded-lg text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 hover:bg-stone-100 dark:hover:bg-[#28282D] transition-colors"
           >
             <X size={20} />
           </button>
@@ -69,7 +69,7 @@ export const RulesModal: React.FC = () => {
         {/* Instructions Body */}
         <div className="py-5 space-y-4 text-sm text-stone-600 dark:text-stone-300">
           <section className="space-y-1.5">
-            <h3 className="font-semibold text-stone-900 dark:text-stone-100 text-xs uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
+            <h3 className="font-semibold text-xs uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
               Pedagogical Objective
             </h3>
             <p className="leading-relaxed">
@@ -78,7 +78,7 @@ export const RulesModal: React.FC = () => {
           </section>
 
           <section className="space-y-2">
-            <h3 className="font-semibold text-stone-900 dark:text-stone-100 text-xs uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
+            <h3 className="font-semibold text-xs uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
               Rules & Mechanics
             </h3>
             <ul className="space-y-2.5">
@@ -92,14 +92,16 @@ export const RulesModal: React.FC = () => {
               </li>
               <li className="flex items-start gap-2.5">
                 <CheckCircle2 size={16} className="text-indigo-600 dark:text-indigo-400 shrink-0 mt-0.5" />
-                <span>Submit using <kbd className="px-1.5 py-0.5 text-xs bg-stone-200 dark:bg-stone-800 rounded">Enter</kbd>. Every guess is analytical feedback.</span>
+                <span>
+                  Submit using <kbd className="px-1.5 py-0.5 text-xs bg-stone-200 dark:bg-[#161618] text-stone-800 dark:text-[#E4E4E7] rounded border border-stone-300 dark:border-[#2E2E34]">Enter</kbd>. Every guess is analytical feedback.
+                </span>
               </li>
             </ul>
           </section>
         </div>
 
         {/* Modal Footer */}
-        <div className="pt-4 border-t border-stone-200 dark:border-stone-800 flex justify-end">
+        <div className="pt-4 border-t border-stone-200 dark:border-[#2E2E34] flex justify-end">
           <button
             type="button"
             onClick={closeRulesModal}

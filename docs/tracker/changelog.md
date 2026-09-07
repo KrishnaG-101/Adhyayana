@@ -6,7 +6,28 @@
 
 ## [Unreleased]
 
-### Drawer Interaction Decoupling & Accordion Refactor — 2026-09-07
+### Widescreen Full-Width Responsiveness & Layout Audit — 2026-09-08
+#### UI/UX Architecture & Responsive Fluid Layout
+- **Navbar Full-Width Bleed & Fluid Container Scaling**:
+  - Maintained `w-full` edge-to-edge header border and backdrop bleed in `Navbar.tsx`.
+  - Refactored inner wrapper to fluid container: `w-full max-w-7xl 2xl:max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-10 h-16 flex items-center justify-between` across both Platform Shell and Focus Mode Shell.
+- **Footer Full-Width Bleed & Sticky Positioning**:
+  - Ensured `Footer.tsx` background extends `w-full border-t` edge-to-edge with `mt-auto`.
+  - Upgraded inner content container to fluid `w-full max-w-7xl 2xl:max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-10 py-12`.
+- **Root Layout Sticky Footer & Horizontal Scroll Elimination**:
+  - Enforced `min-h-screen w-full flex flex-col overflow-x-hidden` on `Layout.tsx` and `flex-1 flex flex-col w-full` on `<main>`, guaranteeing sticky footer pinning on tall monitors without horizontal scrollbar bleed on any resolution.
+- **HomePage Responsive Card Grid & Typography Layout**:
+  - Outer container refactored to `w-full min-h-[calc(100vh-theme(spacing.16))] flex-1 flex flex-col justify-center`.
+  - Inner content container upgraded to fluid `w-full max-w-7xl 2xl:max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-10 py-12 md:py-20 flex flex-col items-center text-center`.
+  - Converted pillar cards into fluid, fully interactive responsive grid (`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 w-full`), removing rigid clamp limits.
+- **Catalog & Sub-Page Widescreen Scaling**:
+  - `PuzzlesPage.tsx`: Container upgraded to fluid `w-full max-w-7xl 2xl:max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-10 py-10`. Desktop filter sidebar widened to `lg:w-72` and card grid expanded to `grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-6` to cleanly occupy widescreen real estate.
+  - `PuzzleViewPage.tsx`: Maintained focused cognitive canvas (`max-w-2xl lg:max-w-3xl space-y-6 mx-auto`) while preserving full-width header navigation.
+  - `LeaderboardPage.tsx`, `CommunityPage.tsx`, and `AboutPage.tsx`: Updated to fluid max-widths with responsive horizontal padding and `#E4E4E7` / `#202024` / `#2E2E34` dark token parity.
+- **Latent Bug Fixes & Elevation Hardening**:
+  - `AvatarDropdown.tsx`: Added `max-w-[calc(100vw-2rem)]` to prevent menu clipping on ultra-narrow viewports, with hardened `z-50` elevation.
+  - `RulesModal.tsx`: Synchronized `#202024` and `#2E2E34` dark surface and border tokens at `z-50`.
+
 #### UI/UX Architecture & Drawer Interaction Polish
 - **Decoupled Puzzles Row in `HamburgerDrawer.tsx`**:
   - Split single-target Puzzles row into two decoupled interactive zones:
