@@ -128,7 +128,7 @@ export const PuzzlesPage: React.FC = () => {
   });
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full">
+    <div className="w-full max-w-7xl 2xl:max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-10 py-10">
       {/* Header */}
       <div className="mb-8">
         <h1 className="font-serif text-3xl sm:text-4xl font-bold text-stone-900 dark:text-[#E4E4E7] tracking-tight">
@@ -297,7 +297,7 @@ export const PuzzlesPage: React.FC = () => {
       {/* Main Grid with Desktop Sidebar */}
       <div className="flex flex-col md:flex-row gap-8">
         {/* Desktop Sticky Sidebar */}
-        <aside className="hidden md:block w-64 shrink-0 space-y-6">
+        <aside className="hidden md:block w-64 lg:w-72 shrink-0 space-y-6">
           <div className="sticky top-24 p-5 rounded-2xl glass-panel space-y-6">
             <div className="flex items-center justify-between pb-3 border-b border-stone-200/80 dark:border-[#2E2E34]/80">
               <h3 className="font-serif font-bold text-base text-stone-900 dark:text-[#E4E4E7]">
@@ -413,7 +413,7 @@ export const PuzzlesPage: React.FC = () => {
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-6">
               {filteredPuzzles.map((puzzle) => (
                 <Link
                   key={puzzle.id}

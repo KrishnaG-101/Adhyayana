@@ -22,7 +22,7 @@ export const Navbar: React.FC = () => {
      * ========================================================================= */
     return (
       <header className="sticky top-0 z-40 w-full glass-panel border-b border-stone-200/60 dark:border-stone-800/60 bg-[#FAF8F5]/80 dark:bg-[#161618]/80 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+        <div className="w-full max-w-7xl 2xl:max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-10 h-16 flex items-center justify-between">
           {/* Left: Hamburger Drawer Trigger */}
           <div className="flex items-center">
             <button
@@ -64,7 +64,7 @@ export const Navbar: React.FC = () => {
    * ========================================================================= */
   return (
     <header className="sticky top-0 z-40 w-full glass-panel border-b border-stone-200/60 dark:border-stone-800/60 bg-[#FAF8F5]/80 dark:bg-[#161618]/80 backdrop-blur-md">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div className="w-full max-w-7xl 2xl:max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-10 h-16 flex items-center justify-between">
         {/* Left: Brand Identity */}
         <div className="flex items-center gap-6">
           <Link

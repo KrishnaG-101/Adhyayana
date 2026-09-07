@@ -31,14 +31,14 @@ export const AboutPage: React.FC = () => {
   ];
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 space-y-16">
+    <div className="w-full max-w-5xl 2xl:max-w-6xl mx-auto px-4 sm:px-6 lg:px-10 py-12 sm:py-16 space-y-16">
       {/* Editorial Mission Statement */}
       <div className="text-center space-y-4 max-w-3xl mx-auto">
         <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-semibold bg-indigo-100 dark:bg-indigo-950/70 text-indigo-700 dark:text-indigo-300 border border-indigo-200/50 dark:border-indigo-800/50">
           <BookOpen size={14} />
           <span>Vicharanashala Philosophical Treatise</span>
         </div>
-        <h1 className="font-serif text-4xl sm:text-6xl font-bold tracking-tight text-stone-900 dark:text-stone-100 leading-tight">
+        <h1 className="font-serif text-4xl sm:text-6xl font-bold tracking-tight text-stone-900 dark:text-[#E4E4E7] leading-tight">
           Language as a Canvas of Deliberate Thought
         </h1>
         <p className="text-stone-600 dark:text-stone-400 text-lg sm:text-xl font-serif italic max-w-2xl mx-auto">
@@ -47,19 +47,19 @@ export const AboutPage: React.FC = () => {
       </div>
 
       {/* Origin Story / Vision */}
-      <div className="p-8 sm:p-12 rounded-3xl bg-white/70 dark:bg-stone-900/70 border border-stone-200/70 dark:border-stone-800/70 backdrop-blur-md space-y-6 text-stone-700 dark:text-stone-300 leading-relaxed text-base sm:text-lg">
+      <div className="p-8 sm:p-12 rounded-3xl bg-white/80 dark:bg-[#202024]/80 border border-stone-200/80 dark:border-[#2E2E34]/80 backdrop-blur-md space-y-6 text-stone-700 dark:text-stone-300 leading-relaxed text-base sm:text-lg">
         <p>
           Language acquisition is too frequently reduced to flashcard memorization, mindless tapping, and addictive slot-machine gamification. Learners are left with fleeting recognition rather than intuitive mastery, rich vocabulary, or the confidence to express nuanced ideas.
         </p>
         <p>
-          <strong className="text-stone-900 dark:text-stone-100 font-semibold">Adhyayana</strong> was conceived as an antidote to cognitive noise. Designed under the <em>Vicharanashala (विचारणशाला)</em> framework, we blend classical linguistics, etymology, and modern cognitive psychology into focused, elegant puzzles. Every mechanic is engineered to cultivate curiosity, lexical precision, and the sheer joy of verbal craftsmanship.
+          <strong className="text-stone-900 dark:text-[#E4E4E7] font-semibold">Adhyayana</strong> was conceived as an antidote to cognitive noise. Designed under the <em>Vicharanashala (विचारणशाला)</em> framework, we blend classical linguistics, etymology, and modern cognitive psychology into focused, elegant puzzles. Every mechanic is engineered to cultivate curiosity, lexical precision, and the sheer joy of verbal craftsmanship.
         </p>
       </div>
 
       {/* 4 Pedagogical Pillars */}
       <div className="space-y-8">
         <div className="text-center space-y-2">
-          <h2 className="font-serif text-3xl font-bold text-stone-900 dark:text-stone-100">
+          <h2 className="font-serif text-3xl font-bold text-stone-900 dark:text-[#E4E4E7]">
             The Pedagogical Pillars
           </h2>
           <p className="text-stone-600 dark:text-stone-400 text-sm max-w-xl mx-auto">
@@ -71,12 +71,12 @@ export const AboutPage: React.FC = () => {
           {pedagogicalPillars.map((pillar, idx) => (
             <div
               key={idx}
-              className="p-8 rounded-3xl bg-white/60 dark:bg-stone-900/60 border border-stone-200/60 dark:border-stone-800/60 backdrop-blur-md space-y-4 hover:border-stone-300 dark:hover:border-stone-700 transition-all"
+              className="p-8 rounded-3xl bg-white/70 dark:bg-[#202024]/70 border border-stone-200/60 dark:border-[#2E2E34]/60 backdrop-blur-md space-y-4 hover:border-stone-300 dark:hover:border-stone-700 transition-all"
             >
-              <div className="w-12 h-12 rounded-2xl bg-stone-100 dark:bg-stone-800 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-2xl bg-stone-100 dark:bg-[#161618] flex items-center justify-center">
                 {pillar.icon}
               </div>
-              <h3 className="font-serif text-xl font-bold text-stone-900 dark:text-stone-100">
+              <h3 className="font-serif text-xl font-bold text-stone-900 dark:text-[#E4E4E7]">
                 {pillar.title}
               </h3>
               <p className="text-stone-600 dark:text-stone-400 text-sm leading-relaxed">
@@ -88,10 +88,10 @@ export const AboutPage: React.FC = () => {
       </div>
 
       {/* Architecture & Open Science */}
-      <div className="p-8 sm:p-10 rounded-3xl bg-stone-100/70 dark:bg-stone-800/40 border border-stone-200/80 dark:border-stone-800/80 space-y-6">
+      <div className="p-8 sm:p-10 rounded-3xl bg-stone-100/70 dark:bg-[#202024]/60 border border-stone-200/80 dark:border-[#2E2E34]/80 space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="space-y-1">
-            <h3 className="font-serif text-2xl font-bold text-stone-900 dark:text-stone-100">
+            <h3 className="font-serif text-2xl font-bold text-stone-900 dark:text-[#E4E4E7]">
               Contract-First, Modular Architecture
             </h3>
             <p className="text-stone-600 dark:text-stone-400 text-sm">
@@ -99,10 +99,10 @@ export const AboutPage: React.FC = () => {
             </p>
           </div>
           <a
-            href="https://github.com"
+            href="https://github.com/KrishnaG-101/Adhyayana"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-stone-900 hover:bg-stone-800 text-white dark:bg-stone-100 dark:hover:bg-stone-200 dark:text-stone-900 text-sm font-medium transition-colors"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-stone-900 hover:bg-stone-800 text-white dark:bg-[#E4E4E7] dark:hover:bg-white dark:text-stone-900 text-sm font-medium transition-colors shadow-xs"
           >
             <Github size={16} />
             <span>GitHub Repository</span>
@@ -116,13 +116,13 @@ export const AboutPage: React.FC = () => {
 
       {/* Bottom CTA */}
       <div className="text-center pt-4 space-y-4">
-        <h3 className="font-serif text-2xl font-bold text-stone-900 dark:text-stone-100">
+        <h3 className="font-serif text-2xl font-bold text-stone-900 dark:text-[#E4E4E7]">
           Ready to immerse your mind?
         </h3>
         <div className="flex justify-center gap-4">
           <Link
             to="/puzzles"
-            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-2xl bg-stone-900 hover:bg-stone-800 text-white dark:bg-stone-100 dark:hover:bg-stone-200 dark:text-stone-900 font-medium text-sm transition-all shadow-md"
+            className="inline-flex items-center gap-2 px-8 py-3.5 rounded-2xl bg-stone-900 hover:bg-stone-800 text-white dark:bg-[#E4E4E7] dark:hover:bg-white dark:text-stone-900 font-medium text-sm transition-all shadow-md"
           >
             <Sparkles size={16} />
             <span>Explore Puzzle Catalog</span>

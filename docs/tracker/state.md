@@ -9,7 +9,7 @@
 
 ## Active Assignments
 - **Teammate 1 (Lead Systems Architect / Backend)**: Backend Core Runtime Verified; Ready for Phase 2 Word Blanks engine implementation
-- **Teammate 2 (Frontend Engineer)**: Phase 1 Frontend Scaffolding, UI/UX Polish, Legal Pages & Drawer Interaction Decoupling Complete (Vite + React + Tailwind + Dual Shell Layout + Mobile Filters + Legal Pages + Decoupled Drawer + 20/20 Vitest tests passing)
+- **Teammate 2 (Frontend Engineer)**: Phase 1 Frontend Scaffolding, UI/UX Polish, Legal Pages, Drawer Decoupling & Widescreen Full-Width Responsiveness Complete (Vite + React + Tailwind + Dual Shell Layout + Mobile Filters + Legal Pages + Decoupled Drawer + Fluid Widescreen Scaling + 20/20 Vitest tests passing)
 
 ## Operational Endpoints
 - **Active Health Probe**: `GET /health` -> `{"status": "healthy", "service": "adhyayana-backend", "version": "0.1.0"}`
@@ -48,4 +48,5 @@
 - [x] Phase 1 Frontend Scaffolding Complete: Vite + React + TypeScript + Tailwind CSS, Dual-Shell Navigation (`Navbar`, `HamburgerDrawer`, `RulesModal`, `Footer`, `Layout`), `ThemeContext`, `NavigationContext` (URL-reactive `isFocusMode`), full route skeletons (`/`, `/puzzles`, `/puzzles/:id`, `/leaderboard`, `/community`, `/about`), 8/8 Vitest tests passing, and living context synchronization (`context.md` v1.1.0).
 - [x] UI/UX Polish & Legal Scaffolding: Refined dark theme canvas (`#161618`) and surfaces (`#202024`), swapped glassmorphism (solid crisp `AvatarDropdown`, glassmorphic `HamburgerDrawer`), implemented mobile 3-category filter grid on `/puzzles`, scaffolded bespoke editorial `TermsPage` (`/terms`) and `PrivacyPage` (`/privacy`), and expanded Vitest test suite to 15/15 passing tests (`context.md` v1.2.0).
 - [x] Drawer Interaction Decoupling & Accordion Refactor: Decoupled Puzzles row into direct catalog link (`/puzzles`) and isolated rotating chevron accordion trigger, default collapsed state (`isPuzzlesExpanded = false`), removed redundant nested catalog link, enforced 44px touch targets across all rows, and expanded Vitest test suite to 20/20 passing tests (`context.md` v1.2.1).
+- [x] Widescreen Full-Width Responsiveness & Layout Audit: Refactored Navbar, Footer, and page views to fluid scaling (`max-w-7xl 2xl:max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-10`), sticky footer guarantee with `min-h-screen` and `flex-1` main, horizontal `overflow-x-hidden`, HomePage proportional 3-card grid, PuzzlesPage `2xl:grid-cols-3` catalog expansion with `lg:w-72` sidebar, and hardened `z-50` clipping prevention (`context.md` v1.3.0).
 

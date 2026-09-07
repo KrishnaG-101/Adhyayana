@@ -3,8 +3,8 @@
 > **Document Class**: Foundational System Specification (Vicharanashala Pattern)  
 > **Target System**: Adhyayana Web Application (English Linguistic Pedagogy)  
 > **Status**: Active / Authoritative  
-> **Version**: 1.2.1  
-> **Last Synchronized Milestone**: Phase 1 UI/UX Polish, Drawer Decoupling & Legal Pages Scaffolding (Completed)  
+> **Version**: 1.3.0  
+> **Last Synchronized Milestone**: Phase 1 Widescreen Responsiveness, Layout Audit & Fluid Scaling (Completed)  
 
 ---
 
@@ -94,14 +94,20 @@ Adhyayana adopts a clean client-server architecture with separation between high
   - `ThemeContext` ([`frontend/src/context/ThemeContext.tsx`](frontend/src/context/ThemeContext.tsx)): Triple-state theme (`system`, `light`, `dark`) backed by `window.matchMedia` listeners and `localStorage` persistence, reactively applying the `.dark` class to `document.documentElement`.
   - `NavigationContext` ([`frontend/src/context/NavigationContext.tsx`](frontend/src/context/NavigationContext.tsx)): Reactively derives `isFocusMode` from URL route patterns (`/puzzles/:id` triggers Focus Mode; standard routes activate Platform Shell), managing drawer visibility, rules modal state, and active puzzle title synchronization.
 - **Dual-Shell Navigation Layout & Routes**:
+  - **Fluid Full-Bleed Shell Topology**:
+    - Outer header (`Navbar.tsx`) and footer (`Footer.tsx`) backgrounds stretch edge-to-edge (`w-full`) across all resolutions.
+    - Inner wrappers adopt fluid scaling: `w-full max-w-7xl 2xl:max-w-[1536px] mx-auto px-4 sm:px-6 lg:px-10` with zero horizontal scrollbar bleed (`w-full overflow-x-hidden` on `Layout.tsx`).
+    - Sticky footer guarantee: `Layout.tsx` enforces `min-h-screen flex flex-col` with `<main className="flex-1 flex flex-col w-full">` and `Footer.tsx` with `mt-auto`.
   - **Platform Shell** (Standard pages: `/`, `/puzzles`, `/leaderboard`, `/community`, `/about`, `/terms`, `/privacy`):
     - Top navigation bar with editorial brand logo ("Adhyayana"), Sanskrit badge (अध्ययन), centered navigational links with active/hover underlines (`Home`, `Puzzles`, `Leaderboard`, `Community`, `About`), streak flame counter, and solid crisp avatar dropdown with guest prompt and theme switcher.
-    - Puzzle catalog ([`frontend/src/pages/PuzzlesPage.tsx`](frontend/src/pages/PuzzlesPage.tsx)) with full responsive parity: 3-selector grid on mobile viewports (< `md`) for Difficulty, Game Type, and Learning Objective with active filter pills, matched by desktop sidebar navigation.
+    - Landing page ([`frontend/src/pages/HomePage.tsx`](frontend/src/pages/HomePage.tsx)) featuring fluid hero typography and proportional 3-card challenge grid (`grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 w-full`).
+    - Puzzle catalog ([`frontend/src/pages/PuzzlesPage.tsx`](frontend/src/pages/PuzzlesPage.tsx)) with full responsive parity: 3-selector grid on mobile viewports (< `md`), sticky desktop sidebar (`lg:w-72`), and fluid 3-column widescreen grid (`2xl:grid-cols-3`).
     - Bespoke editorial legal pages ([`frontend/src/pages/TermsPage.tsx`](frontend/src/pages/TermsPage.tsx) and [`frontend/src/pages/PrivacyPage.tsx`](frontend/src/pages/PrivacyPage.tsx)) with custom SVG hero illustrations and structured terms/privacy sections.
     - Pinned global footer ([`frontend/src/components/layout/Footer.tsx`](frontend/src/components/layout/Footer.tsx)) with mission overview, legal links, and system telemetry.
   - **Puzzle Focus Mode Shell** (Active puzzle pages: `/puzzles/:id`):
     - Minimalist header maximizing cognitive focus, featuring left hamburger drawer trigger, centered active puzzle title, right Help (`?`) rules button, and avatar dropdown.
     - Automatic suppression of the platform footer to eliminate distraction during gameplay.
+    - Focused cognitive board canvas (`max-w-2xl lg:max-w-3xl space-y-6 mx-auto`) preserving gameplay focus while top navigation stretches full-width.
     - Glassmorphic slide-over drawer ([`frontend/src/components/layout/HamburgerDrawer.tsx`](frontend/src/components/layout/HamburgerDrawer.tsx)) featuring decoupled Puzzles row (direct catalog link vs isolated rotating chevron accordion trigger, collapsed by default with redundant links removed), 44px touch targets, and automatic session preservation.
     - Pedagogical Rules Modal ([`frontend/src/components/layout/RulesModal.tsx`](frontend/src/components/layout/RulesModal.tsx)) with objective breakdown, color telemetry guides, and keyboard-accessible dismiss actions.
 - **Verification & Test Rig**:

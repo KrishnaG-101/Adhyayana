@@ -56,12 +56,12 @@ export const AvatarDropdown: React.FC<AvatarDropdownProps> = ({ isAuthenticated 
 
       {/* Dropdown Floating Card */}
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-72 rounded-2xl bg-[#FAF8F5] dark:bg-[#1E1E22] border border-stone-200 dark:border-stone-800 shadow-xl dark:shadow-2xl p-4 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+        <div className="absolute right-0 mt-2 w-72 max-w-[calc(100vw-2rem)] rounded-2xl bg-[#FAF8F5] dark:bg-[#1E1E22] border border-stone-200 dark:border-stone-800 shadow-xl dark:shadow-2xl p-4 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
           {isAuthenticated ? (
             /* Authenticated User View */
             <div className="space-y-3">
               <div className="border-b border-stone-200 dark:border-stone-800 pb-3">
-                <p className="font-semibold text-stone-900 dark:text-stone-100 text-sm">Learner User</p>
+                <p className="font-semibold text-stone-900 dark:text-[#E4E4E7] text-sm">Learner User</p>
                 <p className="text-xs text-stone-500 dark:text-stone-400">learner@adhyayana.org</p>
               </div>
               <nav className="space-y-1 text-sm">
@@ -101,7 +101,7 @@ export const AvatarDropdown: React.FC<AvatarDropdownProps> = ({ isAuthenticated 
             /* Guest User View */
             <div className="space-y-3">
               <div>
-                <p className="font-serif font-bold text-stone-900 dark:text-stone-100 text-base">Guest Learner</p>
+                <p className="font-serif font-bold text-stone-900 dark:text-[#E4E4E7] text-base">Guest Learner</p>
                 <p className="text-xs text-stone-600 dark:text-stone-400 mt-0.5">
                   Sign in to preserve learning streaks across devices.
                 </p>
@@ -119,7 +119,7 @@ export const AvatarDropdown: React.FC<AvatarDropdownProps> = ({ isAuthenticated 
           {/* Theme Segmented Switcher */}
           <div className="border-t border-stone-200 dark:border-stone-800 pt-3 mt-3">
             <p className="text-xs font-medium text-stone-500 dark:text-stone-400 mb-2">Theme Mode</p>
-            <div className="grid grid-cols-3 gap-1 bg-stone-100 dark:bg-stone-800/80 p-1 rounded-xl">
+            <div className="grid grid-cols-3 gap-1 bg-stone-100 dark:bg-[#202024] p-1 rounded-xl border border-stone-200/60 dark:border-[#2E2E34]">
               {themes.map((t) => (
                 <button
                   key={t.id}
@@ -127,8 +127,8 @@ export const AvatarDropdown: React.FC<AvatarDropdownProps> = ({ isAuthenticated 
                   onClick={() => setTheme(t.id)}
                   className={`flex items-center justify-center gap-1.5 py-1 px-2 text-xs font-medium rounded-lg transition-all ${
                     theme === t.id
-                      ? 'bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 shadow-sm'
-                      : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200'
+                      ? 'bg-white dark:bg-[#28282D] text-stone-900 dark:text-[#E4E4E7] shadow-xs'
+                      : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-[#E4E4E7]'
                   }`}
                 >
                   {t.icon}
