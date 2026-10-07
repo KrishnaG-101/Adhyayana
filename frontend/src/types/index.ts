@@ -3,6 +3,7 @@
  */
 
 export * from './backend';
+export * from './catalog';
 
 export type EngineLifecycleState =
   | 'IDLE'
