@@ -3,8 +3,8 @@
 > **Document Class**: Foundational System Specification (Vicharanashala Pattern)  
 > **Target System**: Adhyayana Web Application (English Linguistic Pedagogy)  
 > **Status**: Active / Authoritative  
-> **Version**: 1.7.1  
-> **Last Synchronized Milestone**: Phase 3: Modular Engine #1: Word Blanks — 17-Level Progressive Curriculum & UI/UX Progression Hardening (Completed)  
+> **Version**: 1.8.0  
+> **Last Synchronized Milestone**: Phase 4: Authentication, Player Profiles & Cloud Persistence (Completed)  
 
 ---
 
@@ -220,6 +220,25 @@ The generative stem recall engine implementing active stem completion across **1
    - **Sleek Custom Scrollbars**: Eliminated bulky default OS scrollbars in favor of subtle 6px stone/zinc scrollbars and horizontal stepper scroll buttons.
    - `DiscoveredWordsSidebar.tsx`: Pinned telemetry card with live word count, part-of-speech badges, Wiktionary definitions, and cumulative session XP.
    - `WordBlanksBoard.tsx`: Mounts dynamically in `PuzzleViewPage.tsx` under Focus Mode with direct "How to Play" modal trigger.
+
+### 4.4 Phase 4: Authentication, Player Profiles & Cloud Persistence (Completed)
+1. **Contract-First Auth & User Identity Architecture**:
+   - Master schemas registered in `docs/specs/api-contracts.json`: `UserProfile`, `UserStats`, `UserPreferences`, `UpdateProfileRequest`, `GuestMigrationRequest`, and `GuestMigrationResponse`.
+   - Strict Pydantic v2 validation models in `backend/app/schemas/users.py` and 1:1 mirrored TypeScript interfaces in `frontend/src/types/user.ts`.
+   - Security dependency `get_current_user` in `backend/app/api/deps.py` extracting Bearer ID tokens and resolving user claims via `backend/app/core/firebase.py`.
+   - RESTful endpoints in `backend/app/api/v1/endpoints/users.py`:
+     - `GET /api/v1/auth/me`: Fetches profile and aggregate stats.
+     - `PATCH /api/v1/users/profile`: Updates display name, avatar, and preferences.
+     - `POST /api/v1/users/migrate-guest-data`: Merges guest gameplay progress into cloud profile.
+
+2. **Frontend Reactive State & Modal Architecture**:
+   - `AuthContext.tsx`: Manages session state (`currentUser`, `token`, `isGuest`), Google OAuth simulation, email registration/login, sign-out, and unmigrated progress detection.
+   - `AuthModal.tsx`: Tabbed Sign In / Create Account accessible modal dialog with Google button, email/password form, password show/hide toggle, and Escape dismissal.
+   - `AvatarDropdown.tsx`: Dynamically swaps between "Guest Learner" CTA and logged-in user details (initials/avatar, streak counter, XP badge, Profile link, Sign Out).
+
+3. **Player Profile View & Guest-to-Cloud Migration Engine**:
+   - `ProfilePage.tsx` mounted at `/profile` route with editorial typography, player identity card, interactive display name editing, pedagogical stats matrix (streaks, XP, blanks cleared, completion rate), and guest progress sync banner.
+   - Automatic migration engine: inspects `localStorage` (`adhyayana:word-blanks:v1:l{level}:p{puzzleNumber}:words`), consolidates completed stages and XP, calls `migrateGuestData()`, and credits them to the cloud account.
 
 ---
 

@@ -6,6 +6,36 @@
 
 ## [Unreleased]
 
+### Phase 4: Authentication, Player Profiles & Cloud Persistence — 2026-10-08
+#### Master Contract Specification & Backend Authentication Architecture
+- **Contract-First Registry Expansion (`docs/specs/api-contracts.json`)**:
+  - Registered `UserPreferences` schema (`theme`, `sound`).
+  - Registered `UserStats` schema (`games_played`, `games_won`, `current_streak`, `max_streak`, `total_xp`, `word_blanks_cleared`).
+  - Registered `UserProfile` schema (`uid`, `display_name`, `email`, `photo_url`, `is_anonymous`, `created_at`, `last_active_at`, `stats`, `preferences`).
+  - Registered `UpdateProfileRequest`, `GuestMigrationRequest`, and `GuestMigrationResponse` schemas.
+  - Registered endpoints: `GET /api/v1/auth/me`, `PATCH /api/v1/users/profile`, and `POST /api/v1/users/migrate-guest-data`.
+- **Backend Pydantic v2 Schemas & Auth Dependency (`backend/app/`)**:
+  - Built strict validation models with `ConfigDict(extra="forbid")` in `app/schemas/users.py`.
+  - Built Firebase token verification provider with dev-mode fallback in `app/core/firebase.py`.
+  - Implemented FastAPI security dependency `get_current_user` in `app/api/deps.py` extracting Bearer tokens.
+  - Implemented profile retrieval, profile updates, and guest session state migration in `app/api/v1/endpoints/users.py`.
+  - Expanded backend test suite with `backend/tests/test_users.py` (22/22 pytest tests passing).
+
+#### Frontend Authentication Context, Modal & Profile Page
+- **Absolute Type Parity (`frontend/src/types/user.ts`)**:
+  - Mirrored backend schemas 1:1 into TypeScript and re-exported in `types/index.ts`.
+- **Reactive Auth Context (`frontend/src/context/AuthContext.tsx`)**:
+  - Engineered `AuthProvider` managing user state, tokens, Google OAuth, email sign-in/registration, sign-out, and unmigrated progress detection.
+  - Implemented automatic guest-to-cloud migration consolidating local Word Blanks clearance and XP into player profile.
+- **Accessible Authentication Modal (`frontend/src/components/auth/AuthModal.tsx`)**:
+  - Implemented tabbed Sign In / Create Account modal with Google OAuth button, form validation, password visibility toggle, and keyboard accessibility (Escape dismissal).
+- **Dynamic Avatar Dropdown (`frontend/src/components/layout/AvatarDropdown.tsx`)**:
+  - Dynamically swaps between "Guest Learner" CTA and logged-in user details (initials/avatar, streak counter, XP badge, Profile link, Sign Out).
+- **Player Profile Page (`frontend/src/pages/ProfilePage.tsx`)**:
+  - Mounted `/profile` route with editorial header, player identity card, interactive display name editing, pedagogical stats matrix (streaks, XP, blanks cleared, completion rate), and guest progress sync banner.
+- **Frontend Test Suite Expansion (`frontend/src/tests/AuthAndProfile.test.tsx`)**:
+  - 10 Vitest tests verifying AuthModal tabs, password toggling, Google auth, AvatarDropdown states, and ProfilePage migration (43/43 total Vitest tests passing).
+
 ### Phase 3: Word Blanks UI/UX Refinement, Strict Level Gating & Theme Alignment — 2026-10-08
 #### Cognitive Gameplay Integrity, Level Progression & Design Token Parity
 - **Eradication of In-Game Answer Spoilers**:
