@@ -3,8 +3,8 @@
 > **Document Class**: Foundational System Specification (Vicharanashala Pattern)  
 > **Target System**: Adhyayana Web Application (English Linguistic Pedagogy)  
 > **Status**: Active / Authoritative  
-> **Version**: 1.5.0  
-> **Last Synchronized Milestone**: Phase 2 Step 2.2: Dynamic Catalog API Integration, URL Search Param Sync & Level/XP Badges (Completed)  
+> **Version**: 1.7.1  
+> **Last Synchronized Milestone**: Phase 3: Modular Engine #1: Word Blanks — 17-Level Progressive Curriculum & UI/UX Progression Hardening (Completed)  
 
 ---
 
@@ -179,6 +179,47 @@ All backend puzzle engines inherit from the standardized abstract base contracts
 1. **Isolated State Machine**: Puzzles manage their own internal interaction loop and expose a uniform lifecycle (`IDLE` -> `PLAYING` -> `EVALUATING` -> `WON` | `FAILED`).
 2. **Zero Global Bleed**: No puzzle engine may import or mutate another engine's state or register engine-specific routes directly in global layouts.
 3. **Contract Symmetry**: Every backend payload schema must have an identical TypeScript interface in the frontend engine.
+
+### 4.3 Modular Engine #1: Word Blanks (`word-blanks`)
+The generative stem recall engine implementing active stem completion across **17 progressive difficulty levels** containing **450+ curated generative puzzles**:
+
+1. **The 17-Level Progressive Curriculum**:
+   - **Level 1 (Beginner — 3-Letter Onsets `_ L L`, 30 Puzzles, 20 XP)**: `_ A T`, `_ I N`, `_ O P`, `_ U N`, `_ E T`, etc.
+   - **Level 2 (Beginner — 3-Letter Medial Vowels `L _ L`, 30 Puzzles, 20 XP)**: `C _ T`, `B _ D`, `H _ T`, `P _ N`, etc.
+   - **Level 3 (Beginner — 3-Letter Codas `L L _`, 30 Puzzles, 20 XP)**: `C A _`, `B A _`, `P I _`, `S E _`, `D A _`, etc.
+   - **Level 4 (Intermediate — 4-Letter Rhyming Rimes `_ L L L`, 30 Puzzles, 30 XP)**: `_ A M E`, `_ I N E`, `_ A K E`, etc.
+   - **Level 5 (Intermediate — 4-Letter Terminal Codas `L L L _`, 25 Puzzles, 30 XP)**: `L I _ T`, `B E _ T`, `P A _ T`, etc.
+   - **Level 6 (Intermediate — 4-Letter Bounded Vowels `L _ L L`, 25 Puzzles, 35 XP)**: `B _ L L`, `F _ L L`, `W _ L L`, etc.
+   - **Level 7 (Intermediate — 4-Letter Vowel Digraphs `L _ _ L`, 30 Puzzles, 35 XP)**: `B _ _ T`, `M _ _ T`, `S _ _ P`, `W _ _ D`, etc.
+   - **Level 8 (Advanced — 4-Letter Initial Blends `_ _ L L`, 25 Puzzles, 45 XP)**: `_ _ A T`, `_ _ I P`, `_ _ O P`, etc.
+   - **Level 9 (Advanced — 5-Letter Medial Sandwiches, 25 Puzzles, 55 XP)**: `S T _ N D`, `T R _ I N`, `B L _ N K`, etc.
+   - **Level 10 (Advanced — 5-Letter Vowel Diphthongs, 25 Puzzles, 60 XP)**: `S P _ _ K`, `S T _ _ M`, `C L _ _ D`, etc.
+   - **Level 11 (Advanced — 5-Letter Initial Blends `_ _ L L L`, 25 Puzzles, 65 XP)**: `_ _ A N D`, `_ _ I N T`, `_ _ A R T`, etc.
+   - **Level 12 (Master — 6-Letter Compound Word Halves, 25 Puzzles, 80 XP)**: `S U N _ _ _`, `B E D _ _ _`, `S E A _ _ _`, etc.
+   - **Level 13 (Master — 6-Letter Distributed Templates, 25 Puzzles, 90 XP)**: `_ R _ N _ H`, `S _ R _ N _`, `_ L _ G _ T`, etc.
+   - **Level 14 (Master — 6-Letter Inflectional Suffixes, 25 Puzzles, 95 XP)**: `_ _ _ K E R`, `_ _ _ I N G`, `_ _ _ D E R`, etc.
+   - **Level 15 (Master — Common Base Prefixes UN-, RE-, DIS-, 25 Puzzles, 110 XP)**: `U N _ _ _ _`, `R E _ _ _ _`, `D I S _ _ _`, etc.
+   - **Level 16 (Master — Derivational Suffixes -FUL, -LESS, -NESS, 25 Puzzles, 125 XP)**: `_ _ _ F U L`, `_ _ _ L E S S`, `_ _ _ N E S S`, etc.
+   - **Level 17 (Master — Advanced Polysyllabic Morphemic Matrices, 25 Puzzles, 140 XP)**: `P R E _ _ _ _`, `O V E R _ _ _`, `U N D E R _ _`, etc.
+
+2. **Dynamic Stepper, Strict Level Gating & Stage Clearance Flow**:
+   - **Zero In-Game Spoilers**: Active puzzle cards and pedagogical notes strictly present cognitive guidelines without enumerating candidate answers (e.g., `(e.g. BAT, CAT, HAT)` is completely eradicated from game UI). Illustrative examples are cleanly confined to the "How to Play" modal.
+   - **Sequential Stage Gating**: Within each level, stage $k$ is locked until stage $k-1$ is cleared (3 words discovered).
+   - **Strict 100% Level Progression**: Level $N+1$ unlocks strictly after completing 100% of the puzzles in Level $N$ (`min_puzzles_to_unlock_next = totalPuzzlesInLevel`). The milestone celebration banner triggers only upon completing the entire level.
+   - `[< Previous]` and `[Next >]` stepper controls navigating within the active level.
+   - Quick-Jump Stage Picker: Interactive drawer/modal (`quick-jump-modal`) displaying the full grid of puzzle stages with cleared status, lock icons for pending stages, and one-click stage switching.
+
+3. **Lexical Dictionary Service & Offline Resilience**:
+   - Queries `https://freedictionaryapi.com/api/v1/entries/en/{word}` with `User-Agent: Adhyayana-App/1.0`.
+   - In-memory `WORD_CACHE` protects external rate limits (1,000 req/hr).
+   - Rich `SEED_LEMMA_DICTIONARY` and `OFFLINE_SEED_WORDS` ensure zero-flake test execution and uninterrupted offline play across all 17 levels.
+
+4. **LocalStorage Persistence, Brand Theming & Telemetry Canvas**:
+   - Discovered words persisted per level and puzzle stage: `adhyayana:word-blanks:v1:l{level}:p{puzzleNumber}:words`.
+   - **Brand Theme Parity**: Standardized on Adhyayana `indigo-600` / `indigo-500` / `indigo-400` primary interactive palette; reserved amber strictly for XP counters and duplicate warnings, emerald for clearance, rose for invalid inputs.
+   - **Sleek Custom Scrollbars**: Eliminated bulky default OS scrollbars in favor of subtle 6px stone/zinc scrollbars and horizontal stepper scroll buttons.
+   - `DiscoveredWordsSidebar.tsx`: Pinned telemetry card with live word count, part-of-speech badges, Wiktionary definitions, and cumulative session XP.
+   - `WordBlanksBoard.tsx`: Mounts dynamically in `PuzzleViewPage.tsx` under Focus Mode with direct "How to Play" modal trigger.
 
 ---
 

@@ -68,36 +68,92 @@ export const RulesModal: React.FC = () => {
 
         {/* Instructions Body */}
         <div className="py-5 space-y-4 text-sm text-stone-600 dark:text-stone-300">
-          <section className="space-y-1.5">
-            <h3 className="font-semibold text-xs uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
-              Pedagogical Objective
-            </h3>
-            <p className="leading-relaxed">
-              Exercise active cognitive recall and contextual reasoning. Solve the challenge with minimum hints to maximize your linguistic intuition.
-            </p>
-          </section>
+          {activePuzzleTitle?.toLowerCase().includes('word blanks') ? (
+            <>
+              <section className="space-y-1.5">
+                <h3 className="font-semibold text-xs uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
+                  How Word Blanks Works
+                </h3>
+                <p className="leading-relaxed">
+                  You are presented with a stem pattern containing fixed letters and missing blanks (e.g., <code className="px-1.5 py-0.5 rounded bg-stone-100 dark:bg-[#161618] font-mono text-xs font-bold text-indigo-600 dark:text-indigo-400">_ A T</code>). Type letters into the blank slots to generate valid dictionary words.
+                </p>
+              </section>
 
-          <section className="space-y-2">
-            <h3 className="font-semibold text-xs uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
-              Rules & Mechanics
-            </h3>
-            <ul className="space-y-2.5">
-              <li className="flex items-start gap-2.5">
-                <CheckCircle2 size={16} className="text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
-                <span>Enter candidate English words matching the morphological constraints.</span>
-              </li>
-              <li className="flex items-start gap-2.5">
-                <CheckCircle2 size={16} className="text-amber-500 shrink-0 mt-0.5" />
-                <span>Color-coded telemetry informs you of vector closeness: Emerald for exact, Amber for near-misses.</span>
-              </li>
-              <li className="flex items-start gap-2.5">
-                <CheckCircle2 size={16} className="text-indigo-600 dark:text-indigo-400 shrink-0 mt-0.5" />
-                <span>
-                  Submit using <kbd className="px-1.5 py-0.5 text-xs bg-stone-200 dark:bg-[#161618] text-stone-800 dark:text-[#E4E4E7] rounded border border-stone-300 dark:border-[#2E2E34]">Enter</kbd>. Every guess is analytical feedback.
-                </span>
-              </li>
-            </ul>
-          </section>
+              {/* Illustrative Examples Card */}
+              <section className="p-3.5 rounded-2xl bg-stone-100/80 dark:bg-[#161618]/80 border border-stone-200 dark:border-[#2E2E34] space-y-2">
+                <h4 className="font-mono text-xs font-semibold uppercase tracking-wider text-stone-700 dark:text-stone-300">
+                  Illustrative Example (Stem: <span className="font-bold text-indigo-600 dark:text-indigo-400">_ A T</span>)
+                </h4>
+                <div className="flex flex-col gap-2 text-xs">
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono px-2 py-0.5 rounded bg-white dark:bg-[#202024] border border-stone-300 dark:border-[#383840] font-bold">B + AT</span>
+                    <span className="text-stone-400">→</span>
+                    <span className="font-bold text-emerald-600 dark:text-emerald-400">BAT</span>
+                    <span className="text-stone-500 text-[11px] font-mono">(Valid word • +20 XP awarded)</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono px-2 py-0.5 rounded bg-white dark:bg-[#202024] border border-stone-300 dark:border-[#383840] font-bold">C + AT</span>
+                    <span className="text-stone-400">→</span>
+                    <span className="font-bold text-emerald-600 dark:text-emerald-400">CAT</span>
+                    <span className="text-stone-500 text-[11px] font-mono">(Valid word • +20 XP awarded)</span>
+                  </div>
+                </div>
+              </section>
+
+              <section className="space-y-2">
+                <h3 className="font-semibold text-xs uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
+                  Progression Rules
+                </h3>
+                <ul className="space-y-2 text-xs">
+                  <li className="flex items-start gap-2.5">
+                    <CheckCircle2 size={16} className="text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+                    <span><strong>Stage Clearance:</strong> Find at least 3 valid dictionary words to clear the active stem and unlock the next puzzle.</span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <CheckCircle2 size={16} className="text-indigo-600 dark:text-indigo-400 shrink-0 mt-0.5" />
+                    <span><strong>Level Advancement:</strong> Clear all puzzles in the active level to unlock the next progressive difficulty tier.</span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <CheckCircle2 size={16} className="text-amber-500 shrink-0 mt-0.5" />
+                    <span><strong>Lexicon Exploration:</strong> You can continue finding bonus words on any cleared puzzle to earn extra XP and expand your vocabulary coverage.</span>
+                  </li>
+                </ul>
+              </section>
+            </>
+          ) : (
+            <>
+              <section className="space-y-1.5">
+                <h3 className="font-semibold text-xs uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
+                  Pedagogical Objective
+                </h3>
+                <p className="leading-relaxed">
+                  Exercise active cognitive recall and contextual reasoning. Solve the challenge with minimum hints to maximize your linguistic intuition.
+                </p>
+              </section>
+
+              <section className="space-y-2">
+                <h3 className="font-semibold text-xs uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
+                  Rules & Mechanics
+                </h3>
+                <ul className="space-y-2.5">
+                  <li className="flex items-start gap-2.5">
+                    <CheckCircle2 size={16} className="text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+                    <span>Enter candidate English words matching the morphological constraints.</span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <CheckCircle2 size={16} className="text-amber-500 shrink-0 mt-0.5" />
+                    <span>Color-coded telemetry informs you of vector closeness: Emerald for exact, Amber for near-misses.</span>
+                  </li>
+                  <li className="flex items-start gap-2.5">
+                    <CheckCircle2 size={16} className="text-indigo-600 dark:text-indigo-400 shrink-0 mt-0.5" />
+                    <span>
+                      Submit using <kbd className="px-1.5 py-0.5 text-xs bg-stone-200 dark:bg-[#161618] text-stone-800 dark:text-[#E4E4E7] rounded border border-stone-300 dark:border-[#2E2E34]">Enter</kbd>. Every guess is analytical feedback.
+                    </span>
+                  </li>
+                </ul>
+              </section>
+            </>
+          )}
         </div>
 
         {/* Modal Footer */}

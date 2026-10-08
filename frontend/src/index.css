@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400..800;1,6..72,400..800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,400..800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -8,6 +8,43 @@
   body {
     @apply bg-[#FAF8F5] text-stone-900 dark:bg-[#161618] dark:text-[#E4E4E7] antialiased selection:bg-indigo-500 selection:text-white;
   }
+
+  /* Global sleek scrollbar styling aligning with paper/charcoal palette */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgba(168, 162, 158, 0.4);
+    border-radius: 9999px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(120, 113, 108, 0.65);
+  }
+
+  .dark ::-webkit-scrollbar-thumb {
+    background: rgba(82, 82, 91, 0.5);
+    border-radius: 9999px;
+  }
+
+  .dark ::-webkit-scrollbar-thumb:hover {
+    background: rgba(113, 113, 122, 0.75);
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(168, 162, 158, 0.4) transparent;
+  }
+
+  .dark * {
+    scrollbar-color: rgba(82, 82, 91, 0.5) transparent;
+  }
 }
 
 @layer utilities {
@@ -16,5 +53,13 @@
   }
   .glass-drawer {
     @apply backdrop-blur-md bg-[#FAF8F5]/85 dark:bg-[#161618]/85 border-r border-stone-200/60 dark:border-stone-800/60 shadow-2xl;
+  }
+  /* Hide scrollbar while preserving scroll functionality */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
 }

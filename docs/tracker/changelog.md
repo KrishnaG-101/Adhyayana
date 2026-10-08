@@ -6,7 +6,109 @@
 
 ## [Unreleased]
 
-### Phase 2: Dynamic Catalog API Client, URL Search Param Sync & Level/XP Badges — 2026-09-08
+### Phase 3: Word Blanks UI/UX Refinement, Strict Level Gating & Theme Alignment — 2026-10-08
+#### Cognitive Gameplay Integrity, Level Progression & Design Token Parity
+- **Eradication of In-Game Answer Spoilers**:
+  - Removed all candidate answers / word examples (e.g., `(e.g. BAT, CAT, HAT, MAT, RAT, SAT)`) from pedagogical notes across all 17 levels in `backend/app/engines/word_blanks/puzzles_data.py` and `frontend/src/engines/word_blanks/puzzlesData.ts`.
+  - Confined all illustrative examples strictly to the dedicated Word Blanks tab in `RulesModal.tsx` ("How to Play"), providing clean instructional scaffolding without spoiling game puzzles.
+- **Strict 100% Level Progression Gating**:
+  - Configured `min_puzzles_to_unlock_next` across all 17 levels to require clearing 100% of puzzles in the level (`len(puzzles)`).
+  - Prevented premature Level Unlock celebration banners; banners and next-level buttons now trigger only when all puzzles in the active level (e.g. 30/30) are cleared.
+  - Implemented sequential puzzle-to-puzzle gating: stage $k$ within a level is locked until stage $k-1$ is cleared (3 words discovered). In the Quick-Jump modal, locked stages are disabled with `<Lock>` icons.
+- **Sleek Custom Scrollbars & Stepper Navigation**:
+  - Replaced chunky OS scrollbars across all scroll containers (`html`, `body`, sidebar, modal grids) with sleek, theme-aligned custom scrollbars in `index.css` (6px width, transparent track, subtle stone thumb `rgba(168,162,158,0.4)` / dark `rgba(82,82,91,0.5)`).
+  - Added `.no-scrollbar` utility and horizontal stepper navigation controls (`<ChevronLeft>` and `<ChevronRight>`) for the 17-level tabs selector.
+- **Brand Theme Alignment & Design Token Parity**:
+  - Replaced unbranded amber themes with Adhyayana brand colors: interactive buttons and active level pills now utilize `indigo-600` / `indigo-500` / `indigo-400`.
+  - Amber tokens are strictly reserved for XP badges and duplicate warnings; emerald for victory / cleared state; rose for invalid / mismatch errors.
+  - Added header "How to Play" button in `WordBlanksBoard.tsx` triggering `RulesModal.tsx`.
+- **Test Suite Synchronization**:
+  - Updated `WordBlanksEngine.test.tsx` to verify sequential puzzle unlocking and Quick-Jump modal stage gating (33/33 Vitest tests passing).
+  - Maintained 16/16 backend tests passing and successful production build (`tsc && vite build`).
+
+### Phase 3: Modular Puzzle Engine #1: Word Blanks (17-Level Progressive Curriculum & 450+ Puzzles) — 2026-10-08
+#### Master Contract Specification & 17-Level Curriculum Dataset
+- **Contract-First Registry Expansion (`docs/specs/api-contracts.json`)**:
+  - Registered `WordBlanksPuzzle` schema (`id`, `puzzle_number`, `stem`, `word_length`, `blank_count`, `min_words_to_clear`, `pedagogical_note`).
+  - Extended `WordBlanksLevel` to support 17 levels, title, description, `xp_per_word`, `min_puzzles_to_unlock_next`, and dynamic `puzzles: WordBlanksPuzzle[]`.
+  - Extended `WordBlanksGuessRequest` with `puzzle_number: integer` (default 1).
+- **Absolute Type Parity (Rule 2)**:
+  - Updated Pydantic v2 schemas in `backend/app/schemas/word_blanks.py`.
+  - Mirrored 1:1 into TypeScript in `frontend/src/types/wordBlanks.ts`.
+- **450+ Curated Puzzle Curriculum (`backend/app/engines/word_blanks/puzzles_data.py`)**:
+  - Engineered 17 progressive levels spanning:
+    1. Level 1 (3-Letter Onsets `_ L L`, 30 puzzles, 20 XP)
+    2. Level 2 (3-Letter Medial Vowels `L _ L`, 30 puzzles, 20 XP)
+    3. Level 3 (3-Letter Codas `L L _`, 30 puzzles, 20 XP)
+    4. Level 4 (4-Letter Rhyming Rimes `_ L L L`, 30 puzzles, 30 XP)
+    5. Level 5 (4-Letter Terminal Codas `L L L _`, 25 puzzles, 30 XP)
+    6. Level 6 (4-Letter Bounded Vowels `L _ L L`, 25 puzzles, 35 XP)
+    7. Level 7 (4-Letter Vowel Digraphs `L _ _ L`, 30 puzzles, 35 XP)
+    8. Level 8 (4-Letter Initial Blends `_ _ L L`, 25 puzzles, 45 XP)
+    9. Level 9 (5-Letter Medial Sandwiches, 25 puzzles, 55 XP)
+    10. Level 10 (5-Letter Vowel Diphthongs, 25 puzzles, 60 XP)
+    11. Level 11 (5-Letter Initial Blends `_ _ L L L`, 25 puzzles, 65 XP)
+    12. Level 12 (6-Letter Compound Word Halves, 25 puzzles, 80 XP)
+    13. Level 13 (6-Letter Distributed Templates, 25 puzzles, 90 XP)
+    14. Level 14 (6-Letter Inflectional Suffixes, 25 puzzles, 95 XP)
+    15. Level 15 (Base Prefixes UN-, RE-, DIS-, 25 puzzles, 110 XP)
+    16. Level 16 (Derivational Suffixes -FUL, -LESS, -NESS, 25 puzzles, 125 XP)
+    17. Level 17 (Advanced Polysyllabic Morphemes, 25 puzzles, 140 XP)
+- **Engine Evaluator & Stepper Support (`backend/app/engines/word_blanks/engine.py`)**:
+  - Implemented `get_puzzle(level_num, puzzle_number)` resolver.
+  - Dynamically builds regex from active puzzle stem (supporting onsets, medials, codas, and distributed templates).
+  - Populated `SEED_LEMMA_DICTIONARY` in `backend/app/services/dictionary.py` with multi-stem words.
+  - Verified backend test suite with 16/16 tests passing in `backend/tests/`.
+
+#### Frontend Dynamic Stepper, Quick-Jump Stage Picker & LocalStorage Persistence
+- **Curriculum Synchronization (`frontend/src/engines/word_blanks/puzzlesData.ts`)**:
+  - Exported complete 17-level curriculum in `CLIENT_WORD_BLANKS_LEVELS` matching backend specs.
+- **Dynamic Stepper Bar & Stage Picker (`frontend/src/engines/word_blanks/WordBlanksBoard.tsx`)**:
+  - Rendered 17 scrollable level pills with active indicators and cleared count badges.
+  - Stepper controls: `[< Previous]` button, clearance badge (`✓ Cleared` or `{count}/3 words`), and `[Next >]` button enabled on clearance or previous visits.
+  - Quick-Jump Stage Picker modal (`quick-jump-modal`) rendering responsive grid of all puzzle stages in the active level with cleared statuses.
+  - LocalStorage persistence keyed per puzzle: `adhyayana:word-blanks:v1:l{level}:p{puzzleNumber}:words`.
+  - Cumulative session XP calculation across all levels and puzzles.
+- **Frontend Test Suite Expansion (`frontend/src/tests/WordBlanksEngine.test.tsx`)**:
+  - 11 Vitest tests verifying 17 level pills, stepper navigation, clearance gating, Quick-Jump selection, and Coda patterns (33/33 total tests passing).
+
+### Phase 3: Modular Puzzle Engine #1: Word Blanks (Vertical Slice) — 2026-10-07
+#### Master Contract Specification & Backend Generative Engine
+- **Contract-First Registry Expansion (`docs/specs/api-contracts.json`)**:
+  - Registered `WordBlanksLevel` schema defining levels 1 to 5, stem patterns, blank count, `xp_per_word`, and `min_words_to_unlock`.
+  - Registered `DiscoveredWord` telemetry schema with word, part of speech, definition, and XP awarded.
+  - Registered `WordBlanksGuessRequest` payload with level, entered word, and session discovered words.
+  - Registered `WordBlanksEvaluationResponse` telemetry payload with validity, duplicate flag, pattern compliance, and feedback.
+  - Registered endpoints `GET /api/v1/puzzles/word-blanks/levels` and `POST /api/v1/puzzles/word-blanks/evaluate`.
+- **Absolute Type Parity (Rule 2)**:
+  - Created strict Pydantic v2 models in `backend/app/schemas/word_blanks.py`.
+  - Mirrored 1:1 into `frontend/src/types/wordBlanks.ts` and re-exported in `frontend/src/types/index.ts`.
+- **Dictionary Service (`backend/app/services/dictionary.py`)**:
+  - Implemented async query client for `https://freedictionaryapi.com/api/v1/entries/en/{word}` with `User-Agent: Adhyayana-App/1.0`.
+  - In-memory `WORD_CACHE` storing positive and negative lookups to guard external rate limits.
+  - Embedded offline seed lemma fallback dictionary for Levels 1–5 ensuring zero-flake testing and offline development.
+- **Engine Evaluator (`backend/app/engines/word_blanks/engine.py`)**:
+  - Subclassed `AbstractPuzzleEngine` conforming to pluggable puzzle framework.
+  - Implemented dynamic stem regex generation, session duplicate suppression, and level XP bracket calculation.
+  - Mounted endpoints in `backend/app/api/v1/endpoints/word_blanks.py` and connected router in `backend/app/api/v1/router.py`.
+- **Backend Test Suite (`backend/tests/test_word_blanks.py`)**:
+  - 7 comprehensive tests verifying level metadata, pattern matching, duplicate suppression, master level 5 words, and error validation (15/15 pytest tests passing).
+
+#### Frontend Interactive Engine & Focus Mode Mounting
+- **Word Blanks Client Service (`frontend/src/services/wordBlanksApi.ts`)**:
+  - Implemented `fetchWordBlanksLevels()` and `evaluateWordBlanksGuess()` with offline seed fallback.
+  - Implemented `localStorage` persistence helpers (`adhyayana:word-blanks:v1`) preserving discovered words across sessions.
+- **LetterTileInput (`frontend/src/engines/word_blanks/LetterTileInput.tsx`)**:
+  - Accessible tactile tile grid with locked stem tiles and auto-advancing blank inputs.
+  - Full keyboard navigation: typing advances cursor, Backspace back-navigates, and Enter submits.
+- **DiscoveredWordsSidebar (`frontend/src/engines/word_blanks/DiscoveredWordsSidebar.tsx`)**:
+  - Pinned telemetry sidebar with live word count and session XP counter.
+  - Scrollable card container with first 5 items visible without scrolling, displaying word in bold serif, part of speech pill, and concise definition.
+- **WordBlanksBoard & Focus Mode Mounting (`frontend/src/pages/PuzzleViewPage.tsx`)**:
+  - Sequential level selector bar (Option A) with locked level indicators and unlock celebration milestone banners.
+  - Mounted inside `PuzzleViewPage.tsx` when `puzzleId === 'word-blanks'` within distraction-free Focus Mode shell.
+- **Frontend Test Suite (`frontend/src/tests/WordBlanksEngine.test.tsx`)**:
+  - 7 Vitest tests verifying tile rendering, typing, submission, duplicate feedback, and page mounting (29/29 Vitest tests passing).
 #### Frontend Catalog Integration & Client Service
 - **Resilient Catalog API Client (`frontend/src/services/catalogApi.ts`)**:
   - Implemented `fetchPuzzleCatalog()` targeting `/api/v1/puzzles` with configurable `VITE_API_BASE_URL` (defaulting to `http://localhost:8000`).

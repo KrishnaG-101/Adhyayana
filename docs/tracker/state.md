@@ -3,29 +3,33 @@
 > **Master Roadmap**: Defined and tracked in [`docs/workflows/roadmap.md`](../workflows/roadmap.md)
 
 ## Current Sprint Status
-- **Current Phase**: Phase 2 (Puzzles Catalog, Discovery & Filter Engine) — In Progress
-- **Next Milestone**: Step 2.3 / Phase 3: Declare Word Blanks Engine Contracts & Implement Evaluator
-- **Active Task**: Step 2.2 Complete (Dynamic Catalog API Service, URL Search Parameter Synchronization, and Level/XP Reward Badges)
+- **Current Phase**: Phase 3 (Modular Puzzle Engine #1: Word Blanks — 17-Level Progressive Curriculum & Engine Refinements) — Complete
+- **Next Milestone**: Phase 4: Authentication, Cloud Firestore Persistence & Player Profile Sync
+- **Active Task**: Phase 3 UI & Progression Hardening Complete (Zero Answer Spoilers, Strict 100% Level Clearance Gating, Sequential Stage Gating, Custom Brand-Aligned Scrollbars, Indigo Design Token Parity, RulesModal Integration)
 
 ## Active Assignments
-- **Teammate 1 (Lead Systems Architect / Backend)**: Backend Catalog Service & discovery endpoints verified (8/8 tests passing). Ready for Word Blanks engine evaluator implementation.
-- **Teammate 2 (Frontend Engineer)**: Step 2.2 Complete: Implemented resilient `catalogApi.ts`, connected `PuzzlesPage.tsx` to dynamic API with offline fallback, bidirectionally bound search & filters to URL query params, rendered level ladders and XP badges, and verified with 22/22 Vitest tests.
+- **Lead Systems Architect / Backend**: Phase 3 Complete: Implemented contract-first schemas (`WordBlanksLevel` with 17 tiers and nested `puzzles: WordBlanksPuzzle[]`, `WordBlanksGuessRequest` with `puzzle_number`), 450+ curated generative stems with spoiler-free pedagogical notes in `puzzles_data.py`, 100% level clearance requirements (`min_puzzles_to_unlock_next = len(puzzles)`), `WordBlanksEngine` with dictionary-backed evaluation, and verified with 16/16 Pytest tests passing.
+- **Frontend Engineer**: Phase 3 Complete: Implemented full 17-level curriculum in `puzzlesData.ts`, strict sequential stage gating, 100% level unlock gating, custom brand-aligned scrollbars in `index.css`, horizontal level-tab navigation with chevron controls, indigo design tokens (`indigo-600`), header "How to Play" modal trigger with pedagogical examples, and verified with 33/33 Vitest tests passing and clean production build.
 
 ## Operational Endpoints
 - **Active Health Probe**: `GET /health` -> `{"status": "healthy", "service": "adhyayana-backend", "version": "0.1.0"}`
-- **Puzzle Catalog Discovery**: `GET /api/v1/puzzles` -> `PuzzleCatalogResponse` (Seed puzzles: Word Blanks, Contexto, Crossword with level ladders & XP brackets)
-- **Puzzle Metadata Lookup**: `GET /api/v1/puzzles/{puzzle_id}` -> `PuzzleMetadata` (by immutable ID or slug)
+- **Puzzle Catalog Discovery**: `GET /api/v1/puzzles` -> `PuzzleCatalogResponse`
+- **Puzzle Metadata Lookup**: `GET /api/v1/puzzles/{puzzle_id}` -> `PuzzleMetadata`
+- **Word Blanks Progression Levels**: `GET /api/v1/puzzles/word-blanks/levels` -> `List[WordBlanksLevel]` (17 levels, 450+ stems)
+- **Word Blanks Guess Evaluator**: `POST /api/v1/puzzles/word-blanks/evaluate` -> `WordBlanksEvaluationResponse` (per level and puzzle_number)
 
 ## Blockers & Dependencies
 - None currently.
 
-## Next Up (Iteration Backlog — Phase 2 & Phase 3)
-- [x] Connect `frontend/src/pages/PuzzlesPage.tsx` to fetch catalog data dynamically from `GET /api/v1/puzzles` with offline fallback
-- [ ] Declare Word Blanks contract schemas in `docs/specs/api-contracts.json` (`/api/v1/puzzles/word-blanks/init` and `/evaluate`)
-- [ ] Mirror contract types in `backend/app/schemas/puzzles/word_blanks.py` and `frontend/src/types/wordBlanks.ts`
-- [ ] Implement backend evaluator `backend/app/engines/word_blanks/engine.py` with dictionary-validated active recall
-- [ ] Implement frontend interactive engine `frontend/src/engines/word-blanks/WordBlanksBoard.tsx`
-- [ ] Connect `frontend/src/pages/PuzzleViewPage.tsx` dynamic engine mounting for `word-blanks`
+## Next Up (Iteration Backlog — Phase 4)
+- [x] Declare Word Blanks contract schemas in `docs/specs/api-contracts.json`
+- [x] Mirror contract types in `backend/app/schemas/word_blanks.py` and `frontend/src/types/wordBlanks.ts`
+- [x] Implement backend evaluator `backend/app/engines/word_blanks/engine.py` with dictionary-validated active recall
+- [x] Implement frontend interactive engine `frontend/src/engines/word_blanks/WordBlanksBoard.tsx`
+- [x] Connect `frontend/src/pages/PuzzleViewPage.tsx` dynamic engine mounting for `word-blanks`
+- [x] Expand Word Blanks to 17 progressive levels with 450+ curated generative puzzles and dynamic stepper
+- [ ] Phase 4: Initialize Firebase Authentication & Firestore persistence layer
+- [ ] Phase 4: Profile page and guest-to-authenticated streak migration
 
 ---
 

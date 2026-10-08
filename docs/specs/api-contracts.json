@@ -406,6 +406,229 @@
         }
       },
       "additionalProperties": false
+    },
+    "WordBlanksPuzzle": {
+      "type": "object",
+      "title": "WordBlanksPuzzle",
+      "description": "Individual generative stem puzzle challenge within a Word Blanks level tier.",
+      "required": [
+        "id",
+        "puzzle_number",
+        "stem",
+        "word_length",
+        "blank_count",
+        "min_words_to_clear",
+        "pedagogical_note"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the puzzle (e.g. 'wb-l1-p1')."
+        },
+        "puzzle_number": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Sequential 1-based puzzle index within the level."
+        },
+        "stem": {
+          "type": "string",
+          "description": "Spaced stem representation with underscores indicating blanks (e.g. '_ A T', 'C A _', '_ R _ N _ H')."
+        },
+        "word_length": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Total character length of the target words."
+        },
+        "blank_count": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Number of input blanks in the stem."
+        },
+        "min_words_to_clear": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Minimum count of unique valid words required to clear this puzzle and unlock stepper advance."
+        },
+        "pedagogical_note": {
+          "type": "string",
+          "description": "Pedagogical prompt and explanation for this specific stem pattern."
+        }
+      },
+      "additionalProperties": false
+    },
+    "WordBlanksLevel": {
+      "type": "object",
+      "title": "WordBlanksLevel",
+      "description": "Progressive difficulty tier specification for Word Blanks generative recall curriculum.",
+      "required": [
+        "level",
+        "difficulty",
+        "title",
+        "description",
+        "xp_per_word",
+        "min_puzzles_to_unlock_next",
+        "puzzles"
+      ],
+      "properties": {
+        "level": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 17,
+          "description": "Sequential level number (1 through 17)."
+        },
+        "difficulty": {
+          "$ref": "#/definitions/DifficultyLevel"
+        },
+        "title": {
+          "type": "string",
+          "description": "Pedagogical name of this progression level (e.g. '3-Letter Onset Blanks')."
+        },
+        "description": {
+          "type": "string",
+          "description": "Pedagogical overview and explanation for this level's lexical patterns."
+        },
+        "xp_per_word": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "XP awarded per uniquely discovered valid English word in this level."
+        },
+        "min_puzzles_to_unlock_next": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Minimum count of puzzles cleared in this level to unlock the next level tier."
+        },
+        "puzzles": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/WordBlanksPuzzle"
+          },
+          "description": "Array of curated generative stem puzzles belonging to this level."
+        },
+        "stem": {
+          "type": "string",
+          "description": "Default active stem representation for backward compatibility."
+        },
+        "word_length": {
+          "type": "integer",
+          "description": "Default target word length."
+        },
+        "blank_count": {
+          "type": "integer",
+          "description": "Default input blank count."
+        },
+        "min_words_to_unlock": {
+          "type": "integer",
+          "description": "Legacy threshold for level unlock."
+        }
+      },
+      "additionalProperties": false
+    },
+    "DiscoveredWord": {
+      "type": "object",
+      "title": "DiscoveredWord",
+      "description": "Pedagogical telemetry record for a successfully discovered valid word.",
+      "required": ["word", "xp_awarded", "discovered_at"],
+      "properties": {
+        "word": {
+          "type": "string",
+          "description": "Uppercase discovered word."
+        },
+        "part_of_speech": {
+          "type": ["string", "null"],
+          "description": "Primary grammatical part of speech (noun, verb, adjective, etc.) if resolved."
+        },
+        "definition": {
+          "type": ["string", "null"],
+          "description": "First concise Wiktionary definition returned by dictionary lookup."
+        },
+        "xp_awarded": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Amount of XP awarded for discovering this word."
+        },
+        "discovered_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 timestamp of when the word was validated."
+        }
+      },
+      "additionalProperties": false
+    },
+    "WordBlanksGuessRequest": {
+      "type": "object",
+      "title": "WordBlanksGuessRequest",
+      "description": "Player guess submission payload for Word Blanks level evaluation.",
+      "required": ["level", "entered_word", "session_discovered"],
+      "properties": {
+        "level": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 17,
+          "description": "Active level number being played."
+        },
+        "puzzle_number": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 1,
+          "description": "1-based index of the specific puzzle stage within the level."
+        },
+        "entered_word": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The complete word formed by the player filling blanks."
+        },
+        "session_discovered": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of uppercase words already discovered during this session for duplicate tracking."
+        }
+      },
+      "additionalProperties": false
+    },
+    "WordBlanksEvaluationResponse": {
+      "type": "object",
+      "title": "WordBlanksEvaluationResponse",
+      "description": "Comprehensive evaluation and telemetry payload returned for a Word Blanks guess.",
+      "required": [
+        "is_valid",
+        "is_duplicate",
+        "matches_pattern",
+        "xp_awarded",
+        "feedback_message"
+      ],
+      "properties": {
+        "is_valid": {
+          "type": "boolean",
+          "description": "Whether the entered word is a recognized dictionary word."
+        },
+        "is_duplicate": {
+          "type": "boolean",
+          "description": "Whether the word was already discovered during this session."
+        },
+        "matches_pattern": {
+          "type": "boolean",
+          "description": "Whether the entered word satisfies the fixed stem letter constraints."
+        },
+        "discovered_word": {
+          "anyOf": [
+            { "$ref": "#/definitions/DiscoveredWord" },
+            { "type": "null" }
+          ],
+          "description": "Discovered word telemetry entry if valid and new, else null."
+        },
+        "xp_awarded": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "XP gained from this submission (0 if duplicate or invalid)."
+        },
+        "feedback_message": {
+          "type": "string",
+          "description": "Analytical feedback message explaining evaluation result."
+        }
+      },
+      "additionalProperties": false
     }
   },
   "endpoints": {
@@ -417,6 +640,63 @@
           "description": "Puzzle catalog retrieved successfully.",
           "schema": {
             "$ref": "#/definitions/PuzzleCatalogResponse"
+          }
+        },
+        "500": {
+          "description": "Internal server error.",
+          "schema": {
+            "$ref": "#/definitions/StandardErrorResponse"
+          }
+        }
+      }
+    },
+    "GET /api/v1/puzzles/word-blanks/levels": {
+      "summary": "Retrieve Word Blanks Progression Levels",
+      "description": "Retrieves all 17 progressive Word Blanks levels with stem templates, nested puzzle stages, word length, blanks count, XP per word, and unlock criteria.",
+      "responses": {
+        "200": {
+          "description": "List of Word Blanks level specifications.",
+          "schema": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/WordBlanksLevel"
+            }
+          }
+        },
+        "500": {
+          "description": "Internal server error.",
+          "schema": {
+            "$ref": "#/definitions/StandardErrorResponse"
+          }
+        }
+      }
+    },
+    "POST /api/v1/puzzles/word-blanks/evaluate": {
+      "summary": "Evaluate Word Blanks Guess",
+      "description": "Validates an entered word against the level stem template, detects duplicates in current session, verifies against the dictionary, and awards XP with educational telemetry.",
+      "requestBody": {
+        "required": true,
+        "schema": {
+          "$ref": "#/definitions/WordBlanksGuessRequest"
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Word evaluated successfully with diagnostic telemetry.",
+          "schema": {
+            "$ref": "#/definitions/WordBlanksEvaluationResponse"
+          }
+        },
+        "400": {
+          "description": "Malformed request or invalid level index.",
+          "schema": {
+            "$ref": "#/definitions/StandardErrorResponse"
+          }
+        },
+        "422": {
+          "description": "Unprocessable entity or schema validation error.",
+          "schema": {
+            "$ref": "#/definitions/StandardErrorResponse"
           }
         },
         "500": {
