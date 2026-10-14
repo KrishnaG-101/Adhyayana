@@ -4,10 +4,12 @@ import { Navbar } from './Navbar';
 import { Footer } from './Footer';
 import { HamburgerDrawer } from './HamburgerDrawer';
 import { RulesModal } from './RulesModal';
+import { ConnectionStatusBanner } from '../common/ConnectionStatusBanner';
 
 export const Layout: React.FC = () => {
   return (
     <div className="flex flex-col min-h-screen w-full overflow-x-hidden bg-[#FAF8F5] text-stone-900 dark:bg-[#161618] dark:text-[#E4E4E7] transition-colors duration-200">
+      <ConnectionStatusBanner />
       <Navbar />
       <main className="flex-1 flex flex-col w-full">
         <Outlet />

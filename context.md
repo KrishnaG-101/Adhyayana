@@ -3,8 +3,8 @@
 > **Document Class**: Foundational System Specification (Vicharanashala Pattern)  
 > **Target System**: Adhyayana Web Application (English Linguistic Pedagogy)  
 > **Status**: Active / Authoritative  
-> **Version**: 1.8.0  
-> **Last Synchronized Milestone**: Phase 4: Authentication, Player Profiles & Cloud Persistence (Completed)  
+> **Version**: 2.0.0  
+> **Last Synchronized Milestone**: Phase 4 Extension: Multi-Game Firestore Document Architecture & Automatic Real-Time Cloud Sync (Completed)  
 
 ---
 
@@ -239,6 +239,47 @@ The generative stem recall engine implementing active stem completion across **1
 3. **Player Profile View & Guest-to-Cloud Migration Engine**:
    - `ProfilePage.tsx` mounted at `/profile` route with editorial typography, player identity card, interactive display name editing, pedagogical stats matrix (streaks, XP, blanks cleared, completion rate), and guest progress sync banner.
    - Automatic migration engine: inspects `localStorage` (`adhyayana:word-blanks:v1:l{level}:p{puzzleNumber}:words`), consolidates completed stages and XP, calls `migrateGuestData()`, and credits them to the cloud account.
+
+### 4.5 Live Firebase Authentication & Cloud Firestore Persistence (Completed)
+1. **Client-Side Firebase Modular SDK (`firebase/app`, `firebase/auth`)**:
+   - `frontend/src/services/firebase.ts`: Dual-mode client driver. When `VITE_FIREBASE_API_KEY` is detected, initializes live `initializeApp` and `getAuth()`.
+   - Native Google OAuth Popup: `signInWithPopup(auth, googleProvider)` with automatic account selection (`prompt: 'select_account'`).
+   - Email/Password flows: `signInWithEmailAndPassword`, `createUserWithEmailAndPassword`, and `updateProfile`.
+   - Live Token Lifecycle: Extracts real cryptographically signed JWT Bearer ID tokens via `user.getIdToken()`.
+   - Real-Time Auth State Observer: `subscribeToAuthState` listens to `onAuthStateChanged` for cross-tab and page-reload session persistence while cleanly preserving local mock sessions during automated test runs.
+
+2. **Server-Side Administrative Verification & Cloud Firestore Persistence**:
+   - `backend/app/core/firebase.py`: Initializes `firebase-admin` using private `secrets/serviceAccountKey.json`.
+   - Token Verification: `firebase_auth.verify_id_token` cryptographically decodes Google public keys, verifying player UIDs, email, and display names without trusting client-submitted payloads.
+   - Cloud Firestore Persistence: Reads and writes player profiles to `users/{uid}` collection in Google Cloud Firestore. New users are initialized with 0 XP, default preferences, and streak tracking; profile modifications (`PATCH /api/v1/users/profile`) and guest migrations (`POST /api/v1/users/migrate-guest-data`) write directly to Cloud Firestore.
+   - Dual-Mode Resilience: If running in test mode (`ENVIRONMENT="test"`) or offline, seamlessly falls back to memory store `USER_STORE`, ensuring 100% deterministic test execution.
+
+3. **Security Guardrails & Secret Isolation**:
+   - Root `.gitignore` explicitly blocks `backend/secrets/`, `*serviceAccountKey*.json`, `frontend/.env`, and any local credential artifacts from ever entering git tracking.
+   - Sanitized configuration templates maintained in `frontend/.env.example` and `backend/.env.example`.
+
+### 4.6 Multi-Game Firestore Document Architecture & Real-Time Connection Monitoring (Completed)
+1. **Isolated Multi-Game Subcollections (`users/{uid}/game_progress/{game_id}`)**:
+   - Architectural departure from monolithic progress blobs: game-specific progress is partitioned into dedicated Firestore subcollection documents under `users/{uid}/game_progress/{game_id}`.
+   - Word Blanks engine persists `unlocked_levels`, `cleared_stages`, `discovered_words` map, `total_words_count`, and `total_xp_earned`.
+   - Lightweight storage model: bulky third-party dictionary definitions are excluded from the cloud document, storing solely high-fidelity discovery records: `{ word, xp_awarded, discovered_at }`.
+   - Server-side merge idempotency: endpoint `POST /api/v1/games/{game_id}/progress` merges unlocked levels, cleared stages, and deduplicated word records, crediting aggregate XP to the parent `users/{uid}` profile.
+   - RESTful endpoints in `backend/app/api/v1/endpoints/progress.py`:
+     - `GET /api/v1/games/{game_id}/progress`: Hydrates cross-device state.
+     - `POST /api/v1/games/{game_id}/progress`: Idempotently synchronizes stage clearance and words.
+
+2. **Automatic Background Cloud Synchronization (No Manual Buttons)**:
+   - Eradicated manual "Sync Local Progress ->" buttons on `ProfilePage.tsx`.
+   - In `AuthContext.tsx`, an automatic effect triggers upon user login, migrating unmigrated guest progress into the learner's cloud document and profile in the background.
+   - In `WordBlanksBoard.tsx`, authenticated learners automatically synchronize newly discovered words and cleared stages upon each successful guess.
+   - On component mount, `WordBlanksBoard.tsx` hydrates cloud progress, merging remote discovered words with local cache and restoring unlocked levels across devices or fresh incognito sessions.
+   - Subtle "Cloud Synced" indicator badge with pulsing emerald beacon confirms persistent cloud connectivity on the puzzle canvas.
+
+3. **Global Real-Time Connection Monitoring & Offline Resilience**:
+   - `ConnectionStatusBanner.tsx`: High-visibility sticky notification banner reacting instantaneously to `navigator.onLine` and `adhyayana:connection:change` events.
+   - Connection lost warning: displays immediate rose alert banner informing the learner that Adhyayana requires an active network connection to evaluate words and sync progress.
+   - Offline gameplay protection: disables letter blank submission and submit button with inline warning (`data-testid="offline-play-warning"`) to prevent corrupted state or dropped gameplay data.
+   - Connection restored toast: automatically displays an emerald notification when connectivity returns and confirms cloud synchronization.
 
 ---
 

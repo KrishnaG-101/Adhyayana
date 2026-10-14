@@ -279,8 +279,6 @@ describe('Phase 4: Authentication, Avatar State & Player Profile', () => {
     });
 
     it('detects unmigrated guest progress and triggers migration', async () => {
-      const user = userEvent.setup();
-
       // Seed session
       localStorage.setItem(
         'adhyayana:auth:session',
@@ -343,15 +341,13 @@ describe('Phase 4: Authentication, Avatar State & Player Profile', () => {
         </ThemeProvider>
       );
 
+      // Verify automatic migration was triggered and updated profile in background
       await waitFor(() => {
-        expect(screen.getByTestId('guest-migration-banner')).toBeInTheDocument();
+        expect(localStorage.getItem('adhyayana:auth:guest_migrated')).toBe('true');
       });
 
-      const syncBtn = screen.getByTestId('sync-guest-progress-btn');
-      await user.click(syncBtn);
-
       await waitFor(() => {
-        expect(screen.getByText(/Successfully transferred 60 XP/i)).toBeInTheDocument();
+        expect(screen.getByTestId('stat-card-xp')).toHaveTextContent('400');
       });
     });
   });

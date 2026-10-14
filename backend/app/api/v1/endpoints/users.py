@@ -10,6 +10,7 @@ from datetime import datetime, timezone
 from fastapi import APIRouter, Depends, HTTPException, status
 
 from app.api.deps import get_current_user
+from app.core.firebase import save_user_profile
 from app.schemas.users import (
     GuestMigrationRequest,
     GuestMigrationResponse,
@@ -66,6 +67,7 @@ async def update_my_profile(
             current_user.preferences.sound = payload.preferences.sound
 
     current_user.last_active_at = datetime.now(timezone.utc)
+    save_user_profile(current_user)
     return current_user
 
 
@@ -97,6 +99,7 @@ async def migrate_guest_session(
     current_user.stats.games_played += payload.cleared_stages_count
 
     current_user.last_active_at = datetime.now(timezone.utc)
+    save_user_profile(current_user)
 
     return GuestMigrationResponse(
         success=True,

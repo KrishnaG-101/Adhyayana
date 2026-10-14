@@ -8,6 +8,7 @@ from app.core.config import settings
 from app.api.v1.endpoints.puzzles import router as puzzles_router
 from app.api.v1.endpoints.word_blanks import router as word_blanks_router
 from app.api.v1.endpoints.users import router as users_router
+from app.api.v1.endpoints.progress import router as progress_router
 
 api_v1_router = APIRouter(prefix=settings.API_V1_STR)
 
@@ -17,4 +18,5 @@ api_v1_router.include_router(
     word_blanks_router, prefix="/puzzles/word-blanks", tags=["Word Blanks Engine"]
 )
 api_v1_router.include_router(users_router, tags=["Users & Authentication"])
+api_v1_router.include_router(progress_router, tags=["Game Progress & Persistence"])
 

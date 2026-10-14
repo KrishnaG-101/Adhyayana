@@ -16,10 +16,11 @@ import {
   getStoredSessionUser,
   setStoredSessionUser,
   getSessionToken,
-  mockSignInWithGoogle,
-  mockSignInWithEmail,
-  mockRegisterWithEmail,
-  mockSignOut,
+  signInWithGoogle as authSignInWithGoogle,
+  signInWithEmail as authSignInWithEmail,
+  registerWithEmail as authRegisterWithEmail,
+  signOut as authSignOut,
+  subscribeToAuthState,
   AuthSessionUser,
 } from '@/services/firebase';
 import { fetchMyProfile, updateMyProfile, migrateGuestData } from '@/services/authApi';
@@ -56,10 +57,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Hydrate user profile from backend or construct resilient fallback
   const syncProfileWithToken = useCallback(async (sessionUser: AuthSessionUser, authToken: string) => {
+    const cacheKey = `adhyayana:user:profile:${sessionUser.uid}`;
     try {
       const profile = await fetchMyProfile(authToken);
       setUser(profile);
-    } catch {
+      try {
+        localStorage.setItem(cacheKey, JSON.stringify(profile));
+      } catch {}
+    } catch (err) {
+      console.warn('[AuthContext] Backend sync failed, checking local cache:', err);
+      const cached = localStorage.getItem(cacheKey);
+      if (cached) {
+        try {
+          setUser(JSON.parse(cached));
+          return;
+        } catch {}
+      }
       // Offline fallback: construct valid UserProfile conforming to type contract
       const fallbackProfile: UserProfile = {
         uid: sessionUser.uid,
@@ -86,24 +99,56 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, []);
 
-  // Restore session from localStorage on initial render
+  // Restore session from localStorage or subscribe to Firebase Auth
   useEffect(() => {
+    let isMounted = true;
+
     const initAuth = async () => {
       try {
         const stored = getStoredSessionUser();
-        if (stored) {
+        if (stored && isMounted) {
+          // Immediately populate from local cache to prevent 0-stat flash
+          const cached = localStorage.getItem(`adhyayana:user:profile:${stored.uid}`);
+          if (cached) {
+            try {
+              setUser(JSON.parse(cached));
+            } catch {}
+          }
+
           const storedToken = await getSessionToken(stored);
-          setToken(storedToken);
-          await syncProfileWithToken(stored, storedToken);
+          if (isMounted) {
+            setToken(storedToken);
+            await syncProfileWithToken(stored, storedToken);
+          }
         }
       } catch (err) {
         console.error('[AuthContext] Session hydration error:', err);
       } finally {
-        setIsLoading(false);
+        if (isMounted) {
+          setIsLoading(false);
+        }
       }
     };
 
     initAuth();
+
+    const unsubscribe = subscribeToAuthState(async (sessionUser, authToken) => {
+      if (!isMounted) return;
+      if (sessionUser && authToken) {
+        setToken(authToken);
+        await syncProfileWithToken(sessionUser, authToken);
+      } else if (!sessionUser) {
+        if (!getStoredSessionUser()) {
+          setUser(null);
+          setToken(null);
+        }
+      }
+    });
+
+    return () => {
+      isMounted = false;
+      unsubscribe();
+    };
   }, [syncProfileWithToken]);
 
   // Inspect localStorage to see if guest has unmigrated puzzle progress
@@ -172,6 +217,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const result = await migrateGuestData(token, payload);
       setUser(result.updated_profile);
+      try {
+        localStorage.setItem(`adhyayana:user:profile:${user.uid}`, JSON.stringify(result.updated_profile));
+      } catch {}
       localStorage.setItem(GUEST_MIGRATED_FLAG, 'true');
       return result;
     } catch (err) {
@@ -189,7 +237,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         },
       };
       setUser(updatedUser);
-      localStorage.setItem(GUEST_MIGRATED_FLAG, 'true');
+      try {
+        localStorage.setItem(`adhyayana:user:profile:${user.uid}`, JSON.stringify(updatedUser));
+      } catch {}
       return {
         success: true,
         migrated_xp: totalXp,
@@ -200,10 +250,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [token, user]);
 
+  // Auto-migrate guest progress on sign-in without requiring manual user interaction
+  useEffect(() => {
+    if (user && !user.is_anonymous && token && checkPendingGuestProgress()) {
+      migrateGuestProgress().catch((err) => {
+        console.warn('[AuthContext] Automatic guest progress migration error:', err);
+      });
+    }
+  }, [user, token, checkPendingGuestProgress, migrateGuestProgress]);
+
   const signInWithGoogle = useCallback(async () => {
     setIsLoading(true);
     try {
-      const { user: sessionUser, token: authToken } = await mockSignInWithGoogle();
+      const { user: sessionUser, token: authToken } = await authSignInWithGoogle();
       setStoredSessionUser(sessionUser);
       setToken(authToken);
       await syncProfileWithToken(sessionUser, authToken);
@@ -216,7 +275,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signInWithEmail = useCallback(async (email: string, pass: string) => {
     setIsLoading(true);
     try {
-      const { user: sessionUser, token: authToken } = await mockSignInWithEmail(email, pass);
+      const { user: sessionUser, token: authToken } = await authSignInWithEmail(email, pass);
       setStoredSessionUser(sessionUser);
       setToken(authToken);
       await syncProfileWithToken(sessionUser, authToken);
@@ -229,7 +288,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const registerWithEmail = useCallback(async (name: string, email: string, pass: string) => {
     setIsLoading(true);
     try {
-      const { user: sessionUser, token: authToken } = await mockRegisterWithEmail(name, email, pass);
+      const { user: sessionUser, token: authToken } = await authRegisterWithEmail(name, email, pass);
       setStoredSessionUser(sessionUser);
       setToken(authToken);
       await syncProfileWithToken(sessionUser, authToken);
@@ -242,7 +301,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signOut = useCallback(async () => {
     setIsLoading(true);
     try {
-      await mockSignOut();
+      await authSignOut();
       setUser(null);
       setToken(null);
     } finally {
@@ -257,6 +316,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const updated = await updateMyProfile(token, updates);
       setUser(updated);
+      try {
+        localStorage.setItem(`adhyayana:user:profile:${user.uid}`, JSON.stringify(updated));
+      } catch {}
       return updated;
     } catch {
       // Fallback local update
@@ -270,6 +332,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         },
       };
       setUser(fallbackUpdated);
+      try {
+        localStorage.setItem(`adhyayana:user:profile:${user.uid}`, JSON.stringify(fallbackUpdated));
+      } catch {}
       return fallbackUpdated;
     }
   }, [token, user]);

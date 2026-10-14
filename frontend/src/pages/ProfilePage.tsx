@@ -15,7 +15,6 @@ import {
   Layers,
   Edit2,
   Check,
-  RotateCcw,
   LogIn,
   Sparkles,
   Volume2,
@@ -30,8 +29,6 @@ export const ProfilePage: React.FC = () => {
     isGuest,
     openAuthModal,
     updateProfile,
-    migrateGuestProgress,
-    hasPendingGuestProgress,
   } = useAuth();
 
   const { theme, setTheme } = useTheme();
@@ -39,8 +36,6 @@ export const ProfilePage: React.FC = () => {
   const [isEditingName, setIsEditingName] = useState(false);
   const [displayNameInput, setDisplayNameInput] = useState(user?.display_name || '');
   const [isSavingName, setIsSavingName] = useState(false);
-  const [isMigrating, setIsMigrating] = useState(false);
-  const [migrationFeedback, setMigrationFeedback] = useState<string | null>(null);
 
   const stats = user?.stats || {
     games_played: 0,
@@ -61,21 +56,6 @@ export const ProfilePage: React.FC = () => {
       console.error('Failed to update name:', err);
     } finally {
       setIsSavingName(false);
-    }
-  };
-
-  const handleMigrate = async () => {
-    setIsMigrating(true);
-    setMigrationFeedback(null);
-    try {
-      const res = await migrateGuestProgress();
-      if (res && res.success) {
-        setMigrationFeedback(res.message);
-      }
-    } catch {
-      setMigrationFeedback('Unable to sync progress at this moment.');
-    } finally {
-      setIsMigrating(false);
     }
   };
 
@@ -121,42 +101,6 @@ export const ProfilePage: React.FC = () => {
             <LogIn size={15} />
             <span>Sign In / Create Account</span>
           </button>
-        </div>
-      )}
-
-      {/* Pending Guest Progress Migration Banner */}
-      {(hasPendingGuestProgress || migrationFeedback) && !isGuest && (
-        <div
-          data-testid="guest-migration-banner"
-          className="p-5 rounded-2xl bg-indigo-500/10 border border-indigo-500/30 text-indigo-950 dark:text-indigo-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 animate-in fade-in"
-        >
-          <div className="space-y-1">
-            <h4 className="font-serif font-bold text-base flex items-center gap-2">
-              <RotateCcw size={18} className="text-indigo-600 dark:text-indigo-400" />
-              {migrationFeedback ? 'Local Progress Synchronized' : 'Unsynchronized Local Progress Found'}
-            </h4>
-            <p className="text-xs text-stone-600 dark:text-stone-300 max-w-xl">
-              {migrationFeedback
-                ? 'Your local gameplay records have been successfully merged into your permanent cloud profile.'
-                : 'We detected previous puzzle clearance and XP records on this browser. Click sync to permanently credit them to your cloud account.'}
-            </p>
-            {migrationFeedback && (
-              <p className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold pt-1">
-                ✓ {migrationFeedback}
-              </p>
-            )}
-          </div>
-          {!migrationFeedback && (
-            <button
-              type="button"
-              data-testid="sync-guest-progress-btn"
-              disabled={isMigrating}
-              onClick={handleMigrate}
-              className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white font-semibold text-xs whitespace-nowrap shadow-sm transition-all cursor-pointer disabled:opacity-50"
-            >
-              {isMigrating ? 'Syncing...' : 'Sync Local Progress →'}
-            </button>
-          )}
         </div>
       )}
 

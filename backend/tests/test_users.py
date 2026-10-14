@@ -2,7 +2,19 @@
 
 import pytest
 from httpx import ASGITransport, AsyncClient
+from app.core.config import settings
+from app.core.firebase import USER_STORE
 from app.main import app
+
+
+@pytest.fixture(autouse=True)
+def reset_user_store(monkeypatch):
+    """Resets memory store and sets test environment to isolate each test."""
+    monkeypatch.setattr(settings, "ENVIRONMENT", "test")
+    USER_STORE.clear()
+    yield
+    USER_STORE.clear()
+
 
 
 @pytest.mark.asyncio

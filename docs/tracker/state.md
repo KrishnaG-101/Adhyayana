@@ -3,13 +3,13 @@
 > **Master Roadmap**: Defined and tracked in [`docs/workflows/roadmap.md`](../workflows/roadmap.md)
 
 ## Current Sprint Status
-- **Current Phase**: Phase 4 (Authentication, Player Profiles & Cloud Persistence) — Complete
+- **Current Phase**: Phase 4 (Authentication, Player Profiles, Multi-Game Cloud Persistence & Offline Resilience) — Complete
 - **Next Milestone**: Phase 5: Modular Puzzle Engine #2 — Contexto (Semantic Proximity & Vector Embeddings)
-- **Active Task**: Phase 4 Complete (Contract-First Auth Schemas, FastAPI Bearer Token Dependency, User Profile & Guest Migration Endpoints, AuthModal Dialog, AvatarDropdown State Swapping, Player Profile Page `/profile`, and LocalStorage-to-Cloud Migration Engine)
+- **Active Task**: Multi-Game Firestore Subcollection Persistence (`users/{uid}/game_progress/{game_id}`), automatic background cloud synchronization, real-time offline detection banner, and cross-device hydration.
 
 ## Active Assignments
-- **Lead Systems Architect / Backend**: Phase 4 Complete: Declared contracts in `api-contracts.json`, created Pydantic v2 schemas in `schemas/users.py`, Firebase verification provider in `core/firebase.py`, FastAPI `get_current_user` Bearer dependency in `api/deps.py`, routes `GET /api/v1/auth/me`, `PATCH /api/v1/users/profile`, `POST /api/v1/users/migrate-guest-data`, and verified with 22/22 Pytest tests passing.
-- **Frontend Engineer**: Phase 4 Complete: Mirrored types in `types/user.ts`, API client in `services/authApi.ts`, Firebase provider & mock auth in `services/firebase.ts`, reactive `AuthContext.tsx`, accessible `AuthModal.tsx`, dynamic `AvatarDropdown.tsx`, player profile page `ProfilePage.tsx` (`/profile`), and verified with 43/43 Vitest tests passing and clean production build.
+- **Lead Systems Architect / Backend**: Live Firebase Admin SDK with `serviceAccountKey.json`, token cryptographic verification via `firebase_auth.verify_id_token`, persistent multi-game progress subcollections (`users/{uid}/game_progress/{game_id}`), unlocked levels and cleared stage merging, lightweight word discovery records storage, and 26/26 pytest tests passing deterministically.
+- **Frontend Engineer**: Live Firebase Client SDK, automatic guest-to-cloud migration on login without manual buttons, real-time connection status banner (`ConnectionStatusBanner`) monitoring `navigator.onLine` and API status, cross-device progress hydration on mount in `WordBlanksBoard`, and 52/52 Vitest tests passing with clean production bundle.
 
 ## Operational Endpoints
 - **Active Health Probe**: `GET /health` -> `{"status": "healthy", "service": "adhyayana-backend", "version": "0.1.0"}`
@@ -20,6 +20,8 @@
 - **Authenticated User Profile**: `GET /api/v1/auth/me` -> `UserProfile`
 - **Profile & Preference Update**: `PATCH /api/v1/users/profile` -> `UserProfile`
 - **Guest State Cloud Migration**: `POST /api/v1/users/migrate-guest-data` -> `GuestMigrationResponse`
+- **Game Progress Retrieval**: `GET /api/v1/games/{game_id}/progress` -> `WordBlanksProgressData`
+- **Game Progress Synchronization**: `POST /api/v1/games/{game_id}/progress` -> `SyncGameProgressResponse`
 
 ## Blockers & Dependencies
 - None currently.
@@ -29,6 +31,9 @@
 - [x] Phase 4: Implement backend token verification and user endpoints with 22/22 pytest tests
 - [x] Phase 4: Implement frontend AuthContext, AuthModal, AvatarDropdown, and ProfilePage with 43/43 vitest tests
 - [x] Phase 4: Implement guest-to-cloud localStorage progress migration engine
+- [x] Phase 4 Extension: Multi-Game Firestore Document Architecture (`users/{uid}/game_progress/{game_id}`)
+- [x] Phase 4 Extension: Automatic real-time background cloud synchronization and cross-device hydration
+- [x] Phase 4 Extension: Instant offline/connection-lost warning banner and input disabling
 - [ ] Phase 5: Declare Contexto engine contracts and cosine distance schemas in `docs/specs/api-contracts.json`
 - [ ] Phase 5: Implement backend embedding model / vector rank evaluator in `backend/app/engines/contexto/`
 - [ ] Phase 5: Build frontend Contexto interactive game board in `frontend/src/engines/contexto/`

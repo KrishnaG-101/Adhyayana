@@ -6,6 +6,44 @@
 
 ## [Unreleased]
 
+### Phase 4 Extension: Multi-Game Firestore Architecture, Automatic Cloud Sync & Offline Detection — 2026-10-14
+#### Master Contract Specification & Multi-Game Cloud Document Architecture
+- **Contract-First Registry Expansion (`docs/specs/api-contracts.json`)**:
+  - Registered `DiscoveredWordRecord` schema (`word`, `xp_awarded`, `discovered_at` in UTC ISO 8601).
+  - Registered `WordBlanksProgressData` persistent game progress document schema (`game_id`, `unlocked_levels`, `cleared_stages`, `discovered_words`, `total_words_count`, `total_xp_earned`, `last_played_at`).
+  - Registered `SyncGameProgressRequest` (`unlocked_levels`, `cleared_stages`, `discovered_words`, `new_xp_delta`).
+  - Registered `SyncGameProgressResponse` (`success`, `game_id`, `synced_stages_count`, `synced_words_count`, `total_xp`, `message`, `updated_profile`).
+  - Registered endpoints: `GET /api/v1/games/{game_id}/progress` and `POST /api/v1/games/{game_id}/progress`.
+- **Absolute Type Parity (Rule 2)**:
+  - Backend Pydantic v2 schemas in `backend/app/schemas/progress.py` with `ConfigDict(extra="forbid")`.
+  - Frontend TypeScript types in `frontend/src/types/progress.ts` and re-exported in `frontend/src/types/index.ts`.
+- **Firestore Multi-Game Subcollection Service & Handlers (`backend/app/`)**:
+  - Engineered `get_game_progress` and `save_game_progress` in `backend/app/core/firebase.py` storing dedicated per-game documents at `users/{uid}/game_progress/{game_id}`.
+  - Implemented merging logic for unlocked levels, cleared stages, and deduplicated discovered words with cumulative XP updates to the player profile.
+  - Hardened JWT verification against unverified token fallback errors.
+  - Expanded backend test suite with `backend/tests/test_progress.py` (26/26 backend pytest tests passing).
+- **Frontend Real-Time Connection Monitoring & Automatic Cloud Synchronization**:
+  - Implemented global `ConnectionStatusBanner.tsx` and `setGlobalConnectionState` monitoring network state (`navigator.onLine` and API rejections), displaying persistent red alerts when disconnected and emerald recovery toasts.
+  - Eliminated manual sync button on `ProfilePage.tsx` in favor of automatic background guest progress migration upon authentication in `AuthContext.tsx`.
+  - Engineered cross-device progress hydration on mount in `WordBlanksBoard.tsx`, merging cloud words with local storage, restoring unlocked levels, and auto-syncing discovered words in real-time.
+  - Offline gameplay guard in `WordBlanksBoard.tsx`: disables submission when offline and informs the learner that an active connection is required.
+  - Expanded frontend test suite with `frontend/src/tests/CloudProgressAndOffline.test.tsx` (52/52 Vitest tests passing, 0 TypeScript errors, clean production bundle).
+
+### Phase 4 Extension: Live Firebase Authentication & Firestore Client/Admin Integration — 2026-10-13
+#### Dependency Audit Ledger (pursuant to AGENTS.md Rule 5)
+- **`firebase` (Frontend Client SDK)**:
+  - **Version**: `^11.0.0`
+  - **Exact Purpose**: Client-side authentication driver providing native Google OAuth popup (`signInWithPopup`), Email/Password account flows (`signInWithEmailAndPassword`, `createUserWithEmailAndPassword`), session lifecycle observation (`onAuthStateChanged`), and live ID token generation (`getIdToken()`).
+  - **Security Evaluation**: Official Google SDK. Implements modern OAuth 2.0 PKCE and standard cryptographic token refresh protocols; no client secret tokens stored or required in browser environment.
+  - **Bundle Size Impact**: Tree-shaken modular ES imports (`firebase/app`, `firebase/auth`). Minimal footprint loaded asynchronously by Vite.
+  - **Pedagogical Necessity**: Required for cross-device learner persistence, cloud streaks, and seamless multi-device sign-in.
+- **`firebase-admin` (Backend Server SDK)**:
+  - **Version**: `>=6.5.0`
+  - **Exact Purpose**: Server-side administrative SDK for cryptographic JWT token verification (`auth.verify_id_token`), claims decoding, service account certificate management, and direct Cloud Firestore document persistence (`firestore.client()`).
+  - **Security Evaluation**: Server-side verification utilizing Google public certificate rotators. Isolates service account credentials within gitignored backend root, preventing unauthorized token forgery.
+  - **Bundle Size Impact**: 0 KB client impact (installed solely in backend Python virtual environment).
+  - **Pedagogical Necessity**: Protects learner progression integrity, guarantees authentic XP and streak accumulation, and provides server-authoritative guest-to-cloud profile migration.
+
 ### Phase 4: Authentication, Player Profiles & Cloud Persistence — 2026-10-08
 #### Master Contract Specification & Backend Authentication Architecture
 - **Contract-First Registry Expansion (`docs/specs/api-contracts.json`)**:
