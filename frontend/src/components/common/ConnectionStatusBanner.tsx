@@ -21,18 +21,27 @@ export const ConnectionStatusBanner: React.FC = () => {
     typeof navigator !== 'undefined' ? navigator.onLine : true
   );
   const [showRestoredNotice, setShowRestoredNotice] = useState<boolean>(false);
+  const wasOfflineRef = React.useRef<boolean>(false);
 
   useEffect(() => {
-    const handleOnline = () => {
-      setIsOnline(true);
-      setShowRestoredNotice(true);
-      const timer = setTimeout(() => {
-        setShowRestoredNotice(false);
-      }, 3500);
-      return () => clearTimeout(timer);
+    let timer: ReturnType<typeof setTimeout> | undefined;
+
+    const transitionToOnline = () => {
+      if (wasOfflineRef.current) {
+        wasOfflineRef.current = false;
+        setIsOnline(true);
+        setShowRestoredNotice(true);
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+          setShowRestoredNotice(false);
+        }, 3500);
+      } else {
+        setIsOnline(true);
+      }
     };
 
-    const handleOffline = () => {
+    const transitionToOffline = () => {
+      wasOfflineRef.current = true;
       setIsOnline(false);
       setShowRestoredNotice(false);
     };
@@ -41,20 +50,21 @@ export const ConnectionStatusBanner: React.FC = () => {
       const custom = e as CustomEvent<{ isOnline: boolean }>;
       if (custom.detail) {
         if (custom.detail.isOnline) {
-          handleOnline();
+          transitionToOnline();
         } else {
-          handleOffline();
+          transitionToOffline();
         }
       }
     };
 
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
+    window.addEventListener('online', transitionToOnline);
+    window.addEventListener('offline', transitionToOffline);
     window.addEventListener(CONNECTION_EVENT, handleCustomChange);
 
     return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
+      clearTimeout(timer);
+      window.removeEventListener('online', transitionToOnline);
+      window.removeEventListener('offline', transitionToOffline);
       window.removeEventListener(CONNECTION_EVENT, handleCustomChange);
     };
   }, []);

@@ -419,7 +419,9 @@ export const WordBlanksBoard: React.FC = () => {
           );
           syncGameProgress('word_blanks', token, payload)
             .then((syncRes) => {
-              setGlobalConnectionState(true);
+              if (!isOnline) {
+                setGlobalConnectionState(true);
+              }
               if (syncRes.updated_profile) {
                 try {
                   localStorage.setItem(

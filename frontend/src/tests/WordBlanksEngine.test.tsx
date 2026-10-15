@@ -86,7 +86,7 @@ describe('Word Blanks Engine (विचारणशाला Generative Stem Rec
       expect(screen.getByText('0 / 3')).toBeInTheDocument();
     });
 
-    it('renders list of discovered words with definitions, part of speech, and XP chips', () => {
+    it('renders discovered words in a clean 2x5 grid without definitions or POS tags', () => {
       const sampleWords: DiscoveredWord[] = [
         {
           word: 'BAT',
@@ -118,7 +118,10 @@ describe('Word Blanks Engine (विचारणशाला Generative Stem Rec
       expect(screen.getByText('2 words discovered')).toBeInTheDocument();
       expect(screen.getByTestId('word-card-BAT')).toBeInTheDocument();
       expect(screen.getByTestId('word-card-CAT')).toBeInTheDocument();
-      expect(screen.getByText('A small nocturnal flying mammal of the order Chiroptera.')).toBeInTheDocument();
+      expect(screen.getByTestId('discovered-words-list')).toHaveClass('grid-cols-2');
+      // Assert definitions and POS tags are completely excluded from display
+      expect(screen.queryByText('A small nocturnal flying mammal of the order Chiroptera.')).not.toBeInTheDocument();
+      expect(screen.queryByText('noun')).not.toBeInTheDocument();
     });
   });
 

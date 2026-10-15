@@ -1,7 +1,7 @@
 /**
  * DiscoveredWordsSidebar Component
- * Displays live telemetry of discovered words, parts of speech, Wiktionary definitions, and session XP.
- * The list is scrollable with the first 5 entries comfortably visible.
+ * Displays live telemetry of discovered words in a sleek 2x5 grid layout with session XP.
+ * Features automatic vertical scrolling when more than 10 words are discovered.
  */
 
 import React from 'react';
@@ -88,10 +88,15 @@ export const DiscoveredWordsSidebar: React.FC<DiscoveredWordsSidebarProps> = ({
         </div>
       </div>
 
-      {/* Discovered Words Scrollable List (First 5 visible) */}
-      <div className="flex-1">
-        <div className="text-[11px] font-mono uppercase tracking-wider text-stone-400 dark:text-stone-500 mb-2 px-1">
-          Discovered Entries
+      {/* Discovered Words Grid (2 columns, 5 visible rows before scrolling) */}
+      <div className="flex-1 flex flex-col min-h-0">
+        <div className="flex items-center justify-between text-[11px] font-mono uppercase tracking-wider text-stone-400 dark:text-stone-500 mb-2 px-1">
+          <span>Discovered Words</span>
+          {wordsCount > 0 && (
+            <span className="text-[10px] text-stone-400 dark:text-stone-600 font-mono">
+              2×5 Grid
+            </span>
+          )}
         </div>
 
         {discoveredWords.length === 0 ? (
@@ -103,46 +108,27 @@ export const DiscoveredWordsSidebar: React.FC<DiscoveredWordsSidebarProps> = ({
               "Every word begins with an inquiry."
             </p>
             <p className="text-xs text-stone-400 dark:text-stone-500 leading-relaxed">
-              Fill in the missing letter tiles and submit to unveil Wiktionary definitions and
+              Fill in the missing letter tiles and submit valid words to complete this stage and
               accumulate XP.
             </p>
           </div>
         ) : (
           <div
             data-testid="discovered-words-list"
-            className="max-h-[380px] sm:max-h-[440px] overflow-y-auto space-y-2.5 pr-1.5"
+            className="grid grid-cols-2 gap-2 max-h-[224px] overflow-y-auto pr-1"
           >
             {discoveredWords.map((item, index) => (
               <div
                 key={`${item.word}-${index}`}
                 data-testid={`word-card-${item.word}`}
-                className="group p-3 rounded-2xl bg-[#FAF8F5] dark:bg-[#161618] border border-stone-200/80 dark:border-[#2E2E34]/80 hover:border-indigo-400/50 dark:hover:border-indigo-500/50 transition-all shadow-xs"
+                className="group flex items-center justify-between px-3 py-2 rounded-xl bg-[#FAF8F5] dark:bg-[#161618] border border-stone-200/80 dark:border-[#2E2E34]/80 hover:border-indigo-400/50 dark:hover:border-indigo-500/50 transition-all shadow-xs"
               >
-                <div className="flex items-center justify-between mb-1.5">
-                  <div className="flex items-center gap-2">
-                    <span className="font-serif font-bold text-base text-stone-900 dark:text-[#E4E4E7] tracking-wide">
-                      {item.word}
-                    </span>
-                    {item.part_of_speech && (
-                      <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded-md bg-stone-200/70 dark:bg-stone-800 text-stone-600 dark:text-stone-400 border border-stone-300/40 dark:border-stone-700/40">
-                        {item.part_of_speech}
-                      </span>
-                    )}
-                  </div>
-                  <span className="font-mono text-xs font-semibold text-amber-600 dark:text-amber-400">
-                    +{item.xp_awarded} XP
-                  </span>
-                </div>
-
-                {item.definition ? (
-                  <p className="text-xs text-stone-600 dark:text-stone-300 leading-relaxed line-clamp-3">
-                    {item.definition}
-                  </p>
-                ) : (
-                  <p className="text-xs text-stone-400 dark:text-stone-500 italic">
-                    Recognized lexical lemma.
-                  </p>
-                )}
+                <span className="font-serif font-bold text-sm sm:text-base tracking-wide text-stone-900 dark:text-[#E4E4E7] truncate">
+                  {item.word}
+                </span>
+                <span className="font-mono text-[10px] sm:text-[11px] font-semibold text-amber-600 dark:text-amber-400 shrink-0 bg-amber-500/10 dark:bg-amber-400/10 px-1.5 py-0.5 rounded-md">
+                  +{item.xp_awarded} XP
+                </span>
               </div>
             ))}
           </div>

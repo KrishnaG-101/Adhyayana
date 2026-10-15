@@ -85,6 +85,18 @@ describe('Cloud Progress & Offline Network Resilience', () => {
       expect(screen.queryByTestId('connection-lost-banner')).not.toBeInTheDocument();
       expect(screen.getByTestId('connection-restored-banner')).toBeInTheDocument();
     });
+
+    it('does not display restored toast when setGlobalConnectionState(true) is invoked while already online', () => {
+      render(<ConnectionStatusBanner />);
+
+      // Initially online; invoke setGlobalConnectionState(true)
+      act(() => {
+        setGlobalConnectionState(true);
+      });
+
+      expect(screen.queryByTestId('connection-restored-banner')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('connection-lost-banner')).not.toBeInTheDocument();
+    });
   });
 
   describe('Game Progress API Client (progressApi)', () => {
