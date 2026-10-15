@@ -6,6 +6,74 @@
 
 ## [Unreleased]
 
+### Phase 4 Extension: Multi-Game Firestore Architecture, Automatic Cloud Sync & Offline Detection — 2026-10-14
+#### Master Contract Specification & Multi-Game Cloud Document Architecture
+- **Contract-First Registry Expansion (`docs/specs/api-contracts.json`)**:
+  - Registered `DiscoveredWordRecord` schema (`word`, `xp_awarded`, `discovered_at` in UTC ISO 8601).
+  - Registered `WordBlanksProgressData` persistent game progress document schema (`game_id`, `unlocked_levels`, `cleared_stages`, `discovered_words`, `total_words_count`, `total_xp_earned`, `last_played_at`).
+  - Registered `SyncGameProgressRequest` (`unlocked_levels`, `cleared_stages`, `discovered_words`, `new_xp_delta`).
+  - Registered `SyncGameProgressResponse` (`success`, `game_id`, `synced_stages_count`, `synced_words_count`, `total_xp`, `message`, `updated_profile`).
+  - Registered endpoints: `GET /api/v1/games/{game_id}/progress` and `POST /api/v1/games/{game_id}/progress`.
+- **Absolute Type Parity (Rule 2)**:
+  - Backend Pydantic v2 schemas in `backend/app/schemas/progress.py` with `ConfigDict(extra="forbid")`.
+  - Frontend TypeScript types in `frontend/src/types/progress.ts` and re-exported in `frontend/src/types/index.ts`.
+- **Firestore Multi-Game Subcollection Service & Handlers (`backend/app/`)**:
+  - Engineered `get_game_progress` and `save_game_progress` in `backend/app/core/firebase.py` storing dedicated per-game documents at `users/{uid}/game_progress/{game_id}`.
+  - Implemented merging logic for unlocked levels, cleared stages, and deduplicated discovered words with cumulative XP updates to the player profile.
+  - Hardened JWT verification against unverified token fallback errors.
+  - Expanded backend test suite with `backend/tests/test_progress.py` (26/26 backend pytest tests passing).
+- **Frontend Real-Time Connection Monitoring & Automatic Cloud Synchronization**:
+  - Implemented global `ConnectionStatusBanner.tsx` and `setGlobalConnectionState` monitoring network state (`navigator.onLine` and API rejections), displaying persistent red alerts when disconnected and emerald recovery toasts.
+  - Eliminated manual sync button on `ProfilePage.tsx` in favor of automatic background guest progress migration upon authentication in `AuthContext.tsx`.
+  - Engineered cross-device progress hydration on mount in `WordBlanksBoard.tsx`, merging cloud words with local storage, restoring unlocked levels, and auto-syncing discovered words in real-time.
+  - Offline gameplay guard in `WordBlanksBoard.tsx`: disables submission when offline and informs the learner that an active connection is required.
+  - Expanded frontend test suite with `frontend/src/tests/CloudProgressAndOffline.test.tsx` (52/52 Vitest tests passing, 0 TypeScript errors, clean production bundle).
+
+### Phase 4 Extension: Live Firebase Authentication & Firestore Client/Admin Integration — 2026-10-13
+#### Dependency Audit Ledger (pursuant to AGENTS.md Rule 5)
+- **`firebase` (Frontend Client SDK)**:
+  - **Version**: `^11.0.0`
+  - **Exact Purpose**: Client-side authentication driver providing native Google OAuth popup (`signInWithPopup`), Email/Password account flows (`signInWithEmailAndPassword`, `createUserWithEmailAndPassword`), session lifecycle observation (`onAuthStateChanged`), and live ID token generation (`getIdToken()`).
+  - **Security Evaluation**: Official Google SDK. Implements modern OAuth 2.0 PKCE and standard cryptographic token refresh protocols; no client secret tokens stored or required in browser environment.
+  - **Bundle Size Impact**: Tree-shaken modular ES imports (`firebase/app`, `firebase/auth`). Minimal footprint loaded asynchronously by Vite.
+  - **Pedagogical Necessity**: Required for cross-device learner persistence, cloud streaks, and seamless multi-device sign-in.
+- **`firebase-admin` (Backend Server SDK)**:
+  - **Version**: `>=6.5.0`
+  - **Exact Purpose**: Server-side administrative SDK for cryptographic JWT token verification (`auth.verify_id_token`), claims decoding, service account certificate management, and direct Cloud Firestore document persistence (`firestore.client()`).
+  - **Security Evaluation**: Server-side verification utilizing Google public certificate rotators. Isolates service account credentials within gitignored backend root, preventing unauthorized token forgery.
+  - **Bundle Size Impact**: 0 KB client impact (installed solely in backend Python virtual environment).
+  - **Pedagogical Necessity**: Protects learner progression integrity, guarantees authentic XP and streak accumulation, and provides server-authoritative guest-to-cloud profile migration.
+
+### Phase 4: Authentication, Player Profiles & Cloud Persistence — 2026-10-08
+#### Master Contract Specification & Backend Authentication Architecture
+- **Contract-First Registry Expansion (`docs/specs/api-contracts.json`)**:
+  - Registered `UserPreferences` schema (`theme`, `sound`).
+  - Registered `UserStats` schema (`games_played`, `games_won`, `current_streak`, `max_streak`, `total_xp`, `word_blanks_cleared`).
+  - Registered `UserProfile` schema (`uid`, `display_name`, `email`, `photo_url`, `is_anonymous`, `created_at`, `last_active_at`, `stats`, `preferences`).
+  - Registered `UpdateProfileRequest`, `GuestMigrationRequest`, and `GuestMigrationResponse` schemas.
+  - Registered endpoints: `GET /api/v1/auth/me`, `PATCH /api/v1/users/profile`, and `POST /api/v1/users/migrate-guest-data`.
+- **Backend Pydantic v2 Schemas & Auth Dependency (`backend/app/`)**:
+  - Built strict validation models with `ConfigDict(extra="forbid")` in `app/schemas/users.py`.
+  - Built Firebase token verification provider with dev-mode fallback in `app/core/firebase.py`.
+  - Implemented FastAPI security dependency `get_current_user` in `app/api/deps.py` extracting Bearer tokens.
+  - Implemented profile retrieval, profile updates, and guest session state migration in `app/api/v1/endpoints/users.py`.
+  - Expanded backend test suite with `backend/tests/test_users.py` (22/22 pytest tests passing).
+
+#### Frontend Authentication Context, Modal & Profile Page
+- **Absolute Type Parity (`frontend/src/types/user.ts`)**:
+  - Mirrored backend schemas 1:1 into TypeScript and re-exported in `types/index.ts`.
+- **Reactive Auth Context (`frontend/src/context/AuthContext.tsx`)**:
+  - Engineered `AuthProvider` managing user state, tokens, Google OAuth, email sign-in/registration, sign-out, and unmigrated progress detection.
+  - Implemented automatic guest-to-cloud migration consolidating local Word Blanks clearance and XP into player profile.
+- **Accessible Authentication Modal (`frontend/src/components/auth/AuthModal.tsx`)**:
+  - Implemented tabbed Sign In / Create Account modal with Google OAuth button, form validation, password visibility toggle, and keyboard accessibility (Escape dismissal).
+- **Dynamic Avatar Dropdown (`frontend/src/components/layout/AvatarDropdown.tsx`)**:
+  - Dynamically swaps between "Guest Learner" CTA and logged-in user details (initials/avatar, streak counter, XP badge, Profile link, Sign Out).
+- **Player Profile Page (`frontend/src/pages/ProfilePage.tsx`)**:
+  - Mounted `/profile` route with editorial header, player identity card, interactive display name editing, pedagogical stats matrix (streaks, XP, blanks cleared, completion rate), and guest progress sync banner.
+- **Frontend Test Suite Expansion (`frontend/src/tests/AuthAndProfile.test.tsx`)**:
+  - 10 Vitest tests verifying AuthModal tabs, password toggling, Google auth, AvatarDropdown states, and ProfilePage migration (43/43 total Vitest tests passing).
+
 ### Phase 3: Word Blanks UI/UX Refinement, Strict Level Gating & Theme Alignment — 2026-10-08
 #### Cognitive Gameplay Integrity, Level Progression & Design Token Parity
 - **Eradication of In-Game Answer Spoilers**:

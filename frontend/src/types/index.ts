@@ -5,6 +5,8 @@
 export * from './backend';
 export * from './catalog';
 export * from './wordBlanks';
+export * from './user';
+export * from './progress';
 
 export type EngineLifecycleState =
   | 'IDLE'

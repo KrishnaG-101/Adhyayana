@@ -629,6 +629,367 @@
         }
       },
       "additionalProperties": false
+    },
+    "UserPreferences": {
+      "type": "object",
+      "title": "UserPreferences",
+      "description": "User profile visual and audio interaction preferences.",
+      "required": ["theme", "sound"],
+      "properties": {
+        "theme": {
+          "type": "string",
+          "enum": ["light", "dark", "system"],
+          "description": "Selected UI theme mode."
+        },
+        "sound": {
+          "type": "boolean",
+          "description": "Whether interactive audio feedback is enabled."
+        }
+      },
+      "additionalProperties": false
+    },
+    "UserStats": {
+      "type": "object",
+      "title": "UserStats",
+      "description": "Aggregate learning streaks, puzzle completion counters, and XP statistics.",
+      "required": [
+        "games_played",
+        "games_won",
+        "current_streak",
+        "max_streak",
+        "total_xp",
+        "word_blanks_cleared"
+      ],
+      "properties": {
+        "games_played": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Total number of puzzles attempted across all engines."
+        },
+        "games_won": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Total puzzles successfully solved or cleared."
+        },
+        "current_streak": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Current consecutive daily puzzle completion streak."
+        },
+        "max_streak": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Longest consecutive daily puzzle streak achieved."
+        },
+        "total_xp": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Cumulative XP earned across all puzzle activities."
+        },
+        "word_blanks_cleared": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Total Word Blanks stages cleared across all levels."
+        }
+      },
+      "additionalProperties": false
+    },
+    "UserProfile": {
+      "type": "object",
+      "title": "UserProfile",
+      "description": "Authenticated player identity, profile metadata, preferences, and aggregate stats.",
+      "required": [
+        "uid",
+        "display_name",
+        "email",
+        "photo_url",
+        "is_anonymous",
+        "created_at",
+        "last_active_at",
+        "stats",
+        "preferences"
+      ],
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "Unique Firebase Auth user identifier."
+        },
+        "display_name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 50,
+          "description": "User display name or alias."
+        },
+        "email": {
+          "type": ["string", "null"],
+          "description": "User email address or null for anonymous guests."
+        },
+        "photo_url": {
+          "type": ["string", "null"],
+          "description": "Avatar image URL or null."
+        },
+        "is_anonymous": {
+          "type": "boolean",
+          "description": "True if user is signed in under an anonymous guest session."
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 UTC account creation timestamp."
+        },
+        "last_active_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 UTC timestamp of most recent activity."
+        },
+        "stats": {
+          "$ref": "#/definitions/UserStats"
+        },
+        "preferences": {
+          "$ref": "#/definitions/UserPreferences"
+        }
+      },
+      "additionalProperties": false
+    },
+    "UpdateProfileRequest": {
+      "type": "object",
+      "title": "UpdateProfileRequest",
+      "description": "Payload for updating player display name, photo, and preferences.",
+      "properties": {
+        "display_name": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 50,
+          "description": "Updated display name."
+        },
+        "photo_url": {
+          "type": ["string", "null"],
+          "description": "Updated avatar image URL or null."
+        },
+        "preferences": {
+          "$ref": "#/definitions/UserPreferences"
+        }
+      },
+      "additionalProperties": false
+    },
+    "GuestMigrationRequest": {
+      "type": "object",
+      "title": "GuestMigrationRequest",
+      "description": "Payload migrating guest localStorage progress to the authenticated user's account.",
+      "required": ["total_xp", "current_streak", "cleared_stages_count"],
+      "properties": {
+        "total_xp": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Cumulative XP accumulated during guest play."
+        },
+        "current_streak": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Consecutive streak accumulated during guest play."
+        },
+        "cleared_stages_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Count of Word Blanks stages cleared as guest."
+        },
+        "discovered_words_summary": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of discovered words to merge into player history."
+        }
+      },
+      "additionalProperties": false
+    },
+    "GuestMigrationResponse": {
+      "type": "object",
+      "title": "GuestMigrationResponse",
+      "description": "Response confirming guest session migration into Firestore user profile.",
+      "required": ["success", "migrated_xp", "migrated_stages", "message", "updated_profile"],
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "description": "Whether migration succeeded."
+        },
+        "migrated_xp": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Total XP merged into the user account."
+        },
+        "migrated_stages": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Total stages merged into player stats."
+        },
+        "message": {
+          "type": "string",
+          "description": "Human-readable summary of migration."
+        },
+        "updated_profile": {
+          "$ref": "#/definitions/UserProfile"
+        }
+      },
+      "additionalProperties": false
+    },
+    "DiscoveredWordRecord": {
+      "type": "object",
+      "title": "DiscoveredWordRecord",
+      "description": "Represents an individual discovered word entry within a puzzle stage.",
+      "required": ["word", "xp_awarded", "discovered_at"],
+      "properties": {
+        "word": {
+          "type": "string",
+          "description": "The discovered word string in uppercase."
+        },
+        "xp_awarded": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "XP awarded for discovering this word."
+        },
+        "discovered_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO timestamp of word discovery."
+        }
+      },
+      "additionalProperties": false
+    },
+    "WordBlanksProgressData": {
+      "type": "object",
+      "title": "WordBlanksProgressData",
+      "description": "Persistent document stored in Firestore subcollection users/{uid}/game_progress/word_blanks.",
+      "required": [
+        "game_id",
+        "unlocked_levels",
+        "cleared_stages",
+        "discovered_words",
+        "total_words_count",
+        "total_xp_earned",
+        "last_played_at"
+      ],
+      "properties": {
+        "game_id": {
+          "type": "string",
+          "enum": ["word_blanks"],
+          "description": "Puzzle engine identifier."
+        },
+        "unlocked_levels": {
+          "type": "array",
+          "items": { "type": "integer" },
+          "description": "Array of level numbers unlocked by the player."
+        },
+        "cleared_stages": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "List of cleared stage keys in level:puzzle format (e.g. ['1:1', '1:2'])."
+        },
+        "discovered_words": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": { "$ref": "#/definitions/DiscoveredWordRecord" }
+          },
+          "description": "Map of stage keys to arrays of discovered word records."
+        },
+        "total_words_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Total count of distinct words discovered across all levels."
+        },
+        "total_xp_earned": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Cumulative XP earned within this engine."
+        },
+        "last_played_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO timestamp of most recent gameplay action."
+        }
+      },
+      "additionalProperties": false
+    },
+    "SyncGameProgressRequest": {
+      "type": "object",
+      "title": "SyncGameProgressRequest",
+      "description": "Payload sent by frontend puzzle engines to synchronize stage clearance and discovered words.",
+      "required": ["unlocked_levels", "cleared_stages", "discovered_words"],
+      "properties": {
+        "unlocked_levels": {
+          "type": "array",
+          "items": { "type": "integer" },
+          "description": "Array of unlocked level indices."
+        },
+        "cleared_stages": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Array of cleared stage identifiers."
+        },
+        "discovered_words": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": { "$ref": "#/definitions/DiscoveredWordRecord" }
+          },
+          "description": "Map of stage keys to discovered word records."
+        },
+        "new_xp_delta": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0,
+          "description": "Incremental XP delta earned since last synchronization."
+        }
+      },
+      "additionalProperties": false
+    },
+    "SyncGameProgressResponse": {
+      "type": "object",
+      "title": "SyncGameProgressResponse",
+      "description": "Response envelope confirming cloud synchronization and updated player totals.",
+      "required": [
+        "success",
+        "game_id",
+        "synced_stages_count",
+        "synced_words_count",
+        "total_xp",
+        "message",
+        "updated_profile"
+      ],
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "description": "Whether sync succeeded."
+        },
+        "game_id": {
+          "type": "string",
+          "description": "Puzzle engine identifier."
+        },
+        "synced_stages_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Total cumulative stages cleared."
+        },
+        "synced_words_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Total words discovered across all levels."
+        },
+        "total_xp": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Updated cumulative learner XP."
+        },
+        "message": {
+          "type": "string",
+          "description": "Human-readable status summary."
+        },
+        "updated_profile": {
+          "$ref": "#/definitions/UserProfile"
+        }
+      },
+      "additionalProperties": false
     }
   },
   "endpoints": {
@@ -695,6 +1056,183 @@
         },
         "422": {
           "description": "Unprocessable entity or schema validation error.",
+          "schema": {
+            "$ref": "#/definitions/StandardErrorResponse"
+          }
+        },
+        "500": {
+          "description": "Internal server error.",
+          "schema": {
+            "$ref": "#/definitions/StandardErrorResponse"
+          }
+        }
+      }
+    },
+    "GET /api/v1/auth/me": {
+      "summary": "Retrieve Current User Profile",
+      "description": "Retrieves the authenticated user's profile, preferences, and aggregate stats from the verified Firebase Auth Bearer token.",
+      "security": [{ "BearerAuth": [] }],
+      "responses": {
+        "200": {
+          "description": "Authenticated user profile retrieved successfully.",
+          "schema": {
+            "$ref": "#/definitions/UserProfile"
+          }
+        },
+        "401": {
+          "description": "Missing, expired, or invalid authorization token.",
+          "schema": {
+            "$ref": "#/definitions/StandardErrorResponse"
+          }
+        },
+        "500": {
+          "description": "Internal server error.",
+          "schema": {
+            "$ref": "#/definitions/StandardErrorResponse"
+          }
+        }
+      }
+    },
+    "PATCH /api/v1/users/profile": {
+      "summary": "Update Current User Profile",
+      "description": "Updates the authenticated player's display name, avatar photo, and UI preferences.",
+      "security": [{ "BearerAuth": [] }],
+      "requestBody": {
+        "required": true,
+        "schema": {
+          "$ref": "#/definitions/UpdateProfileRequest"
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Profile updated successfully.",
+          "schema": {
+            "$ref": "#/definitions/UserProfile"
+          }
+        },
+        "400": {
+          "description": "Invalid update parameters.",
+          "schema": {
+            "$ref": "#/definitions/StandardErrorResponse"
+          }
+        },
+        "401": {
+          "description": "Unauthorized.",
+          "schema": {
+            "$ref": "#/definitions/StandardErrorResponse"
+          }
+        },
+        "500": {
+          "description": "Internal server error.",
+          "schema": {
+            "$ref": "#/definitions/StandardErrorResponse"
+          }
+        }
+      }
+    },
+    "POST /api/v1/users/migrate-guest-data": {
+      "summary": "Migrate Guest Session to User Account",
+      "description": "Transfers guest learning streaks, cumulative XP, and cleared puzzle stages into the authenticated player's Firestore profile.",
+      "security": [{ "BearerAuth": [] }],
+      "requestBody": {
+        "required": true,
+        "schema": {
+          "$ref": "#/definitions/GuestMigrationRequest"
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Guest session migrated successfully.",
+          "schema": {
+            "$ref": "#/definitions/GuestMigrationResponse"
+          }
+        },
+        "401": {
+          "description": "Unauthorized.",
+          "schema": {
+            "$ref": "#/definitions/StandardErrorResponse"
+          }
+        },
+        "500": {
+          "description": "Internal server error.",
+          "schema": {
+            "$ref": "#/definitions/StandardErrorResponse"
+          }
+        }
+      }
+    },
+    "GET /api/v1/games/{game_id}/progress": {
+      "summary": "Fetch Game Progress",
+      "description": "Retrieves the authenticated learner's persistent progress document for the specified game from Cloud Firestore subcollection users/{uid}/game_progress/{game_id}.",
+      "security": [{ "BearerAuth": [] }],
+      "parameters": [
+        {
+          "name": "game_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          },
+          "description": "Unique identifier of the puzzle engine (e.g. word_blanks, contexto)."
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Game progress document retrieved successfully.",
+          "schema": {
+            "$ref": "#/definitions/WordBlanksProgressData"
+          }
+        },
+        "401": {
+          "description": "Unauthorized.",
+          "schema": {
+            "$ref": "#/definitions/StandardErrorResponse"
+          }
+        },
+        "500": {
+          "description": "Internal server error.",
+          "schema": {
+            "$ref": "#/definitions/StandardErrorResponse"
+          }
+        }
+      }
+    },
+    "POST /api/v1/games/{game_id}/progress": {
+      "summary": "Synchronize Game Progress",
+      "description": "Merges discovered words, unlocked levels, and cleared stages into the user's Firestore game_progress subcollection and credits cumulative XP to the player profile.",
+      "security": [{ "BearerAuth": [] }],
+      "parameters": [
+        {
+          "name": "game_id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          },
+          "description": "Unique identifier of the puzzle engine."
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "schema": {
+          "$ref": "#/definitions/SyncGameProgressRequest"
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Game progress synchronized successfully.",
+          "schema": {
+            "$ref": "#/definitions/SyncGameProgressResponse"
+          }
+        },
+        "400": {
+          "description": "Invalid sync payload.",
+          "schema": {
+            "$ref": "#/definitions/StandardErrorResponse"
+          }
+        },
+        "401": {
+          "description": "Unauthorized.",
           "schema": {
             "$ref": "#/definitions/StandardErrorResponse"
           }

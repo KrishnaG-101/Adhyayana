@@ -33,8 +33,18 @@ htmlcov/
 .tox/
 .nox/
 
+# Secrets & Credentials
+secrets/
+backend/secrets/
+**/secrets/
+*serviceAccountKey*.json
+firebase-key*.json
+*.pem
+*.key
+
 # Environment files
 .env
+.env.*
 !.env.example
 
 # Node / Frontend

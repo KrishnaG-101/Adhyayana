@@ -69,7 +69,7 @@
 ---
 
 ## Phase 3: Modular Puzzle Engine #1 — Word Blanks (Vertical Slice)
-**Status**: [PLANNED]  
+**Status**: [COMPLETED]  
 **Objective**: Build the first complete, playable puzzle loop from end to end using the Word Blanks (Fill-in-the-Blanks) mechanic.
 
 ### Deliverables
@@ -89,7 +89,7 @@
 ---
 
 ## Phase 4: Authentication, Player Profiles & Cloud Persistence
-**Status**: [PLANNED]  
+**Status**: [COMPLETED]  
 **Objective**: Integrate Firebase Auth and Cloud Firestore to transition from guest play to persistent user profiles and cross-device sync.
 
 ### Deliverables

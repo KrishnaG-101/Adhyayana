@@ -5,7 +5,7 @@
  * tactile tile inputs, and strict adherence to the Adhyayana design tokens.
  */
 
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import {
   Lock,
   CheckCircle2,
@@ -18,8 +18,10 @@ import {
   X,
   Compass,
   HelpCircle,
+  WifiOff,
 } from 'lucide-react';
 import { NavigationContext } from '@/context/NavigationContext';
+import { useAuth } from '@/context/AuthContext';
 import {
   DiscoveredWord,
   WordBlanksLevel,
@@ -33,6 +35,12 @@ import {
   saveStoredDiscoveredWords,
   getClearedPuzzlesCount,
 } from '@/services/wordBlanksApi';
+import { fetchGameProgress, syncGameProgress } from '@/services/progressApi';
+import { DiscoveredWordRecord, SyncGameProgressRequest } from '@/types/progress';
+import {
+  CONNECTION_EVENT,
+  setGlobalConnectionState,
+} from '@/components/common/ConnectionStatusBanner';
 import { LetterTileInput } from './LetterTileInput';
 import { DiscoveredWordsSidebar } from './DiscoveredWordsSidebar';
 
@@ -44,6 +52,8 @@ interface FeedbackState {
 export const WordBlanksBoard: React.FC = () => {
   const navContext = React.useContext(NavigationContext);
   const openRulesModal = navContext?.openRulesModal || (() => {});
+  const { user, token } = useAuth();
+
   const [levels, setLevels] = useState<WordBlanksLevel[]>(CLIENT_WORD_BLANKS_LEVELS);
   const [activeLevelIdx, setActiveLevelIdx] = useState<number>(1);
   const [activePuzzleNum, setActivePuzzleNum] = useState<number>(1);
@@ -51,6 +61,12 @@ export const WordBlanksBoard: React.FC = () => {
   const [feedback, setFeedback] = useState<FeedbackState | null>(null);
   const [resetSignal, setResetSignal] = useState<number>(0);
   const [showQuickJump, setShowQuickJump] = useState<boolean>(false);
+
+  // Cloud and Connectivity States
+  const [cloudUnlockedLevels, setCloudUnlockedLevels] = useState<number[]>([]);
+  const [isOnline, setIsOnline] = useState<boolean>(() =>
+    typeof navigator !== 'undefined' ? navigator.onLine : true
+  );
 
   // Horizontal scroll container reference for level tabs
   const levelScrollRef = useRef<HTMLDivElement>(null);
@@ -64,6 +80,151 @@ export const WordBlanksBoard: React.FC = () => {
 
   // Track cache version to trigger re-renders when words are updated
   const [cacheVersion, setCacheVersion] = useState<number>(0);
+
+  // Real-time network connectivity tracking
+  useEffect(() => {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+    const handleCustomChange = (e: Event) => {
+      const custom = e as CustomEvent<{ isOnline: boolean }>;
+      if (custom.detail) {
+        setIsOnline(custom.detail.isOnline);
+      }
+    };
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    window.addEventListener(CONNECTION_EVENT, handleCustomChange);
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+      window.removeEventListener(CONNECTION_EVENT, handleCustomChange);
+    };
+  }, []);
+
+  // Utility to compile persistent progress payload for cloud synchronization
+  const collectProgressPayload = useCallback(
+    (
+      extraStageKey?: string,
+      extraWords?: DiscoveredWord[],
+      deltaXp: number = 0
+    ): SyncGameProgressRequest => {
+      const discoveredWordsPayload: Record<string, DiscoveredWordRecord[]> = {};
+      const clearedStages: string[] = [];
+      const unlockedLevelsSet = new Set<number>([1, ...cloudUnlockedLevels]);
+
+      levels.forEach((lvl) => {
+        const pCount = lvl.puzzles?.length || 30;
+        let clearedInLvl = 0;
+        for (let p = 1; p <= pCount; p++) {
+          const key = `${lvl.level}:${p}`;
+          let words = discoveredMap[key] || getStoredDiscoveredWords(lvl.level, p);
+          if (key === extraStageKey && extraWords) {
+            words = extraWords;
+          }
+
+          if (words && words.length > 0) {
+            discoveredWordsPayload[key] = words.map((w) => ({
+              word: w.word,
+              xp_awarded: w.xp_awarded,
+              discovered_at: w.discovered_at,
+            }));
+          }
+
+          if (words && words.length >= 3) {
+            clearedStages.push(key);
+            clearedInLvl++;
+          }
+        }
+
+        if (clearedInLvl >= pCount) {
+          unlockedLevelsSet.add(lvl.level + 1);
+        }
+      });
+
+      return {
+        unlocked_levels: Array.from(unlockedLevelsSet).sort((a, b) => a - b),
+        cleared_stages: clearedStages,
+        discovered_words: discoveredWordsPayload,
+        new_xp_delta: deltaXp,
+      };
+    },
+    [levels, discoveredMap, cloudUnlockedLevels]
+  );
+
+  // Cross-device progress hydration from Cloud Firestore
+  useEffect(() => {
+    if (!user || user.is_anonymous || !token) return;
+
+    let isMounted = true;
+
+    fetchGameProgress('word_blanks', token)
+      .then((cloudProgress) => {
+        if (!isMounted) return;
+
+        if (cloudProgress.unlocked_levels && cloudProgress.unlocked_levels.length > 0) {
+          setCloudUnlockedLevels(cloudProgress.unlocked_levels);
+        }
+
+        // Merge remote discovered words into local state and localStorage
+        if (cloudProgress.discovered_words) {
+          let hasNewWords = false;
+
+          Object.entries(cloudProgress.discovered_words).forEach(
+            ([stageKey, cloudWords]) => {
+              const [lvlStr, pzStr] = stageKey.split(':');
+              const lvl = parseInt(lvlStr, 10);
+              const pz = parseInt(pzStr, 10);
+
+              if (!isNaN(lvl) && !isNaN(pz)) {
+                const localWords = getStoredDiscoveredWords(lvl, pz);
+                const localWordSet = new Set(
+                  localWords.map((w) => w.word.toUpperCase())
+                );
+                const toAdd: DiscoveredWord[] = [];
+
+                cloudWords.forEach((rec) => {
+                  if (!localWordSet.has(rec.word.toUpperCase())) {
+                    toAdd.push({
+                      word: rec.word,
+                      part_of_speech: null,
+                      definition: null,
+                      xp_awarded: rec.xp_awarded,
+                      discovered_at: rec.discovered_at,
+                    });
+                    hasNewWords = true;
+                  }
+                });
+
+                if (toAdd.length > 0) {
+                  const merged = [...toAdd, ...localWords];
+                  saveStoredDiscoveredWords(lvl, merged, pz);
+                  setDiscoveredMap((prev) => ({
+                    ...prev,
+                    [stageKey]: merged,
+                  }));
+                }
+              }
+            }
+          );
+
+          if (hasNewWords) {
+            setCacheVersion((v) => v + 1);
+          }
+        }
+      })
+      .catch((err) => {
+        console.warn('[WordBlanksBoard] Cloud hydration warning:', err);
+        if (typeof navigator !== 'undefined' && !navigator.onLine) {
+          setGlobalConnectionState(false);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [user?.uid, token]);
 
   // Fetch remote level configurations on mount
   useEffect(() => {
@@ -148,9 +309,10 @@ export const WordBlanksBoard: React.FC = () => {
     return getClearedPuzzlesCount(activeLevelIdx, totalPuzzlesInLevel, 3);
   }, [activeLevelIdx, totalPuzzlesInLevel, cacheVersion]);
 
-  // Level unlock calculation: Level 1 always unlocked; Level N unlocked IF AND ONLY IF all puzzles of Level N-1 are cleared
+  // Level unlock calculation: Level 1 always unlocked; Level N unlocked IF AND ONLY IF all puzzles of Level N-1 are cleared or unlocked via cloud
   const isLevelUnlocked = (lvlNum: number): boolean => {
     if (lvlNum === 1) return true;
+    if (cloudUnlockedLevels.includes(lvlNum)) return true;
     const prevLvl = levels.find((l) => l.level === lvlNum - 1);
     if (!prevLvl) return false;
     const prevTotal = prevLvl.puzzles?.length || 30;
@@ -213,6 +375,15 @@ export const WordBlanksBoard: React.FC = () => {
 
   const handleGuessSubmit = async (formedWord: string) => {
     if (isSubmitting) return;
+
+    if (!isOnline) {
+      setFeedback({
+        type: 'error',
+        message: 'Active internet connection required to evaluate words and sync progress.',
+      });
+      return;
+    }
+
     setIsSubmitting(true);
     setFeedback(null);
 
@@ -240,6 +411,33 @@ export const WordBlanksBoard: React.FC = () => {
         });
         // Clear blank inputs on success
         setResetSignal((prev) => prev + 1);
+
+        // Automatic background cloud synchronization for authenticated learners
+        if (user && !user.is_anonymous && token) {
+          const payload = collectProgressPayload(
+            activeCacheKey,
+            updated,
+            response.discovered_word.xp_awarded
+          );
+          syncGameProgress('word_blanks', token, payload)
+            .then((syncRes) => {
+              setGlobalConnectionState(true);
+              if (syncRes.updated_profile) {
+                try {
+                  localStorage.setItem(
+                    `adhyayana:user:profile:${syncRes.updated_profile.uid}`,
+                    JSON.stringify(syncRes.updated_profile)
+                  );
+                } catch {}
+              }
+            })
+            .catch((syncErr) => {
+              console.warn('[WordBlanksBoard] Automatic cloud sync failed:', syncErr);
+              if (typeof navigator !== 'undefined' && !navigator.onLine) {
+                setGlobalConnectionState(false);
+              }
+            });
+        }
       } else if (response.is_duplicate) {
         setFeedback({
           type: 'duplicate',
@@ -252,9 +450,12 @@ export const WordBlanksBoard: React.FC = () => {
         });
       }
     } catch {
+      if (typeof navigator !== 'undefined' && !navigator.onLine) {
+        setGlobalConnectionState(false);
+      }
       setFeedback({
         type: 'error',
-        message: 'Network verification failed. Please try again.',
+        message: 'Network verification failed. Please check your internet connection.',
       });
     } finally {
       setIsSubmitting(false);
@@ -396,6 +597,12 @@ export const WordBlanksBoard: React.FC = () => {
               <div className="flex items-center gap-2 text-xs font-mono text-indigo-600 dark:text-indigo-400 font-semibold uppercase tracking-wider">
                 <Compass size={13} />
                 <span>Level {activeLevelIdx}: {activeLevel.title || 'Generative Word Blanks'}</span>
+                {user && !user.is_anonymous && (
+                  <span className="ml-auto inline-flex items-center gap-1.5 text-[11px] font-mono text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800/60">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    <span>Cloud Synced</span>
+                  </span>
+                )}
               </div>
               <h2 className="font-serif text-2xl sm:text-3xl font-bold text-stone-900 dark:text-[#E4E4E7]">
                 Stem Pattern: <span className="text-indigo-600 dark:text-indigo-400">{activePuzzle.stem}</span>
@@ -479,10 +686,22 @@ export const WordBlanksBoard: React.FC = () => {
 
             {/* Interactive Letter Tiles Grid */}
             <div className="pt-2 pb-2 border-t border-stone-100 dark:border-[#2E2E34]">
+              {!isOnline && (
+                <div
+                  data-testid="offline-play-warning"
+                  className="mb-4 flex items-center justify-center gap-2 p-3 rounded-2xl bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/40 text-rose-700 dark:text-rose-300 text-xs font-medium"
+                >
+                  <WifiOff size={15} className="shrink-0 text-rose-500 animate-pulse" />
+                  <span>
+                    Connection lost. An active internet connection is required to evaluate words and sync progress.
+                  </span>
+                </div>
+              )}
               <LetterTileInput
                 stem={activePuzzle.stem}
                 onSubmit={handleGuessSubmit}
                 isLoading={isSubmitting}
+                disabled={!isOnline}
                 resetSignal={resetSignal}
               />
             </div>

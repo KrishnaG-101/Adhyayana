@@ -9,6 +9,21 @@ from .puzzles import (
     PuzzleLevelInfo,
     PuzzleMetadata,
 )
+from .word_blanks import (
+    DiscoveredWord,
+    WordBlanksEvaluationResponse,
+    WordBlanksGuessRequest,
+    WordBlanksLevel,
+    WordBlanksPuzzle,
+)
+from .users import (
+    GuestMigrationRequest,
+    GuestMigrationResponse,
+    UpdateProfileRequest,
+    UserPreferences,
+    UserProfile,
+    UserStats,
+)
 
 __all__ = [
     "HealthCheckResponse",
@@ -18,4 +33,16 @@ __all__ = [
     "PuzzleCatalogResponse",
     "PuzzleLevelInfo",
     "PuzzleMetadata",
+    "DiscoveredWord",
+    "WordBlanksEvaluationResponse",
+    "WordBlanksGuessRequest",
+    "WordBlanksLevel",
+    "WordBlanksPuzzle",
+    "UserPreferences",
+    "UserStats",
+    "UserProfile",
+    "UpdateProfileRequest",
+    "GuestMigrationRequest",
+    "GuestMigrationResponse",
 ]
+

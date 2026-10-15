@@ -3,33 +3,40 @@
 > **Master Roadmap**: Defined and tracked in [`docs/workflows/roadmap.md`](../workflows/roadmap.md)
 
 ## Current Sprint Status
-- **Current Phase**: Phase 3 (Modular Puzzle Engine #1: Word Blanks — 17-Level Progressive Curriculum & Engine Refinements) — Complete
-- **Next Milestone**: Phase 4: Authentication, Cloud Firestore Persistence & Player Profile Sync
-- **Active Task**: Phase 3 UI & Progression Hardening Complete (Zero Answer Spoilers, Strict 100% Level Clearance Gating, Sequential Stage Gating, Custom Brand-Aligned Scrollbars, Indigo Design Token Parity, RulesModal Integration)
+- **Current Phase**: Phase 4 (Authentication, Player Profiles, Multi-Game Cloud Persistence & Offline Resilience) — Complete
+- **Next Milestone**: Phase 5: Modular Puzzle Engine #2 — Contexto (Semantic Proximity & Vector Embeddings)
+- **Active Task**: Multi-Game Firestore Subcollection Persistence (`users/{uid}/game_progress/{game_id}`), automatic background cloud synchronization, real-time offline detection banner, and cross-device hydration.
 
 ## Active Assignments
-- **Lead Systems Architect / Backend**: Phase 3 Complete: Implemented contract-first schemas (`WordBlanksLevel` with 17 tiers and nested `puzzles: WordBlanksPuzzle[]`, `WordBlanksGuessRequest` with `puzzle_number`), 450+ curated generative stems with spoiler-free pedagogical notes in `puzzles_data.py`, 100% level clearance requirements (`min_puzzles_to_unlock_next = len(puzzles)`), `WordBlanksEngine` with dictionary-backed evaluation, and verified with 16/16 Pytest tests passing.
-- **Frontend Engineer**: Phase 3 Complete: Implemented full 17-level curriculum in `puzzlesData.ts`, strict sequential stage gating, 100% level unlock gating, custom brand-aligned scrollbars in `index.css`, horizontal level-tab navigation with chevron controls, indigo design tokens (`indigo-600`), header "How to Play" modal trigger with pedagogical examples, and verified with 33/33 Vitest tests passing and clean production build.
+- **Lead Systems Architect / Backend**: Live Firebase Admin SDK with `serviceAccountKey.json`, token cryptographic verification via `firebase_auth.verify_id_token`, persistent multi-game progress subcollections (`users/{uid}/game_progress/{game_id}`), unlocked levels and cleared stage merging, lightweight word discovery records storage, and 26/26 pytest tests passing deterministically.
+- **Frontend Engineer**: Live Firebase Client SDK, automatic guest-to-cloud migration on login without manual buttons, real-time connection status banner (`ConnectionStatusBanner`) monitoring `navigator.onLine` and API status, cross-device progress hydration on mount in `WordBlanksBoard`, and 52/52 Vitest tests passing with clean production bundle.
 
 ## Operational Endpoints
 - **Active Health Probe**: `GET /health` -> `{"status": "healthy", "service": "adhyayana-backend", "version": "0.1.0"}`
 - **Puzzle Catalog Discovery**: `GET /api/v1/puzzles` -> `PuzzleCatalogResponse`
 - **Puzzle Metadata Lookup**: `GET /api/v1/puzzles/{puzzle_id}` -> `PuzzleMetadata`
 - **Word Blanks Progression Levels**: `GET /api/v1/puzzles/word-blanks/levels` -> `List[WordBlanksLevel]` (17 levels, 450+ stems)
-- **Word Blanks Guess Evaluator**: `POST /api/v1/puzzles/word-blanks/evaluate` -> `WordBlanksEvaluationResponse` (per level and puzzle_number)
+- **Word Blanks Guess Evaluator**: `POST /api/v1/puzzles/word-blanks/evaluate` -> `WordBlanksEvaluationResponse`
+- **Authenticated User Profile**: `GET /api/v1/auth/me` -> `UserProfile`
+- **Profile & Preference Update**: `PATCH /api/v1/users/profile` -> `UserProfile`
+- **Guest State Cloud Migration**: `POST /api/v1/users/migrate-guest-data` -> `GuestMigrationResponse`
+- **Game Progress Retrieval**: `GET /api/v1/games/{game_id}/progress` -> `WordBlanksProgressData`
+- **Game Progress Synchronization**: `POST /api/v1/games/{game_id}/progress` -> `SyncGameProgressResponse`
 
 ## Blockers & Dependencies
 - None currently.
 
-## Next Up (Iteration Backlog — Phase 4)
-- [x] Declare Word Blanks contract schemas in `docs/specs/api-contracts.json`
-- [x] Mirror contract types in `backend/app/schemas/word_blanks.py` and `frontend/src/types/wordBlanks.ts`
-- [x] Implement backend evaluator `backend/app/engines/word_blanks/engine.py` with dictionary-validated active recall
-- [x] Implement frontend interactive engine `frontend/src/engines/word_blanks/WordBlanksBoard.tsx`
-- [x] Connect `frontend/src/pages/PuzzleViewPage.tsx` dynamic engine mounting for `word-blanks`
-- [x] Expand Word Blanks to 17 progressive levels with 450+ curated generative puzzles and dynamic stepper
-- [ ] Phase 4: Initialize Firebase Authentication & Firestore persistence layer
-- [ ] Phase 4: Profile page and guest-to-authenticated streak migration
+## Next Up (Iteration Backlog — Phase 5)
+- [x] Phase 4: Declare UserProfile, Auth, and Migration schemas in `docs/specs/api-contracts.json`
+- [x] Phase 4: Implement backend token verification and user endpoints with 22/22 pytest tests
+- [x] Phase 4: Implement frontend AuthContext, AuthModal, AvatarDropdown, and ProfilePage with 43/43 vitest tests
+- [x] Phase 4: Implement guest-to-cloud localStorage progress migration engine
+- [x] Phase 4 Extension: Multi-Game Firestore Document Architecture (`users/{uid}/game_progress/{game_id}`)
+- [x] Phase 4 Extension: Automatic real-time background cloud synchronization and cross-device hydration
+- [x] Phase 4 Extension: Instant offline/connection-lost warning banner and input disabling
+- [ ] Phase 5: Declare Contexto engine contracts and cosine distance schemas in `docs/specs/api-contracts.json`
+- [ ] Phase 5: Implement backend embedding model / vector rank evaluator in `backend/app/engines/contexto/`
+- [ ] Phase 5: Build frontend Contexto interactive game board in `frontend/src/engines/contexto/`
 
 ---
 
