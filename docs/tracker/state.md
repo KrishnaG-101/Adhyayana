@@ -3,13 +3,13 @@
 > **Master Roadmap**: Defined and tracked in [`docs/workflows/roadmap.md`](../workflows/roadmap.md)
 
 ## Current Sprint Status
-- **Current Phase**: Phase 4 (Authentication, Player Profiles, Multi-Game Cloud Persistence & Offline Resilience) — Complete
+- **Current Phase**: Phase 4 (Authentication, Player Profiles, Multi-Game Cloud Persistence, User Isolation & UI Cleanup) — Complete
 - **Next Milestone**: Phase 5: Modular Puzzle Engine #2 — Contexto (Semantic Proximity & Vector Embeddings)
-- **Active Task**: Multi-Game Firestore Subcollection Persistence (`users/{uid}/game_progress/{game_id}`), automatic background cloud synchronization, real-time offline detection banner, and cross-device hydration.
+- **Active Task**: Strict User-Isolated Persistence (`adhyayana:user:{uid}:word-blanks:...` & `adhyayana:guest:word-blanks:...`), Cloud Firestore source of truth (0 XP clean board guarantee), and editorial UI clutter removal.
 
 ## Active Assignments
 - **Lead Systems Architect / Backend**: Live Firebase Admin SDK with `serviceAccountKey.json`, token cryptographic verification via `firebase_auth.verify_id_token`, persistent multi-game progress subcollections (`users/{uid}/game_progress/{game_id}`), unlocked levels and cleared stage merging, lightweight word discovery records storage, and 26/26 pytest tests passing deterministically.
-- **Frontend Engineer**: Live Firebase Client SDK, automatic guest-to-cloud migration on login without manual buttons, real-time connection status banner (`ConnectionStatusBanner`) monitoring `navigator.onLine` and API status, cross-device progress hydration on mount in `WordBlanksBoard`, and 52/52 Vitest tests passing with clean production bundle.
+- **Frontend Engineer**: Strict user-isolated storage scoping, Cloud Firestore authoritative hydration (0 XP accounts start completely fresh with 0 discovered words), in-memory wipe on sign-out/account switch, removal of `● CLOUD SYNCED` badge, clean `PuzzleViewPage` header/footer, removal of dead `/settings` link, clear stage progress indicator, 53/53 Vitest tests passing, and clean production bundle.
 
 ## Operational Endpoints
 - **Active Health Probe**: `GET /health` -> `{"status": "healthy", "service": "adhyayana-backend", "version": "0.1.0"}`
@@ -34,6 +34,7 @@
 - [x] Phase 4 Extension: Multi-Game Firestore Document Architecture (`users/{uid}/game_progress/{game_id}`)
 - [x] Phase 4 Extension: Automatic real-time background cloud synchronization and cross-device hydration
 - [x] Phase 4 Extension: Instant offline/connection-lost warning banner and input disabling
+- [x] Phase 4 Hardening: Strict user-isolated storage (`adhyayana:user:{uid}:word-blanks:...`), Cloud Firestore source of truth (0 XP clean board guarantee), in-memory wipe on sign-out, and editorial UI cleanup (53/53 vitest tests, 26/26 pytest tests)
 - [ ] Phase 5: Declare Contexto engine contracts and cosine distance schemas in `docs/specs/api-contracts.json`
 - [ ] Phase 5: Implement backend embedding model / vector rank evaluator in `backend/app/engines/contexto/`
 - [ ] Phase 5: Build frontend Contexto interactive game board in `frontend/src/engines/contexto/`

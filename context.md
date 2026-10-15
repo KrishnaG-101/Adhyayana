@@ -270,16 +270,29 @@ The generative stem recall engine implementing active stem completion across **1
 
 2. **Automatic Background Cloud Synchronization (No Manual Buttons)**:
    - Eradicated manual "Sync Local Progress ->" buttons on `ProfilePage.tsx`.
-   - In `AuthContext.tsx`, an automatic effect triggers upon user login, migrating unmigrated guest progress into the learner's cloud document and profile in the background.
    - In `WordBlanksBoard.tsx`, authenticated learners automatically synchronize newly discovered words and cleared stages upon each successful guess.
-   - On component mount, `WordBlanksBoard.tsx` hydrates cloud progress, merging remote discovered words with local cache and restoring unlocked levels across devices or fresh incognito sessions.
-   - Subtle "Cloud Synced" indicator badge with pulsing emerald beacon confirms persistent cloud connectivity on the puzzle canvas.
+   - On component mount, `WordBlanksBoard.tsx` hydrates cloud progress, restoring unlocked levels and discovered words directly from Cloud Firestore across devices.
 
 3. **Global Real-Time Connection Monitoring & Offline Resilience**:
    - `ConnectionStatusBanner.tsx`: High-visibility sticky notification banner reacting instantaneously to `navigator.onLine` and `adhyayana:connection:change` events.
    - Connection lost warning: displays immediate rose alert banner informing the learner that Adhyayana requires an active network connection to evaluate words and sync progress.
    - Offline gameplay protection: disables letter blank submission and submit button with inline warning (`data-testid="offline-play-warning"`) to prevent corrupted state or dropped gameplay data.
    - Connection restored toast: automatically displays an emerald notification when connectivity returns and confirms cloud synchronization.
+
+### 4.7 Strict User-Isolated Storage, Cloud Source of Truth & Clean Editorial UI (Completed)
+1. **User-Scoped Storage Namespacing**:
+   - `wordBlanksApi.ts` persistence helpers (`getStoredDiscoveredWords`, `saveStoredDiscoveredWords`, `clearStoredLevelProgress`, `isPuzzleCleared`, `getClearedPuzzlesCount`) accept `userId?: string`.
+   - Keys are strictly partitioned: `adhyayana:user:{uid}:word-blanks:v1:...` for authenticated learners and `adhyayana:guest:word-blanks:v1:...` for guest learners.
+   - Global un-namespaced keys are deprecated and excluded from data loading, preventing cross-account and guest session data contamination.
+2. **Authoritative Cloud Source of Truth in `WordBlanksBoard`**:
+   - Authenticated sessions initialize in-memory discovered words as empty and hydrate strictly from `fetchGameProgress('word_blanks', token)` from Cloud Firestore without merging foreign guest localStorage.
+   - Fresh accounts or accounts with 0 XP display a 100% clean board (0 words discovered, 0 cleared stages, Level 1 Puzzle 1).
+   - Switching accounts or signing out wipes all in-memory game state (`discoveredMap`, `activeLevelIdx = 1`, `activePuzzleNum = 1`, `cloudUnlockedLevels = []`).
+3. **UI Clutter Removal & Editorial Refinement**:
+   - Removed intrusive `● CLOUD SYNCED` badge from the puzzle header in `WordBlanksBoard.tsx`.
+   - Streamlined `PuzzleViewPage.tsx`: Removed redundant `Rules & Mechanics` sub-button, `Engine: {puzzleId}` tag, and bottom telemetry footer text; retained pristine `← Return to Catalog` breadcrumb.
+   - Cleaned `AvatarDropdown.tsx`: Removed non-existent `/settings` link.
+   - Clarified `DiscoveredWordsSidebar.tsx`: Replaced misleading `Target to Unlock Level N` with `Stage Progress: {wordsCount} / {minWordsToClear}` and affirmative `✓ Stage Cleared` indicator upon clearing stage requirement.
 
 ---
 

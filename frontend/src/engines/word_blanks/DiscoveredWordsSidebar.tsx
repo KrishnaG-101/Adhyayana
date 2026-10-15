@@ -18,9 +18,9 @@ interface DiscoveredWordsSidebarProps {
 
 export const DiscoveredWordsSidebar: React.FC<DiscoveredWordsSidebarProps> = ({
   discoveredWords,
-  currentLevel,
+  currentLevel: _currentLevel,
   minWordsToUnlock,
-  isNextLevelUnlocked,
+  isNextLevelUnlocked: _isNextLevelUnlocked,
   totalXp,
 }) => {
   const wordsCount = discoveredWords.length;
@@ -57,19 +57,19 @@ export const DiscoveredWordsSidebar: React.FC<DiscoveredWordsSidebarProps> = ({
         </div>
       </div>
 
-      {/* Level Unlock Progress Indicator */}
+      {/* Stage Progress Indicator */}
       <div className="rounded-2xl bg-stone-50 dark:bg-[#161618] border border-stone-200/70 dark:border-[#2E2E34]/70 p-3 space-y-1.5">
         <div className="flex items-center justify-between text-xs font-medium">
           <span className="text-stone-600 dark:text-stone-300 flex items-center gap-1.5">
-            {isNextLevelUnlocked ? (
+            {wordsCount >= minWordsToUnlock ? (
               <>
                 <CheckCircle2 size={13} className="text-emerald-500" />
-                <span className="text-emerald-700 dark:text-emerald-400">
-                  Tier Unlocked
+                <span className="text-emerald-700 dark:text-emerald-400 font-semibold">
+                  ✓ Stage Cleared
                 </span>
               </>
             ) : (
-              <span>Target to Unlock Level {currentLevel + 1}</span>
+              <span>Stage Progress</span>
             )}
           </span>
           <span className="font-mono text-stone-500 dark:text-stone-400">
@@ -81,7 +81,7 @@ export const DiscoveredWordsSidebar: React.FC<DiscoveredWordsSidebarProps> = ({
         <div className="w-full h-1.5 rounded-full bg-stone-200 dark:bg-stone-800 overflow-hidden">
           <div
             className={`h-full transition-all duration-300 ${
-              isNextLevelUnlocked ? 'bg-emerald-500' : 'bg-indigo-600'
+              wordsCount >= minWordsToUnlock ? 'bg-emerald-500' : 'bg-indigo-600'
             }`}
             style={{ width: `${progressRatio * 100}%` }}
           />
