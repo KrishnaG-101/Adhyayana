@@ -188,7 +188,7 @@ describe('Word Blanks Engine (विचारणशाला Generative Stem Rec
 
       // Seed localStorage with BAT already found
       localStorage.setItem(
-        'adhyayana:word-blanks:v1:level:1:words',
+        'adhyayana:guest:word-blanks:v1:l1:p1:words',
         JSON.stringify([
           {
             word: 'BAT',
@@ -256,7 +256,7 @@ describe('Word Blanks Engine (विचारणशाला Generative Stem Rec
 
       // Seed Level 1, Puzzle 1 with 3 words already cleared
       localStorage.setItem(
-        'adhyayana:word-blanks:v1:l1:p1:words',
+        'adhyayana:guest:word-blanks:v1:l1:p1:words',
         JSON.stringify([
           { word: 'BAT', part_of_speech: 'noun', definition: 'A mammal.', xp_awarded: 20, discovered_at: 'now' },
           { word: 'CAT', part_of_speech: 'noun', definition: 'A feline.', xp_awarded: 20, discovered_at: 'now' },
@@ -298,7 +298,7 @@ describe('Word Blanks Engine (विचारणशाला Generative Stem Rec
 
       // Seed stage 1 and stage 2 as cleared so stage 3 is unlocked but stage 4 remains locked
       localStorage.setItem(
-        'adhyayana:word-blanks:v1:l1:p1:words',
+        'adhyayana:guest:word-blanks:v1:l1:p1:words',
         JSON.stringify([
           { word: 'BAT', part_of_speech: 'noun', definition: 'A mammal.', xp_awarded: 20, discovered_at: 'now' },
           { word: 'CAT', part_of_speech: 'noun', definition: 'A feline.', xp_awarded: 20, discovered_at: 'now' },
@@ -306,7 +306,7 @@ describe('Word Blanks Engine (विचारणशाला Generative Stem Rec
         ])
       );
       localStorage.setItem(
-        'adhyayana:word-blanks:v1:l1:p2:words',
+        'adhyayana:guest:word-blanks:v1:l1:p2:words',
         JSON.stringify([
           { word: 'BIN', part_of_speech: 'noun', definition: 'A container.', xp_awarded: 20, discovered_at: 'now' },
           { word: 'PIN', part_of_speech: 'noun', definition: 'A fastener.', xp_awarded: 20, discovered_at: 'now' },
@@ -345,7 +345,7 @@ describe('Word Blanks Engine (विचारणशाला Generative Stem Rec
       // Unlock Level 2 and Level 3 via localStorage by clearing all puzzles in Level 1 and 2
       for (let p = 1; p <= 30; p++) {
         localStorage.setItem(
-          `adhyayana:word-blanks:v1:l1:p${p}:words`,
+          `adhyayana:guest:word-blanks:v1:l1:p${p}:words`,
           JSON.stringify([
             { word: 'BAT', part_of_speech: 'noun', definition: 'A bat.', xp_awarded: 20, discovered_at: 'now' },
             { word: 'CAT', part_of_speech: 'noun', definition: 'A cat.', xp_awarded: 20, discovered_at: 'now' },
@@ -353,7 +353,7 @@ describe('Word Blanks Engine (विचारणशाला Generative Stem Rec
           ])
         );
         localStorage.setItem(
-          `adhyayana:word-blanks:v1:l2:p${p}:words`,
+          `adhyayana:guest:word-blanks:v1:l2:p${p}:words`,
           JSON.stringify([
             { word: 'COT', part_of_speech: 'noun', definition: 'A cot.', xp_awarded: 20, discovered_at: 'now' },
             { word: 'CUT', part_of_speech: 'verb', definition: 'To cut.', xp_awarded: 20, discovered_at: 'now' },
@@ -434,7 +434,7 @@ describe('Word Blanks Engine (विचारणशाला Generative Stem Rec
       );
 
       expect(screen.getByTestId('word-blanks-board')).toBeInTheDocument();
-      expect(screen.getByText('Engine: word-blanks')).toBeInTheDocument();
+      expect(screen.getByText('Return to Catalog')).toBeInTheDocument();
     });
   });
 });

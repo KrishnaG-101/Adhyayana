@@ -275,16 +275,88 @@ describe('Cloud Progress & Offline Network Resilience', () => {
         </MemoryRouter>
       );
 
-      // Verify Cloud Synced indicator appears
-      await waitFor(() => {
-        expect(screen.getByText('Cloud Synced')).toBeInTheDocument();
-      });
-
       // Verify remote words were hydrated into sidebar
       await waitFor(() => {
         expect(screen.getByText('2 words discovered')).toBeInTheDocument();
         expect(screen.getByText('BAT')).toBeInTheDocument();
         expect(screen.getByText('CAT')).toBeInTheDocument();
+      });
+    });
+
+    it('displays 0 discovered words on board for an account with 0 XP without leaking guest localStorage', async () => {
+      // Seed guest storage with prior guest words
+      localStorage.setItem(
+        'adhyayana:guest:word-blanks:v1:l1:p1:words',
+        JSON.stringify([
+          { word: 'BAT', part_of_speech: 'noun', definition: 'A bat.', xp_awarded: 20, discovered_at: 'now' },
+          { word: 'CAT', part_of_speech: 'noun', definition: 'A cat.', xp_awarded: 20, discovered_at: 'now' },
+        ])
+      );
+      // Also seed legacy key to ensure it is strictly ignored
+      localStorage.setItem(
+        'adhyayana:word-blanks:v1:l1:p1:words',
+        JSON.stringify([
+          { word: 'LEGACY', part_of_speech: 'noun', definition: 'Legacy.', xp_awarded: 20, discovered_at: 'now' },
+        ])
+      );
+
+      // Seed authenticated session for a clean 0 XP user
+      localStorage.setItem(
+        'adhyayana:auth:session',
+        JSON.stringify({
+          uid: 'user-clean-0xp',
+          email: 'fresh@adhyayana.org',
+          displayName: 'Fresh Learner',
+          photoURL: null,
+          isAnonymous: false,
+        })
+      );
+
+      vi.spyOn(global, 'fetch').mockImplementation(async (url) => {
+        const urlStr = url.toString();
+        if (urlStr.includes('/auth/me')) {
+          return {
+            ok: true,
+            json: async () => ({
+              uid: 'user-clean-0xp',
+              display_name: 'Fresh Learner',
+              email: 'fresh@adhyayana.org',
+              is_anonymous: false,
+              stats: { total_xp: 0, word_blanks_cleared: 0, current_streak: 0, max_streak: 0, games_played: 0, games_won: 0 },
+            }),
+          } as Response;
+        }
+        if (urlStr.includes('/games/word_blanks/progress')) {
+          return {
+            ok: true,
+            json: async () => ({
+              unlocked_levels: [1],
+              cleared_stages: [],
+              discovered_words: {},
+            }),
+          } as Response;
+        }
+        return { ok: false, status: 404 } as Response;
+      });
+
+      render(
+        <MemoryRouter>
+          <ThemeProvider>
+            <AuthProvider>
+              <NavigationProvider>
+                <WordBlanksBoard />
+              </NavigationProvider>
+            </AuthProvider>
+          </ThemeProvider>
+        </MemoryRouter>
+      );
+
+      // Verify clean board: 0 words, empty lexicon encouragement, no guest leaks
+      await waitFor(() => {
+        expect(screen.getByTestId('empty-lexicon-state')).toBeInTheDocument();
+        expect(screen.getByText('0 / 3')).toBeInTheDocument();
+        expect(screen.queryByText('BAT')).not.toBeInTheDocument();
+        expect(screen.queryByText('LEGACY')).not.toBeInTheDocument();
       });
     });
   });

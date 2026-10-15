@@ -390,31 +390,28 @@ function evaluateOfflineFallback(
 }
 
 // ---------------------------------------------------------------------------
-// LocalStorage Persistence Helpers
+// LocalStorage Persistence Helpers (Strictly User-Scoped)
 // ---------------------------------------------------------------------------
 
-const STORAGE_PREFIX = 'adhyayana:word-blanks:v1';
+function getStoragePrefix(userId?: string): string {
+  if (userId && userId.trim()) {
+    return `adhyayana:user:${userId.trim()}:word-blanks:v1`;
+  }
+  return 'adhyayana:guest:word-blanks:v1';
+}
 
 export function getStoredDiscoveredWords(
   level: number,
-  puzzleNumber: number = 1
+  puzzleNumber: number = 1,
+  userId?: string
 ): DiscoveredWord[] {
   try {
-    // 1. Check primary key: l{level}:p{puzzleNumber}:words
-    const key = `${STORAGE_PREFIX}:l${level}:p${puzzleNumber}:words`;
+    const prefix = getStoragePrefix(userId);
+    const key = `${prefix}:l${level}:p${puzzleNumber}:words`;
     const raw = localStorage.getItem(key);
     if (raw) {
       return JSON.parse(raw) as DiscoveredWord[];
     }
-
-    // 2. Backward compatibility fallback for puzzle 1
-    if (puzzleNumber === 1) {
-      const legacyRaw = localStorage.getItem(`${STORAGE_PREFIX}:level:${level}:words`);
-      if (legacyRaw) {
-        return JSON.parse(legacyRaw) as DiscoveredWord[];
-      }
-    }
-
     return [];
   } catch (err) {
     console.error('Failed to load discovered words from localStorage', err);
@@ -425,10 +422,12 @@ export function getStoredDiscoveredWords(
 export function saveStoredDiscoveredWords(
   level: number,
   words: DiscoveredWord[],
-  puzzleNumber: number = 1
+  puzzleNumber: number = 1,
+  userId?: string
 ): void {
   try {
-    const key = `${STORAGE_PREFIX}:l${level}:p${puzzleNumber}:words`;
+    const prefix = getStoragePrefix(userId);
+    const key = `${prefix}:l${level}:p${puzzleNumber}:words`;
     localStorage.setItem(key, JSON.stringify(words));
   } catch (err) {
     console.error('Failed to save discovered words to localStorage', err);
@@ -437,16 +436,17 @@ export function saveStoredDiscoveredWords(
 
 export function clearStoredLevelProgress(
   level: number,
-  puzzleNumber?: number
+  puzzleNumber?: number,
+  userId?: string
 ): void {
   try {
+    const prefix = getStoragePrefix(userId);
     if (puzzleNumber !== undefined) {
-      localStorage.removeItem(`${STORAGE_PREFIX}:l${level}:p${puzzleNumber}:words`);
+      localStorage.removeItem(`${prefix}:l${level}:p${puzzleNumber}:words`);
     } else {
-      localStorage.removeItem(`${STORAGE_PREFIX}:level:${level}:words`);
       // Clear all puzzles for this level (1 to 50)
       for (let p = 1; p <= 50; p++) {
-        localStorage.removeItem(`${STORAGE_PREFIX}:l${level}:p${p}:words`);
+        localStorage.removeItem(`${prefix}:l${level}:p${p}:words`);
       }
     }
   } catch (err) {
@@ -457,20 +457,22 @@ export function clearStoredLevelProgress(
 export function isPuzzleCleared(
   level: number,
   puzzleNumber: number,
-  minWordsToClear: number = 3
+  minWordsToClear: number = 3,
+  userId?: string
 ): boolean {
-  const words = getStoredDiscoveredWords(level, puzzleNumber);
+  const words = getStoredDiscoveredWords(level, puzzleNumber, userId);
   return words.length >= minWordsToClear;
 }
 
 export function getClearedPuzzlesCount(
   level: number,
   totalPuzzles: number,
-  minWordsToClear: number = 3
+  minWordsToClear: number = 3,
+  userId?: string
 ): number {
   let count = 0;
   for (let p = 1; p <= totalPuzzles; p++) {
-    if (isPuzzleCleared(level, p, minWordsToClear)) {
+    if (isPuzzleCleared(level, p, minWordsToClear, userId)) {
       count++;
     }
   }

@@ -53,6 +53,7 @@ export const WordBlanksBoard: React.FC = () => {
   const navContext = React.useContext(NavigationContext);
   const openRulesModal = navContext?.openRulesModal || (() => {});
   const { user, token } = useAuth();
+  const currentUid = user && !user.is_anonymous ? user.uid : undefined;
 
   const [levels, setLevels] = useState<WordBlanksLevel[]>(CLIENT_WORD_BLANKS_LEVELS);
   const [activeLevelIdx, setActiveLevelIdx] = useState<number>(1);
@@ -72,7 +73,11 @@ export const WordBlanksBoard: React.FC = () => {
   const levelScrollRef = useRef<HTMLDivElement>(null);
 
   // In-memory cache of discovered words keyed by `level:puzzle`
+  // Authenticated accounts start clean and hydrate exclusively from Cloud Firestore
   const [discoveredMap, setDiscoveredMap] = useState<Record<string, DiscoveredWord[]>>(() => {
+    if (currentUid) {
+      return {};
+    }
     const initial: Record<string, DiscoveredWord[]> = {};
     initial['1:1'] = getStoredDiscoveredWords(1, 1);
     return initial;
@@ -80,6 +85,20 @@ export const WordBlanksBoard: React.FC = () => {
 
   // Track cache version to trigger re-renders when words are updated
   const [cacheVersion, setCacheVersion] = useState<number>(0);
+
+  // Wipe local in-memory game state when user signs out or switches accounts
+  const lastUidRef = useRef<string | undefined>(currentUid);
+  useEffect(() => {
+    if (lastUidRef.current !== currentUid) {
+      lastUidRef.current = currentUid;
+      setDiscoveredMap(currentUid ? {} : { '1:1': getStoredDiscoveredWords(1, 1) });
+      setActiveLevelIdx(1);
+      setActivePuzzleNum(1);
+      setCloudUnlockedLevels([]);
+      setFeedback(null);
+      setCacheVersion((v) => v + 1);
+    }
+  }, [currentUid]);
 
   // Real-time network connectivity tracking
   useEffect(() => {
@@ -119,7 +138,7 @@ export const WordBlanksBoard: React.FC = () => {
         let clearedInLvl = 0;
         for (let p = 1; p <= pCount; p++) {
           const key = `${lvl.level}:${p}`;
-          let words = discoveredMap[key] || getStoredDiscoveredWords(lvl.level, p);
+          let words = discoveredMap[key] || getStoredDiscoveredWords(lvl.level, p, currentUid);
           if (key === extraStageKey && extraWords) {
             words = extraWords;
           }
@@ -150,12 +169,12 @@ export const WordBlanksBoard: React.FC = () => {
         new_xp_delta: deltaXp,
       };
     },
-    [levels, discoveredMap, cloudUnlockedLevels]
+    [levels, discoveredMap, cloudUnlockedLevels, currentUid]
   );
 
-  // Cross-device progress hydration from Cloud Firestore
+  // Cross-device progress hydration from Cloud Firestore (Strict Cloud Truth)
   useEffect(() => {
-    if (!user || user.is_anonymous || !token) return;
+    if (!currentUid || !token) return;
 
     let isMounted = true;
 
@@ -163,56 +182,34 @@ export const WordBlanksBoard: React.FC = () => {
       .then((cloudProgress) => {
         if (!isMounted) return;
 
-        if (cloudProgress.unlocked_levels && cloudProgress.unlocked_levels.length > 0) {
-          setCloudUnlockedLevels(cloudProgress.unlocked_levels);
-        }
+        setCloudUnlockedLevels(cloudProgress.unlocked_levels || [1]);
 
-        // Merge remote discovered words into local state and localStorage
+        // Populate discovered words strictly from Cloud Firestore (no guest localStorage merging)
+        const newDiscoveredMap: Record<string, DiscoveredWord[]> = {};
         if (cloudProgress.discovered_words) {
-          let hasNewWords = false;
-
           Object.entries(cloudProgress.discovered_words).forEach(
             ([stageKey, cloudWords]) => {
               const [lvlStr, pzStr] = stageKey.split(':');
               const lvl = parseInt(lvlStr, 10);
               const pz = parseInt(pzStr, 10);
 
-              if (!isNaN(lvl) && !isNaN(pz)) {
-                const localWords = getStoredDiscoveredWords(lvl, pz);
-                const localWordSet = new Set(
-                  localWords.map((w) => w.word.toUpperCase())
-                );
-                const toAdd: DiscoveredWord[] = [];
-
-                cloudWords.forEach((rec) => {
-                  if (!localWordSet.has(rec.word.toUpperCase())) {
-                    toAdd.push({
-                      word: rec.word,
-                      part_of_speech: null,
-                      definition: null,
-                      xp_awarded: rec.xp_awarded,
-                      discovered_at: rec.discovered_at,
-                    });
-                    hasNewWords = true;
-                  }
-                });
-
-                if (toAdd.length > 0) {
-                  const merged = [...toAdd, ...localWords];
-                  saveStoredDiscoveredWords(lvl, merged, pz);
-                  setDiscoveredMap((prev) => ({
-                    ...prev,
-                    [stageKey]: merged,
-                  }));
-                }
+              if (!isNaN(lvl) && !isNaN(pz) && Array.isArray(cloudWords)) {
+                const words: DiscoveredWord[] = cloudWords.map((rec) => ({
+                  word: rec.word,
+                  part_of_speech: null,
+                  definition: null,
+                  xp_awarded: rec.xp_awarded,
+                  discovered_at: rec.discovered_at,
+                }));
+                newDiscoveredMap[stageKey] = words;
+                saveStoredDiscoveredWords(lvl, words, pz, currentUid);
               }
             }
           );
-
-          if (hasNewWords) {
-            setCacheVersion((v) => v + 1);
-          }
         }
+
+        setDiscoveredMap(newDiscoveredMap);
+        setCacheVersion((v) => v + 1);
       })
       .catch((err) => {
         console.warn('[WordBlanksBoard] Cloud hydration warning:', err);
@@ -224,7 +221,7 @@ export const WordBlanksBoard: React.FC = () => {
     return () => {
       isMounted = false;
     };
-  }, [user?.uid, token]);
+  }, [currentUid, token]);
 
   // Fetch remote level configurations on mount
   useEffect(() => {
@@ -274,19 +271,19 @@ export const WordBlanksBoard: React.FC = () => {
     if (discoveredMap[activeCacheKey] !== undefined) {
       return discoveredMap[activeCacheKey];
     }
-    return getStoredDiscoveredWords(activeLevelIdx, activePuzzleNum);
-  }, [discoveredMap, activeCacheKey, activeLevelIdx, activePuzzleNum, cacheVersion]);
+    return getStoredDiscoveredWords(activeLevelIdx, activePuzzleNum, currentUid);
+  }, [discoveredMap, activeCacheKey, activeLevelIdx, activePuzzleNum, cacheVersion, currentUid]);
 
   // Ensure current puzzle words are in memory state
   useEffect(() => {
     if (discoveredMap[activeCacheKey] === undefined) {
-      const stored = getStoredDiscoveredWords(activeLevelIdx, activePuzzleNum);
+      const stored = getStoredDiscoveredWords(activeLevelIdx, activePuzzleNum, currentUid);
       setDiscoveredMap((prev) => ({
         ...prev,
         [activeCacheKey]: stored,
       }));
     }
-  }, [activeCacheKey, activeLevelIdx, activePuzzleNum, discoveredMap]);
+  }, [activeCacheKey, activeLevelIdx, activePuzzleNum, discoveredMap, currentUid]);
 
   // Minimum words required to clear the current puzzle
   const minWordsToClearCurrent = activePuzzle.min_words_to_clear || 3;
@@ -295,7 +292,8 @@ export const WordBlanksBoard: React.FC = () => {
   // Check if a specific puzzle within the active level is unlocked
   const isPuzzleUnlocked = (pNum: number): boolean => {
     if (pNum === 1) return true;
-    const prevWords = getStoredDiscoveredWords(activeLevelIdx, pNum - 1);
+    const prevKey = `${activeLevelIdx}:${pNum - 1}`;
+    const prevWords = discoveredMap[prevKey] || getStoredDiscoveredWords(activeLevelIdx, pNum - 1, currentUid);
     return prevWords.length >= 3;
   };
 
@@ -306,8 +304,8 @@ export const WordBlanksBoard: React.FC = () => {
 
   // Count cleared puzzles in active level
   const clearedPuzzlesInActiveLevel = useMemo(() => {
-    return getClearedPuzzlesCount(activeLevelIdx, totalPuzzlesInLevel, 3);
-  }, [activeLevelIdx, totalPuzzlesInLevel, cacheVersion]);
+    return getClearedPuzzlesCount(activeLevelIdx, totalPuzzlesInLevel, 3, currentUid);
+  }, [activeLevelIdx, totalPuzzlesInLevel, cacheVersion, currentUid]);
 
   // Level unlock calculation: Level 1 always unlocked; Level N unlocked IF AND ONLY IF all puzzles of Level N-1 are cleared or unlocked via cloud
   const isLevelUnlocked = (lvlNum: number): boolean => {
@@ -316,7 +314,7 @@ export const WordBlanksBoard: React.FC = () => {
     const prevLvl = levels.find((l) => l.level === lvlNum - 1);
     if (!prevLvl) return false;
     const prevTotal = prevLvl.puzzles?.length || 30;
-    const prevCleared = getClearedPuzzlesCount(prevLvl.level, prevTotal, 3);
+    const prevCleared = getClearedPuzzlesCount(prevLvl.level, prevTotal, 3, currentUid);
     return prevCleared >= prevTotal;
   };
 
@@ -327,14 +325,14 @@ export const WordBlanksBoard: React.FC = () => {
       const pCount = lvl.puzzles?.length || 30;
       for (let p = 1; p <= pCount; p++) {
         const key = `${lvl.level}:${p}`;
-        const words = discoveredMap[key] || getStoredDiscoveredWords(lvl.level, p);
+        const words = discoveredMap[key] || getStoredDiscoveredWords(lvl.level, p, currentUid);
         words.forEach((w) => {
           xp += w.xp_awarded;
         });
       }
     });
     return xp;
-  }, [levels, discoveredMap, cacheVersion]);
+  }, [levels, discoveredMap, cacheVersion, currentUid]);
 
   // Level completion milestone: Unlocks next level tier only when ALL puzzles in the current level are cleared!
   const hasAchievedNextUnlock =
@@ -402,7 +400,7 @@ export const WordBlanksBoard: React.FC = () => {
           ...prev,
           [activeCacheKey]: updated,
         }));
-        saveStoredDiscoveredWords(activeLevelIdx, updated, activePuzzleNum);
+        saveStoredDiscoveredWords(activeLevelIdx, updated, activePuzzleNum, currentUid);
         setCacheVersion((v) => v + 1);
 
         setFeedback({
@@ -487,7 +485,7 @@ export const WordBlanksBoard: React.FC = () => {
               const unlocked = isLevelUnlocked(lvl.level);
               const isActive = lvl.level === activeLevelIdx;
               const totalInLevel = lvl.puzzles?.length || 30;
-              const clearedCount = getClearedPuzzlesCount(lvl.level, totalInLevel, 3);
+              const clearedCount = getClearedPuzzlesCount(lvl.level, totalInLevel, 3, currentUid);
               const isCompleted = clearedCount >= totalInLevel;
 
               return (
@@ -597,12 +595,6 @@ export const WordBlanksBoard: React.FC = () => {
               <div className="flex items-center gap-2 text-xs font-mono text-indigo-600 dark:text-indigo-400 font-semibold uppercase tracking-wider">
                 <Compass size={13} />
                 <span>Level {activeLevelIdx}: {activeLevel.title || 'Generative Word Blanks'}</span>
-                {user && !user.is_anonymous && (
-                  <span className="ml-auto inline-flex items-center gap-1.5 text-[11px] font-mono text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800/60">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                    <span>Cloud Synced</span>
-                  </span>
-                )}
               </div>
               <h2 className="font-serif text-2xl sm:text-3xl font-bold text-stone-900 dark:text-[#E4E4E7]">
                 Stem Pattern: <span className="text-indigo-600 dark:text-indigo-400">{activePuzzle.stem}</span>
@@ -813,7 +805,8 @@ export const WordBlanksBoard: React.FC = () => {
             {/* Puzzles Grid */}
             <div className="flex-1 overflow-y-auto pr-1 py-1 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5">
               {(activeLevel.puzzles || []).map((pz) => {
-                const words = getStoredDiscoveredWords(activeLevelIdx, pz.puzzle_number);
+                const stageKey = `${activeLevelIdx}:${pz.puzzle_number}`;
+                const words = discoveredMap[stageKey] || getStoredDiscoveredWords(activeLevelIdx, pz.puzzle_number, currentUid);
                 const cleared = words.length >= (pz.min_words_to_clear || 3);
                 const isSelected = pz.puzzle_number === activePuzzleNum;
                 const isStageUnlocked = isPuzzleUnlocked(pz.puzzle_number);

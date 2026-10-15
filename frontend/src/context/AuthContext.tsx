@@ -250,15 +250,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [token, user]);
 
-  // Auto-migrate guest progress on sign-in without requiring manual user interaction
-  useEffect(() => {
-    if (user && !user.is_anonymous && token && checkPendingGuestProgress()) {
-      migrateGuestProgress().catch((err) => {
-        console.warn('[AuthContext] Automatic guest progress migration error:', err);
-      });
-    }
-  }, [user, token, checkPendingGuestProgress, migrateGuestProgress]);
-
   const signInWithGoogle = useCallback(async () => {
     setIsLoading(true);
     try {

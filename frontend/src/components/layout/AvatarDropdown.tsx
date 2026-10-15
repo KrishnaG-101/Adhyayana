@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { User, Sun, Moon, Monitor, LogIn, Settings, LogOut, Flame, Zap } from 'lucide-react';
+import { User, Sun, Moon, Monitor, LogIn, LogOut, Flame, Zap } from 'lucide-react';
 import { useTheme, Theme } from '@/context/ThemeContext';
 import { useAuth } from '@/context/AuthContext';
 
@@ -113,14 +113,6 @@ export const AvatarDropdown: React.FC = () => {
                   className="flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
                 >
                   <User size={16} /> Profile & Stats
-                </Link>
-                <Link
-                  to="/settings"
-                  data-testid="settings-nav-link"
-                  onClick={() => setIsOpen(false)}
-                  className="flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
-                >
-                  <Settings size={16} /> Settings
                 </Link>
               </nav>
 

@@ -278,7 +278,7 @@ describe('Phase 4: Authentication, Avatar State & Player Profile', () => {
       expect(screen.getByTestId('stat-card-games-won')).toHaveTextContent('12');
     });
 
-    it('detects unmigrated guest progress and triggers migration', async () => {
+    it('does not automatically merge guest progress into authenticated profiles on mount', async () => {
       // Seed session
       localStorage.setItem(
         'adhyayana:auth:session',
@@ -293,7 +293,7 @@ describe('Phase 4: Authentication, Avatar State & Player Profile', () => {
 
       // Seed unmigrated guest word blanks
       localStorage.setItem(
-        'adhyayana:word-blanks:v1:l1:p1:words',
+        'adhyayana:guest:word-blanks:v1:l1:p1:words',
         JSON.stringify([
           { word: 'BAT', xp_awarded: 20 },
           { word: 'CAT', xp_awarded: 20 },
@@ -309,25 +309,6 @@ describe('Phase 4: Authentication, Avatar State & Player Profile', () => {
             json: async () => TEST_PROFILE,
           } as Response;
         }
-        if (urlStr.includes('/migrate-guest-data')) {
-          return {
-            ok: true,
-            json: async () => ({
-              success: true,
-              migrated_xp: 60,
-              migrated_stages: 1,
-              message: 'Successfully transferred 60 XP and 1 cleared stages.',
-              updated_profile: {
-                ...TEST_PROFILE,
-                stats: {
-                  ...TEST_PROFILE.stats,
-                  total_xp: 400,
-                  word_blanks_cleared: 11,
-                },
-              },
-            }),
-          } as Response;
-        }
         return { ok: false, status: 404 } as Response;
       });
 
@@ -341,14 +322,11 @@ describe('Phase 4: Authentication, Avatar State & Player Profile', () => {
         </ThemeProvider>
       );
 
-      // Verify automatic migration was triggered and updated profile in background
+      // Verify profile loads its own cloud XP without foreign guest data being automatically swept in
       await waitFor(() => {
-        expect(localStorage.getItem('adhyayana:auth:guest_migrated')).toBe('true');
+        expect(screen.getByTestId('stat-card-xp')).toHaveTextContent('340');
       });
-
-      await waitFor(() => {
-        expect(screen.getByTestId('stat-card-xp')).toHaveTextContent('400');
-      });
+      expect(localStorage.getItem('adhyayana:auth:guest_migrated')).toBeNull();
     });
   });
 });
